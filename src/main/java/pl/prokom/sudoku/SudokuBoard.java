@@ -1,13 +1,19 @@
 package pl.prokom.sudoku;
 
 import java.util.Random;
-import java.util.Arrays;
 
 public class SudokuBoard {
 
     private static final int DIM = 9;
     private static final int MINI_DIM = 3;
     private int[][] board = new int[DIM][DIM];
+
+    // tylko dla podstawowego sprawdzenia
+    public static void main(String[] args) {
+        SudokuBoard sudoku = new SudokuBoard();
+        sudoku.fillBoard();
+        sudoku.printSudokuBoard();
+    }
 
     public boolean isCrossCorrect(int row, int col) {
         for (int i = 0; i < DIM; i++) {
@@ -121,13 +127,6 @@ public class SudokuBoard {
             }
             System.out.print("\n");
         }
-    }
-
-// tylko dla podstawowego sprawdzenia
-    public static void main(String[] args){
-        SudokuBoard sudoku = new SudokuBoard();
-        sudoku.fillBoard();
-        sudoku.printSudokuBoard();
     }
 
 }
