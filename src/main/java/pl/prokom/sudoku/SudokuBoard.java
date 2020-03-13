@@ -4,16 +4,9 @@ import java.util.Random;
 
 public class SudokuBoard {
 
-    private static final int DIM = 9;
-    private static final int MINI_DIM = 3;
+    private final int DIM = 9;
+    private final int MINI_DIM = 3;
     private int[][] board = new int[DIM][DIM];
-
-    // tylko dla podstawowego sprawdzenia
-    public static void main(String[] args) {
-        SudokuBoard sudoku = new SudokuBoard();
-        sudoku.fillBoard();
-        sudoku.printSudokuBoard();
-    }
 
     public boolean isCrossCorrect(int row, int col) {
         for (int i = 0; i < DIM; i++) {
@@ -55,7 +48,7 @@ public class SudokuBoard {
 //         trudność w "cofaniu się" po ustaleniu braku możliwości wstawienia danej cyfry do konkretnej komórki
 //         trudność polega na odpowiedniej zmianie numeru rzędu, a następnie doboru odpowiedniej wartości "początkowej"
 //         dla kroku w tył
-
+        board = new int[DIM][DIM];
         int[] helperTab = new int[DIM * DIM];
         boolean isCorrect = false;
         int r, c, i;
@@ -114,20 +107,17 @@ public class SudokuBoard {
         }
     }
 
-    public void printRow(int rowNumber) {
-        for (int col : board[rowNumber]) {
-            System.out.print(col + " ");
-        }
-    }
-
     public void printSudokuBoard() {
-        for (int i = 0; i < DIM; i++) {
-            for (int col : board[i]) {
+        for (int[] row : board) {
+            for (int col : row) {
                 System.out.print(col + " ");
             }
-            System.out.print("\n");
+            System.out.println();
         }
     }
 
+    public int[][] getBoard() {
+        return board;
+    }
 }
 
