@@ -1,123 +1,159 @@
 package pl.prokom.sudoku;
 
+import java.util.Arrays;
 import java.util.Random;
 
+
+/**
+ * SudokuBoard class to solve sudoku.
+ */
 public class SudokuBoard {
+    private final int miniSquareSize = 3;
+    private final int miniSquareCount = 3;
 
-    private final int DIM = 9;
-    private final int MINI_DIM = 3;
-    private int[][] board = new int[DIM][DIM];
+    private final int squareSize;
+    private int[][] board;
 
-    public boolean isCrossCorrect(int row, int col) {
-        for (int i = 0; i < DIM; i++) {
-            if (i != col) {
-                if (this.board[row][i] == this.board[row][col])
-                    return false;
-            }
-        }
 
-        for (int i = 0; i < DIM; i++) {
-            if (i != row) {
-                if (this.board[i][col] == this.board[row][col])
-                    return false;
-            }
-        }
-        return true;
+    /**
+     * Constructor of SudokuBoard object.
+     */
+    public SudokuBoard() {
+        this.squareSize = miniSquareSize * miniSquareCount;
+        this.board = new int[squareSize][squareSize];
     }
 
-    public boolean isMiniCorrect(int row, int col) {
+    /**
+     * Method to check whether you can put {@code num} in board or not.
+     *
+     * @param row int row to search for duplicates
+     * @param column int column to search for duplicates
+     * @param num int number you want to put in board
+     * @return boolean
+     */
+    private boolean isAllowed(final int row, final int column, final int num) {
 
-        int miniRow = row / MINI_DIM;
-        int miniCol = col / MINI_DIM;
-        for (int i = 0; i < MINI_DIM; i++) {
-            for (int j = 0; j < MINI_DIM; j++) {
-                if ((i + miniRow * 3 != row) && (j + miniCol * 3 != col)) {
-                    if (this.board[i + miniRow * 3][j + miniCol * 3] == this.board[row][col]) {
-                        return false;
-                    }
+        // Check if number already in row
+        for (int i = 0; i < squareSize; i++) {
+            if (board[row][i] == num) {
+                return false;
+            }
+        }
+
+        // Check if number already in column
+        for (int i = 0; i < squareSize; i++) {
+            if (board[i][column] == num) {
+                return false;
+            }
+        }
+
+        // Check if number already in mini square
+        // Set mini{Row,Column) to top left of mini square
+        int miniRow = row - row % miniSquareSize;
+        int miniColumn = column - column % miniSquareSize;
+
+        // Iterate through mini square
+        for (int i = miniRow; i < miniRow + miniSquareSize; i++) {
+            for (int j = miniColumn; j < miniColumn + miniSquareSize; j++) {
+                if (board[i][j] == num) {
+                    return false;
                 }
             }
         }
+
         return true;
     }
 
-    public void fillBoard() {
+    /**
+     * Override for fillBoard method.
+     */
+    public final void fillBoard() {
+        fillBoard(true);
+    }
 
-//         tablica helperTab służy do przechowywania ciągu cyfr (1-9)
-//         cel jej utworzenia:
-//         trudność w "cofaniu się" po ustaleniu braku możliwości wstawienia danej cyfry do konkretnej komórki
-//         trudność polega na odpowiedniej zmianie numeru rzędu, a następnie doboru odpowiedniej wartości "początkowej"
-//         dla kroku w tył
-        board = new int[DIM][DIM];
-        int[] helperTab = new int[DIM * DIM];
-        boolean isCorrect = false;
-        int r, c, i;
-        Random randomize = new Random();
 
-        for (i = 0; i < DIM * DIM; i++) {
-            isCorrect = false;
-            c = i % DIM;
-            r = i / DIM;
-            // gdy następuje wstawienie cyfry w puste miejsce w tablicy sudoku
-            if (helperTab[i] == 0) {
-                helperTab[i] = randomize.nextInt(9) + 1;
-                board[r][c] = helperTab[i];
-                if (isCrossCorrect(r, c) == true && isMiniCorrect(r, c) == true) {
-                    isCorrect = true;
+    /**
+     * Generates/Fills sudoku board with numbers.
+     *
+     * @param override boolean true if you want to override values in board
+     */
+    public final void fillBoard(final boolean override) {
+        Random random = new Random();
+        if (override) {
+            board = new int[squareSize][squareSize];
+        }
+        int[][] helpBoard = new int[squareSize][squareSize];
+
+        for (int row = 0; row < squareSize; row++) {
+            for (int column = 0; column < squareSize; column++) {
+                if (board[row][column] != 0 && helpBoard[row][column] == 0) {
                     continue;
-                } else {
-                    for (int k = 0; k < 8; k++) {
-                        if (board[r][c] + 1 == 10) {
-                            board[r][c] = 1;
-                        } else
-                            board[r][c] = board[r][c] + 1;
+                }
+                boolean isCorrect = false;
 
-                        if (isCrossCorrect(r, c) == true && isMiniCorrect(r, c) == true) {
+                if (helpBoard[row][column] == 0) {
+                    helpBoard[row][column] = random.nextInt(squareSize) + 1;
+                    int rand = helpBoard[row][column];
+
+                    do {
+                        if (isAllowed(row, column, rand)) {
+                            board[row][column] = rand;
                             isCorrect = true;
                             break;
                         }
+                        rand = rand % squareSize + 1;
+                    } while (rand != helpBoard[row][column]);
+                } else {
+                    int rand = board[row][column] % squareSize + 1;
+                    board[row][column] = 0;
+
+                    while (rand != helpBoard[row][column]) {
+                        if (isAllowed(row, column, rand)) {
+                            board[row][column] = rand;
+                            isCorrect = true;
+                            break;
+                        }
+                        rand = rand % squareSize + 1;
                     }
                 }
-                // gdy następuje krok w tył i wymagane jest dopasowanie zapełnionej już komórki tabeli sudoku
-            } else {
-                // iteracja po wszystkich(!) cyfrach, dokładny warunek opisany poniżej
-                for (int z = 0; z < 8; z++) {
-                    if (board[r][c] + 1 == 10) {
-                        board[r][c] = 1;
-                    } else
-                        board[r][c] = board[r][c] + 1;
 
-                    //  podstawowe sprawdzenie + ważny warunek, mówiący że na miejscu zapełnionej komórki tabeli, nie może pojawić się już wartość,
-                    //  którą została ona zainicjowana (warunek obowiązuje, gdy krok wstecz wypada na tą właśnie wartość,
-                    //  podczas i+1 dopasowania warunek zawsze pozostanie spełniony)
-
-                    if (isCrossCorrect(r, c) == true && isMiniCorrect(r, c) == true && board[r][c] != helperTab[i]) {
-                        isCorrect = true;
-                        break;
+                if (!isCorrect) {
+                    helpBoard[row][column] = 0;
+                    board[row][column] = 0;
+                    column = (column - 2) % squareSize;
+                    if (column < 0) {
+                        column += squareSize;
+                        row = Math.max(row - 1, 0);
                     }
-                    break;
                 }
-            }
-
-            if (!isCorrect) {
-                helperTab[i] = 0;
-                board[r][c] = 0;
-                i -= 2;
             }
         }
     }
 
-    public void printSudokuBoard() {
+    /**
+     * Prints sudoku board using System.out.print().
+     */
+    public final void printSudokuBoard() {
         for (int[] row : board) {
             for (int col : row) {
                 System.out.print(col + " ");
             }
             System.out.println();
         }
+        System.out.println();
     }
 
-    public int[][] getBoard() {
-        return board;
+    /**
+     * Returns reference to copy of this.board.
+     *
+     * @return int[][]
+     */
+    public final int[][] getCopyOfBoard() {
+        int[][] copyBoard = new int[squareSize][];
+        for (int i = 0; i < squareSize; i++) {
+            copyBoard[i] = Arrays.copyOf(board[i], squareSize);
+        }
+        return copyBoard;
     }
 }
 
