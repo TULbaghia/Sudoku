@@ -8,10 +8,22 @@ import java.util.Random;
  * SudokuBoard class to solve sudoku.
  */
 public class SudokuBoard {
+    /**
+     * Size of miniSquare inside board.
+     */
     private final int miniSquareSize = 3;
+    /**
+     * Count of miniSquares inside board.
+     */
     private final int miniSquareCount = 3;
 
+    /**
+     * Size of board.
+     */
     private final int squareSize;
+    /**
+     * Sudoku board.
+     */
     private int[][] board;
 
 
