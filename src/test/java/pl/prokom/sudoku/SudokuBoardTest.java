@@ -41,15 +41,6 @@ class SudokuBoardTest {
     }
 
     /**
-     * Checks if given array is squared
-     */
-    void checkIfArrayIsSquared(int[][] board) {
-        for (int[] ints : board) {
-            assertEquals(ints.length, board.length);
-        }
-    }
-
-    /**
      * Function checks uniqueness of values in each row
      * Case description:
      * - board should be squared
@@ -61,7 +52,9 @@ class SudokuBoardTest {
     @Test
     void sudokuRowUniqTestCase() {
         int[][] board = sudokuBoard.getCopyOfBoard();
-        checkIfArrayIsSquared(board);
+        for (int[] ints : board) {
+            assertEquals(ints.length, board.length);
+        }
 
         for (int i = 0; i < board.length; i++) {
             SortedSet<Integer> uniqueValues = new TreeSet<>();
@@ -89,7 +82,9 @@ class SudokuBoardTest {
     @Test
     void sudokuColumnUniqTestCase() {
         int[][] board = sudokuBoard.getCopyOfBoard();
-        checkIfArrayIsSquared(board);
+        for (int[] ints : board) {
+            assertEquals(ints.length, board.length);
+        }
 
         for (int i = 0; i < board[0].length; i++) {
             SortedSet<Integer> uniqueValues = new TreeSet<>();
@@ -117,8 +112,10 @@ class SudokuBoardTest {
     @Test
     void sudokuMiniSquareUniqTestCase() {
         int[][] board = sudokuBoard.getCopyOfBoard();
-        checkIfArrayIsSquared(board);
-        int subBoardSize = board.length / 3;
+        for (int[] ints : board) {
+            assertEquals(ints.length, board.length);
+        }
+        int subBoardSize = (int) Math.sqrt(board.length);
 
         for (int i = 0; i < board.length; i += subBoardSize) {
             for (int j = 0; j < board.length; j += subBoardSize) {
@@ -148,11 +145,15 @@ class SudokuBoardTest {
     void sudokuFillBoardTestCase() {
         sudokuBoard.fillBoard();
         int[][] board1 = sudokuBoard.getCopyOfBoard();
-        checkIfArrayIsSquared(board1);
+        for (int[] ints : board1) {
+            assertEquals(ints.length, board1.length);
+        }
 
         sudokuBoard.fillBoard();
         int[][] board2 = sudokuBoard.getCopyOfBoard();
-        checkIfArrayIsSquared(board2);
+        for (int[] ints : board2) {
+            assertEquals(ints.length, board2.length);
+        }
 
         assertEquals(board1.length, board2.length);
         for (int i = 0; i < board1.length; i++) {
