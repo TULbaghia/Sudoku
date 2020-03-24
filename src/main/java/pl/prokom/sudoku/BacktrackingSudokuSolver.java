@@ -18,7 +18,7 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
      */
     public final void solve(final SudokuBoard sudoku) {
         int squareSize = sudoku.getSquareSize();
-        int[][] helpBoard = new int[squareSize][squareSize];
+        byte[][] helpBoard = new byte[squareSize][squareSize];
         List<Integer> randomValues =
                 IntStream.range(1, squareSize + 1).boxed().collect(Collectors.toList());
         Collections.shuffle(randomValues);
@@ -81,9 +81,22 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
      */
     public boolean isAllowed(final int row, final int column, final int num,
                              final SudokuBoard sudoku) {
-        return isAllowedInRow(row, num, sudoku)
+        return isAllowedValue(num, sudoku)
+                && isAllowedInRow(row, num, sudoku)
                 && isAllowedInColumn(column, num, sudoku)
                 && isAllowedInMiniSquare(row, column, num, sudoku);
+    }
+
+
+    /**
+     * Method to check whether {@code num} is allowed value.
+     *
+     * @param num    int number you want to put in board
+     * @param sudoku SudokuBoard object
+     * @return whether num is between min and max
+     */
+    private boolean isAllowedValue(int num, SudokuBoard sudoku) {
+        return 0 < num && sudoku.getSquareSize() >= num;
     }
 
     /**
