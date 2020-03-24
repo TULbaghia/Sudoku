@@ -99,12 +99,13 @@ public class SudokuBoard implements Cloneable {
     }
 
     /**
-     * Returns reference to copy of this.board.
+     * Returns reference to deep copy of this.board.
      *
      * @return int[][]
      */
     public final int[][] getCopyOfBoard() {
         int[][] copyBoard = board.clone();
+        //board.clone() creates shallow copy of object, we need deep copy.
         for (int i = 0; i < squareSize; i++) {
             copyBoard[i] = board[i].clone();
         }
@@ -123,6 +124,9 @@ public class SudokuBoard implements Cloneable {
 
     @Override
     public final Object clone() throws CloneNotSupportedException {
+        SudokuBoard sudokuBoard = (SudokuBoard) super.clone();
+        //clone create shallow copy of array, we need deep copy
+        sudokuBoard.setBoard(getCopyOfBoard());
         return super.clone();
     }
 
@@ -142,7 +146,7 @@ public class SudokuBoard implements Cloneable {
                 .append(miniSquareSize, that.miniSquareSize)
                 .append(miniSquareCount, that.miniSquareCount)
                 .append(squareSize, that.squareSize)
-                .append(board, that.board)
+                .append(Arrays.deepEquals(board, that.board), true)
                 .isEquals();
     }
 
@@ -152,6 +156,7 @@ public class SudokuBoard implements Cloneable {
                 .append(miniSquareSize)
                 .append(miniSquareCount)
                 .append(squareSize)
+                //TODO: check if append board works with 2d array
                 .append(board)
                 .toHashCode();
     }
