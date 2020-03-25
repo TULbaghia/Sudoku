@@ -55,7 +55,7 @@ class SudokuBoardTest {
      * - other object type should not be equal to SudokuBoard
      */
     @Test
-    void sudokuDifferentObjectTestCase() throws CloneNotSupportedException {
+    void sudokuDifferentObjectTestCase() {
         assertNotEquals(null, sudokuBoard);
         assertNotEquals(sudokuBoard, (Object) "");
 
