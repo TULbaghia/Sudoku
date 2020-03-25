@@ -115,7 +115,7 @@ public class SudokuBoard implements Cloneable {
     @Override
     public String toString() {
         return "SudokuBoard{"
-                + "miniSquareSize=" + miniSquareSize
+                + "  miniSquareSize=" + miniSquareSize
                 + ", miniSquareCount=" + miniSquareCount
                 + ", squareSize=" + squareSize
                 + ", board=" + Arrays.deepToString(board)
@@ -156,7 +156,6 @@ public class SudokuBoard implements Cloneable {
                 .append(miniSquareSize)
                 .append(miniSquareCount)
                 .append(squareSize)
-                //TODO: check if append board works with 2d array
                 .append(board)
                 .toHashCode();
     }

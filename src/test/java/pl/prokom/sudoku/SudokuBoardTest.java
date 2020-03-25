@@ -46,9 +46,19 @@ class SudokuBoardTest {
      */
     @Test
     void sudokuCloneNotSame() throws CloneNotSupportedException {
-        solver.solve(sudokuBoard);
         SudokuBoard cloneBoard = (SudokuBoard) sudokuBoard.clone();
         assertNotSame(cloneBoard, sudokuBoard);
+    }
+
+    /**
+     * Case description:
+     * - other object type should not be equal to SudokuBoard
+     */
+    @Test
+    void sudokuDifferentObjectTestCase() throws CloneNotSupportedException {
+        assertNotEquals(null, sudokuBoard);
+        assertNotEquals(sudokuBoard, (Object) "");
+
     }
 
     /**
@@ -58,10 +68,9 @@ class SudokuBoardTest {
      */
     @Test
     void sudokuEquals() throws CloneNotSupportedException {
-        solver.solve(sudokuBoard);
         SudokuBoard cloneBoard = (SudokuBoard) sudokuBoard.clone();
-        assertTrue(cloneBoard.equals(sudokuBoard));
-        assertTrue(sudokuBoard.equals(sudokuBoard));
+        assertEquals(cloneBoard, sudokuBoard);
+        assertEquals(sudokuBoard, sudokuBoard);
 
     }
 
@@ -71,7 +80,6 @@ class SudokuBoardTest {
      */
     @Test
     void sudokuBoardDifferentHashcode() throws CloneNotSupportedException {
-        solver.solve(sudokuBoard);
         SudokuBoard cloneBoard = (SudokuBoard) sudokuBoard.clone();
         assertFalse(sudokuBoard.hashCode() != cloneBoard.hashCode());
     }
@@ -82,7 +90,6 @@ class SudokuBoardTest {
      */
     @Test
     void sudokuSolveGameTest() {
-        solver.solve(sudokuBoard);
         assertTrue(sudokuBoard.solveGame());
     }
 
