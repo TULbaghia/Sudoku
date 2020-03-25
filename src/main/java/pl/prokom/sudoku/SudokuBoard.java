@@ -1,31 +1,33 @@
 package pl.prokom.sudoku;
 
 import java.util.Arrays;
-import java.util.Random;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
 /**
  * SudokuBoard class to solve sudoku.
  */
-public class SudokuBoard {
+public class SudokuBoard implements Cloneable {
     /**
-     * Size of miniSquare inside board.
+     * Dimensions of miniSquare inside board.
      */
     private final int miniSquareSize = 3;
+
     /**
      * Count of miniSquares inside board.
      */
     private final int miniSquareCount = 3;
 
     /**
-     * Size of board.
+     * Size of game board.
      */
     private final int squareSize;
+
     /**
-     * Sudoku board.
+     * Sudoku game board.
      */
     private int[][] board;
-
 
     /**
      * Constructor of SudokuBoard object.
@@ -36,136 +38,131 @@ public class SudokuBoard {
     }
 
     /**
-     * Method to check whether you can put {@code num} in board or not.
+     * Returns output state of a board (solved correctly or not).
      *
-     * @param row int row to search for duplicates
-     * @param column int column to search for duplicates
-     * @param num int number you want to put in board
-     * @return boolean
+     * @return boolean whether board is solved correctly or not
      */
-    private boolean isAllowed(final int row, final int column, final int num) {
-
-        // Check if number already in row
-        for (int i = 0; i < squareSize; i++) {
-            if (board[row][i] == num) {
-                return false;
-            }
-        }
-
-        // Check if number already in column
-        for (int i = 0; i < squareSize; i++) {
-            if (board[i][column] == num) {
-                return false;
-            }
-        }
-
-        // Check if number already in mini square
-        // Set mini{Row,Column) to top left of mini square
-        int miniRow = row - row % miniSquareSize;
-        int miniColumn = column - column % miniSquareSize;
-
-        // Iterate through mini square
-        for (int i = miniRow; i < miniRow + miniSquareSize; i++) {
-            for (int j = miniColumn; j < miniColumn + miniSquareSize; j++) {
-                if (board[i][j] == num) {
+    public final boolean solveGame() {
+        BacktrackingSudokuSolver solver = new BacktrackingSudokuSolver();
+        for (int i = 0; i < this.squareSize; i++) {
+            for (int j = 0; j < this.squareSize; j++) {
+                if (solver.isAllowed(i, j, this.board[i][j], this)) {
                     return false;
                 }
             }
         }
-
         return true;
     }
 
     /**
-     * Override for fillBoard method.
+     * Getter for miniSquareSize.
+     * @return int mini SquareSize
      */
-    public final void fillBoard() {
-        fillBoard(true);
-    }
-
-
-    /**
-     * Generates/Fills sudoku board with numbers.
-     *
-     * @param override boolean true if you want to override values in board
-     */
-    public final void fillBoard(final boolean override) {
-        Random random = new Random();
-        if (override) {
-            board = new int[squareSize][squareSize];
-        }
-        int[][] helpBoard = new int[squareSize][squareSize];
-
-        for (int row = 0; row < squareSize; row++) {
-            for (int column = 0; column < squareSize; column++) {
-                if (board[row][column] != 0 && helpBoard[row][column] == 0) {
-                    continue;
-                }
-                boolean isCorrect = false;
-
-                if (helpBoard[row][column] == 0) {
-                    helpBoard[row][column] = random.nextInt(squareSize) + 1;
-                    int rand = helpBoard[row][column];
-
-                    do {
-                        if (isAllowed(row, column, rand)) {
-                            board[row][column] = rand;
-                            isCorrect = true;
-                            break;
-                        }
-                        rand = rand % squareSize + 1;
-                    } while (rand != helpBoard[row][column]);
-                } else {
-                    int rand = board[row][column] % squareSize + 1;
-                    board[row][column] = 0;
-
-                    while (rand != helpBoard[row][column]) {
-                        if (isAllowed(row, column, rand)) {
-                            board[row][column] = rand;
-                            isCorrect = true;
-                            break;
-                        }
-                        rand = rand % squareSize + 1;
-                    }
-                }
-
-                if (!isCorrect) {
-                    helpBoard[row][column] = 0;
-                    board[row][column] = 0;
-                    column = (column - 2) % squareSize;
-                    if (column < 0) {
-                        column += squareSize;
-                        row = Math.max(row - 1, 0);
-                    }
-                }
-            }
-        }
+    public final int getMiniSquareSize() {
+        return miniSquareSize;
     }
 
     /**
-     * Prints sudoku board using System.out.print().
+     * Getter for suquareSize.
+     * @return int boardWidth = boardHeight
      */
-    public final void printSudokuBoard() {
-        for (int[] row : board) {
-            for (int col : row) {
-                System.out.print(col + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
+    public final int getSquareSize() {
+        return squareSize;
     }
 
     /**
-     * Returns reference to copy of this.board.
+     * Returns element in game board.
+     * @param row n-th row (from 0)
+     * @param column n-th column (from 0)
+     * @return value at board.[row][column]
+     */
+    public final int getBoardCell(int row, int column) {
+        return this.board[row][column];
+    }
+
+    /**
+     * Change element in board.
+     * @param row n-th row (from 0)
+     * @param column n-th column (from 0)
+     * @param num element you want to put inside board
+     */
+    public final void setBoardCell(int row, int column, int num) {
+        this.board[row][column] = num;
+    }
+
+    /**
+     * Change game board.
+     * @param board array[squareSize][squareSize] that will override current board
+     */
+    public final void setBoard(int[][] board) {
+        this.board = board;
+    }
+
+    /**
+     * Returns reference to deep copy of this.board.
      *
      * @return int[][]
      */
     public final int[][] getCopyOfBoard() {
-        int[][] copyBoard = new int[squareSize][];
+        int[][] copyBoard = board.clone();
+        //board.clone() creates shallow copy of object, we need deep copy.
         for (int i = 0; i < squareSize; i++) {
-            copyBoard[i] = Arrays.copyOf(board[i], squareSize);
+            copyBoard[i] = board[i].clone();
         }
         return copyBoard;
     }
+
+    @Override
+    public String toString() {
+        return "SudokuBoard{"
+                + "  miniSquareSize=" + miniSquareSize
+                + ", miniSquareCount=" + miniSquareCount
+                + ", squareSize=" + squareSize
+                + ", board=" + Arrays.deepToString(board)
+                + '}';
+    }
+
+    @Override
+    public final Object clone() throws CloneNotSupportedException {
+        SudokuBoard sudokuBoard = (SudokuBoard) super.clone();
+        //clone create shallow copy of array, we need deep copy
+        sudokuBoard.setBoard(getCopyOfBoard());
+        return super.clone();
+    }
+
+    @Override
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SudokuBoard that = (SudokuBoard) o;
+
+        return new EqualsBuilder()
+                .append(miniSquareSize, that.miniSquareSize)
+                .append(miniSquareCount, that.miniSquareCount)
+                .append(squareSize, that.squareSize)
+                .append(Arrays.deepEquals(board, that.board), true)
+                .isEquals();
+    }
+
+    @Override
+    public final int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(miniSquareSize)
+                .append(miniSquareCount)
+                .append(squareSize)
+                .append(board)
+                .toHashCode();
+    }
+
 }
+
+
+
+
 
