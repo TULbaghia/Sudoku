@@ -12,17 +12,17 @@ public class SudokuBoard implements Cloneable {
     /**
      * Dimensions of miniSquare inside board.
      */
-    private final int miniSquareSize = 3;
+    private static final int miniSquareSize = 3;
 
     /**
      * Count of miniSquares inside board.
      */
-    private final int miniSquareCount = 3;
+    private static final int miniSquareCount = 3;
 
     /**
      * Size of game board.
      */
-    private final int squareSize;
+    private static int squareSize;
 
     /**
      * Sudoku game board.
@@ -58,15 +58,19 @@ public class SudokuBoard implements Cloneable {
      * Getter for miniSquareSize.
      * @return int mini SquareSize
      */
-    public final int getMiniSquareSize() {
+    public static int getMiniSquareSize() {
         return miniSquareSize;
+    }
+
+    public static int getMiniSquareCount() {
+        return miniSquareCount;
     }
 
     /**
      * Getter for suquareSize.
      * @return int boardWidth = boardHeight
      */
-    public final int getSquareSize() {
+    public static int getSquareSize() {
         return squareSize;
     }
 
