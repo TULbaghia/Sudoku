@@ -45,8 +45,6 @@ public class SudokuField implements Cloneable {
 
     @Override
     public final Object clone() throws CloneNotSupportedException {
-        SudokuField clone = (SudokuField) super.clone();
-
-        return clone;
+        return super.clone();
     }
 }

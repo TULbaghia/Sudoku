@@ -56,8 +56,8 @@ class SudokuBoardTest {
      */
     @Test
     void sudokuDifferentObjectTestCase() {
-        assertNotEquals(null, sudokuBoard);
-        assertNotEquals(sudokuBoard, (Object) "");
+        assertNotEquals(sudokuBoard, null);
+        assertNotEquals(sudokuBoard, new BacktrackingSudokuSolver());
 
     }
 

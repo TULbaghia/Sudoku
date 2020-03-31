@@ -20,8 +20,8 @@ public abstract class SudokuPartial {
 
     public boolean verify() {
         SortedSet<Integer> uniqueValues = new TreeSet<>();
-        for (int i = 0; i < fields.length; i++) {
-            if (!uniqueValues.add(fields[i].getFieldValue())) {
+        for (SudokuField field : fields) {
+            if (!uniqueValues.add(field.getFieldValue())) {
                 return false;
             }
         }
