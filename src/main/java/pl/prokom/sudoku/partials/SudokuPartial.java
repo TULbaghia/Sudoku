@@ -25,6 +25,9 @@ public abstract class SudokuPartial {
                 return false;
             }
         }
+        if (uniqueValues.first() != 1 || uniqueValues.last() != fields.length) {
+            return false;
+        }
         return true;
     }
 }

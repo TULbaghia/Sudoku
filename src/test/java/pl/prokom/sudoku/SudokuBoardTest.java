@@ -2,6 +2,7 @@ package pl.prokom.sudoku;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.prokom.sudoku.partials.SudokuField;
 
 import java.util.Arrays;
 
@@ -27,14 +28,14 @@ class SudokuBoardTest {
      */
     @Test
     void sudokuGetCopyOfBoardUniqTestCase() {
-        int[][] board1 = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board1 = sudokuBoard.getCopyOfBoard();
         for (int i = 0; i < board1.length; i++) {
             for (int j = 0; j < board1[i].length; j++) {
-                board1[i][j] = i * board1.length + j;
+                board1[i][j].setFieldValue((i * board1.length + j + 3) % sudokuBoard.getSquareSize() + 1);
             }
         }
 
-        int[][] board2 = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board2 = sudokuBoard.getCopyOfBoard();
 
         assertEquals(board1.length, board2.length);
         assertFalse(Arrays.deepEquals(board1, board2));

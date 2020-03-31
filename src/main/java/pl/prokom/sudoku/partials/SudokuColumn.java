@@ -1,7 +1,7 @@
 package pl.prokom.sudoku.partials;
 
 public class SudokuColumn extends SudokuPartial {
-    SudokuColumn(SudokuField[] fields) {
+    public SudokuColumn(SudokuField[] fields) {
         super(fields);
     }
 

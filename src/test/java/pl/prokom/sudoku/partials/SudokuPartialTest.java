@@ -41,12 +41,18 @@ class SudokuPartialTest {
 
     /**
      * Case description:
-     * - checks if values are unique
+     * - checks if values are unique and in correct order
      */
     @Test
     void verifyTestCase() {
         assertTrue(sudokuPartial.verify());
         sudokuPartial.setFields(new SudokuField[]{new SudokuField(1), new SudokuField(1)});
+        assertFalse(sudokuPartial.verify());
+
+        sudokuPartial.setFields(new SudokuField[]{new SudokuField(), new SudokuField(1)});
+        assertFalse(sudokuPartial.verify());
+
+        sudokuPartial.setFields(new SudokuField[]{new SudokuField(1), new SudokuField(4)});
         assertFalse(sudokuPartial.verify());
     }
 }

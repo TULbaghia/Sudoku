@@ -2,6 +2,7 @@ package pl.prokom.sudoku;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.prokom.sudoku.partials.SudokuField;
 
 import java.util.Arrays;
 import java.util.SortedSet;
@@ -26,8 +27,8 @@ public class BacktrackingSudokuSolverTest {
      *
      * @param board gameboard from sudoku object
      */
-    private void checkSquare(int[][] board) {
-        for (int[] ints : board) {
+    private void checkSquare(SudokuField[][] board) {
+        for (SudokuField[] ints : board) {
             assertEquals(ints.length, board.length);
         }
     }
@@ -41,12 +42,12 @@ public class BacktrackingSudokuSolverTest {
     @Test
     void sudokuSolveTestCase() {
         solver.solve(sudokuBoard);
-        int[][] board1 = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board1 = sudokuBoard.getCopyOfBoard();
         checkSquare(board1);
 
-        sudokuBoard.setBoard(new int[sudokuBoard.getSquareSize()][sudokuBoard.getSquareSize()]);
+        sudokuBoard.setBoard(new SudokuField[sudokuBoard.getSquareSize()][sudokuBoard.getSquareSize()]);
         solver.solve(sudokuBoard);
-        int[][] board2 = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board2 = sudokuBoard.getCopyOfBoard();
         checkSquare(board2);
 
         assertEquals(board1.length, board2.length);
@@ -70,7 +71,7 @@ public class BacktrackingSudokuSolverTest {
      */
     @Test
     void sudokuAllowedValuesTestCase() {
-        sudokuBoard.setBoard(new int[sudokuBoard.getSquareSize()][sudokuBoard.getSquareSize()]);
+        sudokuBoard.setBoard(new SudokuField[sudokuBoard.getSquareSize()][sudokuBoard.getSquareSize()]);
 
         for (int num = -5; num < sudokuBoard.getSquareSize() + 5; num++) {
             assertEquals(0 < num && sudokuBoard.getSquareSize() >= num
@@ -89,13 +90,13 @@ public class BacktrackingSudokuSolverTest {
      */
     @Test
     void sudokuRowUniqTestCase() {
-        int[][] board = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board = sudokuBoard.getCopyOfBoard();
         checkSquare(board);
 
         for (int i = 0; i < board.length; i++) {
             SortedSet<Integer> uniqueValues = new TreeSet<>();
             for (int j = 0; j < board[0].length; j++) {
-                assertTrue(uniqueValues.add(board[i][j]));
+                assertTrue(uniqueValues.add(board[i][j].getFieldValue()));
             }
             assertEquals(uniqueValues.size(), board.length);
             int actual = 1;
@@ -116,13 +117,13 @@ public class BacktrackingSudokuSolverTest {
      */
     @Test
     void sudokuColumnUniqTestCase() {
-        int[][] board = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board = sudokuBoard.getCopyOfBoard();
         checkSquare(board);
 
         for (int i = 0; i < board[0].length; i++) {
             SortedSet<Integer> uniqueValues = new TreeSet<>();
             for (int j = 0; j < board.length; j++) {
-                assertTrue(uniqueValues.add(board[j][i]));
+                assertTrue(uniqueValues.add(board[j][i].getFieldValue()));
             }
             assertEquals(uniqueValues.size(), board.length);
             int actual = 1;
@@ -144,7 +145,7 @@ public class BacktrackingSudokuSolverTest {
      */
     @Test
     void sudokuMiniSquareUniqTestCase() {
-        int[][] board = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board = sudokuBoard.getCopyOfBoard();
         checkSquare(board);
         int subBoardSize = (int) Math.sqrt(board.length);
 
@@ -153,7 +154,7 @@ public class BacktrackingSudokuSolverTest {
                 SortedSet<Integer> uniqueValues = new TreeSet<>();
                 for (int k = 0; k < subBoardSize; k++) {
                     for (int l = 0; l < subBoardSize; l++) {
-                        assertTrue(uniqueValues.add(board[i + k][j + l]));
+                        assertTrue(uniqueValues.add(board[i + k][j + l].getFieldValue()));
                     }
                 }
                 assertEquals(uniqueValues.size(), subBoardSize * subBoardSize);

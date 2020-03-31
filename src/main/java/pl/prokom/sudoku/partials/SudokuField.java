@@ -26,6 +26,10 @@ public class SudokuField implements Cloneable {
         this.value = value;
     }
 
+    public void reset()  {
+        this.value = 0;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -44,7 +48,12 @@ public class SudokuField implements Cloneable {
     }
 
     @Override
-    public final Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public final Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
