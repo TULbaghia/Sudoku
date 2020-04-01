@@ -139,7 +139,7 @@ public class SudokuBoard implements Cloneable {
         for (int i = 0; i < squareSize; i++) {
             //copyBoard[i] = board[i].clone();
             for (int j = 0; j < squareSize; j++) {
-                copyBoard[i][j] = (SudokuField) board[i][j].clone();
+                copyBoard[i][j] = board[i][j].clone();
             }
         }
         return copyBoard;
@@ -149,7 +149,7 @@ public class SudokuBoard implements Cloneable {
         SudokuField[] sudokuFields = new SudokuField[getSquareSize()];
 
         for (int i = 0; i < getSquareSize(); i++) {
-            sudokuFields[i] = (SudokuField) getBoardCell(row, i).clone();
+            sudokuFields[i] = getBoardCell(row, i).clone();
         }
 
         return new SudokuRow(sudokuFields);
@@ -159,7 +159,7 @@ public class SudokuBoard implements Cloneable {
         SudokuField[] sudokuFields = new SudokuField[getSquareSize()];
 
         for (int i = 0; i < getSquareSize(); i++) {
-            sudokuFields[i] = (SudokuField) getBoardCell(i, column).clone();
+            sudokuFields[i] = getBoardCell(i, column).clone();
         }
 
         return new SudokuColumn(sudokuFields);
@@ -174,7 +174,7 @@ public class SudokuBoard implements Cloneable {
 
         for (int i = miniRow; i < miniRow + getMiniSquareSize(); i++) {
             for (int j = miniColumn; j < miniColumn + getMiniSquareSize(); j++) {
-                sudokuFields[index++] = (SudokuField) getBoardCell(i, j).clone();
+                sudokuFields[index++] = getBoardCell(i, j).clone();
             }
         }
 

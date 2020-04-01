@@ -54,8 +54,7 @@ class SudokuFieldTest {
     }
 
     @Test
-    void testEqualsCloneTestCase() throws CloneNotSupportedException {
+    void testEqualsCloneTestCase() {
         assertEquals(sudokuField, sudokuField.clone());
     }
-
 }
