@@ -3,6 +3,10 @@ package pl.prokom.sudoku;
 import java.util.Arrays;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import pl.prokom.sudoku.partials.SudokuBox;
+import pl.prokom.sudoku.partials.SudokuColumn;
+import pl.prokom.sudoku.partials.SudokuField;
+import pl.prokom.sudoku.partials.SudokuRow;
 
 
 /**
@@ -12,29 +16,29 @@ public class SudokuBoard implements Cloneable {
     /**
      * Dimensions of miniSquare inside board.
      */
-    private final int miniSquareSize = 3;
+    private static final int miniSquareSize = 3;
 
     /**
      * Count of miniSquares inside board.
      */
-    private final int miniSquareCount = 3;
+    private static final int miniSquareCount = 3;
 
     /**
      * Size of game board.
      */
-    private final int squareSize;
+    private static int squareSize;
 
     /**
      * Sudoku game board.
      */
-    private int[][] board;
+    private SudokuField[][] board;
 
     /**
      * Constructor of SudokuBoard object.
      */
     public SudokuBoard() {
         this.squareSize = miniSquareSize * miniSquareCount;
-        this.board = new int[squareSize][squareSize];
+        setBoard(new SudokuField[squareSize][squareSize]);
     }
 
     /**
@@ -46,7 +50,7 @@ public class SudokuBoard implements Cloneable {
         BacktrackingSudokuSolver solver = new BacktrackingSudokuSolver();
         for (int i = 0; i < this.squareSize; i++) {
             for (int j = 0; j < this.squareSize; j++) {
-                if (solver.isAllowed(i, j, this.board[i][j], this)) {
+                if (solver.isAllowed(i, j, this.board[i][j].getFieldValue(), this)) {
                     return false;
                 }
             }
@@ -56,46 +60,70 @@ public class SudokuBoard implements Cloneable {
 
     /**
      * Getter for miniSquareSize.
+     *
      * @return int mini SquareSize
      */
-    public final int getMiniSquareSize() {
+    public static int getMiniSquareSize() {
         return miniSquareSize;
+    }
+
+    public static int getMiniSquareCount() {
+        return miniSquareCount;
     }
 
     /**
      * Getter for suquareSize.
+     *
      * @return int boardWidth = boardHeight
      */
-    public final int getSquareSize() {
+    public static int getSquareSize() {
         return squareSize;
     }
 
     /**
      * Returns element in game board.
-     * @param row n-th row (from 0)
+     *
+     * @param row    n-th row (from 0)
      * @param column n-th column (from 0)
      * @return value at board.[row][column]
      */
-    public final int getBoardCell(int row, int column) {
+    public final SudokuField getBoardCell(int row, int column) {
         return this.board[row][column];
+    }
+
+    public final int get(int row, int column) {
+        return getBoardCell(row, column).getFieldValue();
     }
 
     /**
      * Change element in board.
-     * @param row n-th row (from 0)
+     *
+     * @param row    n-th row (from 0)
      * @param column n-th column (from 0)
-     * @param num element you want to put inside board
+     * @param num    element you want to put inside board
      */
     public final void setBoardCell(int row, int column, int num) {
-        this.board[row][column] = num;
+        this.board[row][column].setFieldValue(num);
+    }
+
+    public final void set(int row, int column, int num) {
+        setBoardCell(row, column, num);
     }
 
     /**
      * Change game board.
+     *
      * @param board array[squareSize][squareSize] that will override current board
      */
-    public final void setBoard(int[][] board) {
+    public final void setBoard(SudokuField[][] board) {
         this.board = board;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (this.board[i][j] == null) {
+                    this.board[i][j] = new SudokuField();
+                }
+            }
+        }
     }
 
     /**
@@ -103,13 +131,54 @@ public class SudokuBoard implements Cloneable {
      *
      * @return int[][]
      */
-    public final int[][] getCopyOfBoard() {
-        int[][] copyBoard = board.clone();
+    public final SudokuField[][] getCopyOfBoard() {
+        //SudokuField[][] copyBoard = board.clone();
+        SudokuField[][] copyBoard = new SudokuField[9][9];
         //board.clone() creates shallow copy of object, we need deep copy.
+        //clone does not handle provide uniq references
         for (int i = 0; i < squareSize; i++) {
-            copyBoard[i] = board[i].clone();
+            //copyBoard[i] = board[i].clone();
+            for (int j = 0; j < squareSize; j++) {
+                copyBoard[i][j] = board[i][j].clone();
+            }
         }
         return copyBoard;
+    }
+
+    public SudokuRow getRow(int row) {
+        SudokuField[] sudokuFields = new SudokuField[getSquareSize()];
+
+        for (int i = 0; i < getSquareSize(); i++) {
+            sudokuFields[i] = getBoardCell(row, i).clone();
+        }
+
+        return new SudokuRow(sudokuFields);
+    }
+
+    public SudokuColumn getColumn(int column) {
+        SudokuField[] sudokuFields = new SudokuField[getSquareSize()];
+
+        for (int i = 0; i < getSquareSize(); i++) {
+            sudokuFields[i] = getBoardCell(i, column).clone();
+        }
+
+        return new SudokuColumn(sudokuFields);
+    }
+
+    public SudokuBox getBox(int row, int column) {
+        SudokuField[] sudokuFields = new SudokuField[getSquareSize()];
+
+        int miniRow = row - row % getMiniSquareSize();
+        int miniColumn = column - column % getMiniSquareSize();
+        int index = 0;
+
+        for (int i = miniRow; i < miniRow + getMiniSquareSize(); i++) {
+            for (int j = miniColumn; j < miniColumn + getMiniSquareSize(); j++) {
+                sudokuFields[index++] = getBoardCell(i, j).clone();
+            }
+        }
+
+        return new SudokuBox(sudokuFields);
     }
 
     @Override

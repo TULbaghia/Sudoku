@@ -2,6 +2,10 @@ package pl.prokom.sudoku;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.prokom.sudoku.partials.SudokuBox;
+import pl.prokom.sudoku.partials.SudokuColumn;
+import pl.prokom.sudoku.partials.SudokuField;
+import pl.prokom.sudoku.partials.SudokuRow;
 
 import java.util.Arrays;
 
@@ -27,14 +31,14 @@ class SudokuBoardTest {
      */
     @Test
     void sudokuGetCopyOfBoardUniqTestCase() {
-        int[][] board1 = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board1 = sudokuBoard.getCopyOfBoard();
         for (int i = 0; i < board1.length; i++) {
             for (int j = 0; j < board1[i].length; j++) {
-                board1[i][j] = i * board1.length + j;
+                board1[i][j].setFieldValue((i * board1.length + j + 3) % sudokuBoard.getSquareSize() + 1);
             }
         }
 
-        int[][] board2 = sudokuBoard.getCopyOfBoard();
+        SudokuField[][] board2 = sudokuBoard.getCopyOfBoard();
 
         assertEquals(board1.length, board2.length);
         assertFalse(Arrays.deepEquals(board1, board2));
@@ -56,8 +60,8 @@ class SudokuBoardTest {
      */
     @Test
     void sudokuDifferentObjectTestCase() {
-        assertNotEquals(null, sudokuBoard);
-        assertNotEquals(sudokuBoard, (Object) "");
+        assertNotEquals(sudokuBoard, null);
+        assertNotEquals(sudokuBoard, new BacktrackingSudokuSolver());
 
     }
 
@@ -91,6 +95,70 @@ class SudokuBoardTest {
     @Test
     void sudokuSolveGameTest() {
         assertTrue(sudokuBoard.solveGame());
+    }
+
+    /**
+     * Case description:
+     * - checks if get return correct values from field
+     */
+    @Test
+    void getTestCase() {
+        sudokuBoard.setBoard(new SudokuField[SudokuBoard.getSquareSize()][SudokuBoard.getSquareSize()]);
+        sudokuBoard.setBoardCell(1, 1, 3);
+        assertEquals(3, sudokuBoard.get(1, 1));
+    }
+
+    /**
+     * Case description:
+     * - checks if set- sets correct value in field
+     */
+    @Test
+    void setTestCase() {
+        sudokuBoard.setBoard(new SudokuField[SudokuBoard.getSquareSize()][SudokuBoard.getSquareSize()]);
+        sudokuBoard.set(1, 1, 3);
+        assertEquals(3, sudokuBoard.get(1, 1));
+    }
+
+    /**
+     * Case description:
+     * - checks whether row returned from board is equal
+     */
+    @Test
+    void getRowTestCase() {
+        SudokuRow sudokuRow = sudokuBoard.getRow(0);
+
+        for (int i = 0; i < sudokuBoard.getSquareSize(); i++) {
+            assertEquals(sudokuRow.getRow()[i], sudokuBoard.getBoardCell(0, i));
+        }
+    }
+
+    /**
+     * Case description:
+     * - checks whether column returned from board is equal
+     */
+    @Test
+    void getColumnTestCase() {
+        SudokuColumn sudokuColumn = sudokuBoard.getColumn(0);
+
+        for (int i = 0; i < sudokuBoard.getSquareSize(); i++) {
+            assertEquals(sudokuColumn.getColumn()[i], sudokuBoard.getBoardCell(i, 0));
+        }
+    }
+
+    /**
+     * Case description:
+     * - checks whether box returned from board is equal
+     */
+    @Test
+    void getBoxTestCase() {
+        SudokuBox sudokuBox = sudokuBoard.getBox(0, 0);
+
+        for (int i = 0; i < sudokuBoard.getMiniSquareSize(); i++) {
+            for (int j = 0; j < sudokuBoard.getMiniSquareSize(); j++) {
+                assertEquals(sudokuBox.getBox()[i * sudokuBoard.getMiniSquareSize() + j],
+                        sudokuBoard.getBoardCell(i, j));
+            }
+        }
     }
 
 }

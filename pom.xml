@@ -8,6 +8,8 @@
     <artifactId>sudoku</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <url>localhost</url>
+
     <properties>
         <project.encoding>UTF-8</project.encoding>
         <project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>

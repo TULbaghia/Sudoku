@@ -25,7 +25,7 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
 
         for (int row = 0; row < squareSize; row++) {
             for (int column = 0; column < squareSize; column++) {
-                if (sudoku.getBoardCell(row, column) != 0 && helpBoard[row][column] == 0) {
+                if (sudoku.get(row, column) != 0 && helpBoard[row][column] == 0) {
                     continue;
                 }
                 boolean isCorrect = false;
@@ -43,9 +43,9 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
                         rand = rand % squareSize + 1;
                     } while (rand != helpBoard[row][column]);
                 } else {
-                    int rand = randomValues.indexOf(sudoku.getBoardCell(row, column)) + 1;
+                    int rand = randomValues.indexOf(sudoku.get(row, column)) + 1;
                     rand = rand % squareSize + 1;
-                    sudoku.setBoardCell(row, column, 0);
+                    sudoku.getBoardCell(row, column).reset();
 
                     while (rand != helpBoard[row][column]) {
                         if (isAllowed(row, column, randomValues.get(rand - 1), sudoku)) {
@@ -59,7 +59,7 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
 
                 if (!isCorrect) {
                     helpBoard[row][column] = 0;
-                    sudoku.setBoardCell(row, column, 0);
+                    sudoku.getBoardCell(row, column).reset();
                     column = (column - 2) % squareSize;
                     if (column < 0) {
                         column += squareSize;
@@ -109,7 +109,7 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
      */
     private boolean isAllowedInRow(final int row, final int num, final SudokuBoard sudoku) {
         for (int i = 0; i < sudoku.getSquareSize(); i++) {
-            if (sudoku.getBoardCell(row, i) == num) {
+            if (sudoku.get(row, i) == num) {
                 return false;
             }
         }
@@ -126,7 +126,7 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
      */
     private boolean isAllowedInColumn(final int column, final int num, final SudokuBoard sudoku) {
         for (int i = 0; i < sudoku.getSquareSize(); i++) {
-            if (sudoku.getBoardCell(i, column) == num) {
+            if (sudoku.get(i, column) == num) {
                 return false;
             }
         }
@@ -149,7 +149,7 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
 
         for (int i = miniRow; i < miniRow + sudoku.getMiniSquareSize(); i++) {
             for (int j = miniColumn; j < miniColumn + sudoku.getMiniSquareSize(); j++) {
-                if (sudoku.getBoardCell(i, j) == num) {
+                if (sudoku.get(i, j) == num) {
                     return false;
                 }
             }
