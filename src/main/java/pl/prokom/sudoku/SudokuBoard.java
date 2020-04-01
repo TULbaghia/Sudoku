@@ -46,15 +46,31 @@ public class SudokuBoard implements Cloneable {
      *
      * @return boolean whether board is solved correctly or not
      */
-    public final boolean solveGame() {
-        BacktrackingSudokuSolver solver = new BacktrackingSudokuSolver();
-        for (int i = 0; i < this.squareSize; i++) {
-            for (int j = 0; j < this.squareSize; j++) {
-                if (solver.isAllowed(i, j, this.board[i][j].getFieldValue(), this)) {
+    public final boolean isSolvedGame() {
+        return checkBoard();
+    }
+
+    private boolean checkBoard() {
+        for (int i = 0; i < getMiniSquareCount(); i++) {
+            for (int j = 0; j < getMiniSquareCount(); j++) {
+                if (!getBox(i, j).verify()) {
                     return false;
                 }
             }
         }
+
+        for (int i = 0; i < getSquareSize(); i++) {
+            if (!getRow(i).verify()) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < getSquareSize(); i++) {
+            if (!getColumn(i).verify()) {
+                return false;
+            }
+        }
+
         return true;
     }
 
