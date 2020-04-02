@@ -34,9 +34,9 @@ class SudokuGroupTest {
      */
     @Test
     void getFieldsTestCase() {
-        assertEquals(sudokuFields.length, sudokuGroup.getFields().length);
+        assertEquals(sudokuFields.length, sudokuGroup.getSudokuFields().length);
         for(int i=0; i<sudokuFields.length; i++) {
-            assertEquals(sudokuFields[i].getFieldValue(), sudokuGroup.getFields()[i].getFieldValue());
+            assertEquals(sudokuFields[i].getFieldValue(), sudokuGroup.getSudokuFields()[i].getFieldValue());
         }
     }
 

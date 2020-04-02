@@ -8,6 +8,6 @@ public class SudokuRow extends SudokuGroup {
     }
 
     public SudokuField[] getRow() {
-        return super.getFields();
+        return super.getSudokuFields();
     }
 }
