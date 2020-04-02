@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class SudokuPartialTest {
-    SudokuPartial sudokuPartial;
+class SudokuGroupTest {
+    SudokuGroup sudokuGroup;
     SudokuField[] sudokuFields;
 
     @BeforeEach
@@ -25,7 +25,7 @@ class SudokuPartialTest {
         Collections.shuffle(sudokuFields);
         this.sudokuFields = sudokuFields.toArray(new SudokuField[0]).clone();
 
-        sudokuPartial = new SudokuPartial(sudokuFields.toArray(new SudokuField[0]).clone()) {};
+        sudokuGroup = new SudokuGroup(sudokuFields.toArray(new SudokuField[0]).clone()) {};
     }
 
     /**
@@ -34,9 +34,9 @@ class SudokuPartialTest {
      */
     @Test
     void getFieldsTestCase() {
-        assertEquals(sudokuFields.length, sudokuPartial.getFields().length);
+        assertEquals(sudokuFields.length, sudokuGroup.getFields().length);
         for(int i=0; i<sudokuFields.length; i++) {
-            assertEquals(sudokuFields[i].getFieldValue(), sudokuPartial.getFields()[i].getFieldValue());
+            assertEquals(sudokuFields[i].getFieldValue(), sudokuGroup.getFields()[i].getFieldValue());
         }
     }
 
@@ -46,14 +46,14 @@ class SudokuPartialTest {
      */
     @Test
     void verifyTestCase() {
-        assertTrue(sudokuPartial.verify());
-        sudokuPartial.setFields(new SudokuField[]{new SudokuField(1), new SudokuField(1)});
-        assertFalse(sudokuPartial.verify());
+        assertTrue(sudokuGroup.verify());
+        sudokuGroup.setFields(new SudokuField[]{new SudokuField(1), new SudokuField(1)});
+        assertFalse(sudokuGroup.verify());
 
-        sudokuPartial.setFields(new SudokuField[]{new SudokuField(), new SudokuField(1)});
-        assertFalse(sudokuPartial.verify());
+        sudokuGroup.setFields(new SudokuField[]{new SudokuField(), new SudokuField(1)});
+        assertFalse(sudokuGroup.verify());
 
-        sudokuPartial.setFields(new SudokuField[]{new SudokuField(1), new SudokuField(4)});
-        assertFalse(sudokuPartial.verify());
+        sudokuGroup.setFields(new SudokuField[]{new SudokuField(1), new SudokuField(4)});
+        assertFalse(sudokuGroup.verify());
     }
 }

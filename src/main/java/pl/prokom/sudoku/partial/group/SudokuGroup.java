@@ -4,10 +4,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import pl.prokom.sudoku.partial.field.SudokuField;
 
-public abstract class SudokuPartial {
+public abstract class SudokuGroup {
     private SudokuField[] fields;
 
-    SudokuPartial(SudokuField[] fields) {
+    SudokuGroup(SudokuField[] fields) {
         this.fields = fields.clone();
     }
 
