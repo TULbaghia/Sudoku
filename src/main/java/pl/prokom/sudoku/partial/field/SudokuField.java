@@ -49,13 +49,24 @@ public class SudokuField implements Cloneable {
         }
     }
 
-    public int getFieldValue() {
-        return value;
+    /**
+     * Getter for {@code value}.
+     *
+     * @return value of this.value
+     */
+    public final int getFieldValue() {
+        return this.value;
     }
 
-    public void setFieldValue(int value) throws IllegalFieldValueException {
-        if (!(value > 0 && value <= SudokuBoard.getSquareSize())) {
-            throw new IllegalFieldValueException("Wartosc jest nieprawidlowa. Podano: " + value);
+    /**
+     * Setter for {@code this.value}.
+     *
+     * @param value value that has to be assigned to {@code this.value}
+     * @throws IllegalFieldValueException when value not in given range
+     */
+    public void setFieldValue(final int value) throws IllegalFieldValueException {
+        if (1 > value || maxValue < value) {
+            throw new IllegalFieldValueException("Value '" + value + "' is not in allowed range.");
         }
         this.value = value;
     }
