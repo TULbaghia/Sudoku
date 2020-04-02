@@ -1,4 +1,6 @@
-package pl.prokom.sudoku.partials;
+package pl.prokom.sudoku.partial.group;
+
+import pl.prokom.sudoku.partial.field.SudokuField;
 
 public class SudokuRow extends SudokuPartial {
     public SudokuRow(SudokuField[] fields) {

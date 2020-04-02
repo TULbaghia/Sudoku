@@ -1,7 +1,8 @@
-package pl.prokom.sudoku.partials;
+package pl.prokom.sudoku.partial.group;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
+import pl.prokom.sudoku.partial.field.SudokuField;
 
 public abstract class SudokuPartial {
     private SudokuField[] fields;

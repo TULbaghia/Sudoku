@@ -1,4 +1,4 @@
-package pl.prokom.sudoku.partials;
+package pl.prokom.sudoku.partial.field;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import pl.prokom.sudoku.SudokuBoard;

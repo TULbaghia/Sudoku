@@ -3,10 +3,10 @@ package pl.prokom.sudoku;
 import java.util.Arrays;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import pl.prokom.sudoku.partials.SudokuBox;
-import pl.prokom.sudoku.partials.SudokuColumn;
-import pl.prokom.sudoku.partials.SudokuField;
-import pl.prokom.sudoku.partials.SudokuRow;
+import pl.prokom.sudoku.partial.field.SudokuField;
+import pl.prokom.sudoku.partial.group.SudokuBox;
+import pl.prokom.sudoku.partial.group.SudokuColumn;
+import pl.prokom.sudoku.partial.group.SudokuRow;
 
 
 /**

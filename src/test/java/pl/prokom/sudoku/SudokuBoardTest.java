@@ -2,10 +2,10 @@ package pl.prokom.sudoku;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.prokom.sudoku.partials.SudokuBox;
-import pl.prokom.sudoku.partials.SudokuColumn;
-import pl.prokom.sudoku.partials.SudokuField;
-import pl.prokom.sudoku.partials.SudokuRow;
+import pl.prokom.sudoku.partial.group.SudokuBox;
+import pl.prokom.sudoku.partial.group.SudokuColumn;
+import pl.prokom.sudoku.partial.field.SudokuField;
+import pl.prokom.sudoku.partial.group.SudokuRow;
 
 import java.util.Arrays;
 

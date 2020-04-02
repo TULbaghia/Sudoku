@@ -2,7 +2,7 @@ package pl.prokom.sudoku;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.prokom.sudoku.partials.SudokuField;
+import pl.prokom.sudoku.partial.field.SudokuField;
 
 import java.util.Arrays;
 import java.util.SortedSet;

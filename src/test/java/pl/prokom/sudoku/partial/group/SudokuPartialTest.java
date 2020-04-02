@@ -1,7 +1,8 @@
-package pl.prokom.sudoku.partials;
+package pl.prokom.sudoku.partial.group;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.prokom.sudoku.partial.field.SudokuField;
 
 import static org.junit.jupiter.api.Assertions.*;
 
