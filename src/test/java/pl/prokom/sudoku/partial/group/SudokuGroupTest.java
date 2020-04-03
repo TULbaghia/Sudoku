@@ -3,12 +3,9 @@ package pl.prokom.sudoku.partial.group;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.prokom.sudoku.partial.field.SudokuField;
-
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class SudokuGroupTest {
     SudokuGroup sudokuGroup;
@@ -16,44 +13,35 @@ class SudokuGroupTest {
 
     @BeforeEach
     void setUp() {
-        List<SudokuField> sudokuFields = new ArrayList<>();
+        AtomicInteger index = new AtomicInteger(1);
+        sudokuFields = new SudokuField[9];
+        sudokuFields = Arrays.stream(sudokuFields)
+                .map(x -> new SudokuField(index.getAndIncrement()))
+                .toArray(SudokuField[]::new);
 
-        for(int i=1; i<10; i++) {
-            sudokuFields.add(new SudokuField(i));
-        }
-
-        Collections.shuffle(sudokuFields);
-        this.sudokuFields = sudokuFields.toArray(new SudokuField[0]).clone();
-
-        sudokuGroup = new SudokuGroup(sudokuFields.toArray(new SudokuField[0]).clone()) {};
+        sudokuGroup = new SudokuGroup(sudokuFields) {};
     }
+
 
     /**
      * Case description:
-     * - checks if getFields return all items in given order
-     */
-    @Test
-    void getFieldsTestCase() {
-        assertEquals(sudokuFields.length, sudokuGroup.getSudokuFields().length);
-        for(int i=0; i<sudokuFields.length; i++) {
-            assertEquals(sudokuFields[i].getFieldValue(), sudokuGroup.getSudokuFields()[i].getFieldValue());
-        }
-    }
-
-    /**
-     * Case description:
-     * - checks if values are unique and in correct order
+     * - checks if values are unique
      */
     @Test
     void verifyTestCase() {
         assertTrue(sudokuGroup.verify());
-        sudokuGroup.setFields(new SudokuField[]{new SudokuField(1), new SudokuField(1)});
+
+        sudokuGroup.getSudokuFields()[0].setFieldValue(2);
         assertFalse(sudokuGroup.verify());
 
-        sudokuGroup.setFields(new SudokuField[]{new SudokuField(), new SudokuField(1)});
+        sudokuGroup.getSudokuFields()[0].resetValue();
         assertFalse(sudokuGroup.verify());
 
-        sudokuGroup.setFields(new SudokuField[]{new SudokuField(1), new SudokuField(4)});
+        sudokuGroup.getSudokuFields()[0].setFieldValue(1);
+        assertTrue(sudokuGroup.verify());
+
+        sudokuGroup.getSudokuFields()[sudokuFields.length-1].resetValue();
         assertFalse(sudokuGroup.verify());
     }
+
 }

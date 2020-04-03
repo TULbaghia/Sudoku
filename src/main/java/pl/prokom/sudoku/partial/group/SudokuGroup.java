@@ -25,10 +25,6 @@ public abstract class SudokuGroup {
         this.sudokuFields = sudokuFields;
     }
 
-    public void setFields(SudokuField[] fields) {
-        this.sudokuFields = fields.clone();
-    }
-
     /**
      * Getter of {@code sudokuFields}.
      *
