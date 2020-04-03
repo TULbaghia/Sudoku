@@ -2,7 +2,6 @@ package pl.prokom.sudoku.partial.field;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import pl.prokom.sudoku.SudokuBoard;
 import pl.prokom.sudoku.exceptions.IllegalFieldValueException;
 
 /**

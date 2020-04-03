@@ -22,6 +22,23 @@ class SudokuGroupTest {
         sudokuGroup = new SudokuGroup(sudokuFields) {};
     }
 
+    /**
+     * Case description:
+     * - getColumn return the same object that was pushed in SudokuGroup
+     */
+    @Test
+    void getColumnTestCase() {
+        assertArrayEquals(sudokuFields, sudokuGroup.getSudokuFields());
+        assertSame(sudokuFields, sudokuGroup.getSudokuFields());
+        sudokuFields[0].resetValue();
+
+        for (int i = 0; i < sudokuFields.length; i++) {
+            assertSame(sudokuFields[i], sudokuGroup.getSudokuFields()[i]);
+        }
+
+        sudokuFields[1].resetValue();
+        assertTrue(Arrays.deepEquals(sudokuFields, sudokuGroup.getSudokuFields()));
+    }
 
     /**
      * Case description:
