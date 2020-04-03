@@ -1,23 +1,25 @@
 package pl.prokom.sudoku.partial.field;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import pl.prokom.sudoku.exceptions.IllegalFieldValueException;
+import pl.prokom.sudoku.exception.IllegalFieldValueException;
 
 /**
  * Made for storing fields values in SudokuBoard and other collections.
  */
-
 public class SudokuField implements Cloneable {
+
+    /**
+     * Handles observers of created object.
+     */
+    private PropertyChangeSupport pcs;
+
     /**
      * Stores value of field.
      */
     private int value;
-
-    /**
-     * Holds maximum value that can be assigned to {@code value}.
-     */
-    private final int maxValue;
 
     /**
      * Constructor calls {@code SudokuField(0)} with default {@code value = 0}.
@@ -32,18 +34,7 @@ public class SudokuField implements Cloneable {
      * @param value value that has to be assigned to {@code this.value}
      */
     public SudokuField(final int value) {
-        this(value, 9);
-    }
-
-    /**
-     * Constructor assigns maxValue and value.
-     * Throws exception when value not in given range [0..maxValue]
-     *
-     * @param value    value that has to be assigned to {@code this.value}
-     * @param maxValue value that has to be assigned to {@code this.maxValue}
-     */
-    public SudokuField(final int value, final int maxValue) {
-        this.maxValue = maxValue;
+        pcs = new PropertyChangeSupport(this);
         if (value != 0) {
             setFieldValue(value);
         }
@@ -65,9 +56,10 @@ public class SudokuField implements Cloneable {
      * @throws IllegalFieldValueException when value not in given range
      */
     public void setFieldValue(final int value) throws IllegalFieldValueException {
-        if (1 > value || maxValue < value) {
+        if (value < 1) {
             throw new IllegalFieldValueException("Value '" + value + "' is not in allowed range.");
         }
+        pcs.firePropertyChange("value", this.value, value);
         this.value = value;
     }
 
@@ -75,19 +67,28 @@ public class SudokuField implements Cloneable {
      * Method to reset field {@code this.value} to 0.
      */
     public void resetValue() {
+        pcs.firePropertyChange("value", this.value, value);
         this.value = 0;
+    }
+
+    /**
+     * Allows to assign Observer to this Observable.
+     *
+     * @param listener object that thould be notified when value change occurs
+     */
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
     }
 
     @Override
     public String toString() {
         return "SudokuField{"
                 + "value=" + this.value
-                + ", maxValue=" + this.maxValue
                 + '}';
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (this == object) {
             return true;
         }
@@ -99,21 +100,19 @@ public class SudokuField implements Cloneable {
 
         return new EqualsBuilder()
                 .append(this.value, that.value)
-                .append(this.maxValue, that.maxValue)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
+                .append(this.getClass().getName())
                 .append(this.value)
-                .append(this.maxValue)
                 .toHashCode();
     }
 
-
     @Override
-    public final SudokuField clone() {
+    public SudokuField clone() {
         try {
             return (SudokuField) super.clone();
         } catch (CloneNotSupportedException e) {

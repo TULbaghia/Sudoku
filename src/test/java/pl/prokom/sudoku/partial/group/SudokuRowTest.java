@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SudokuRowTest {
-    SudokuRow sudokuRow;
     SudokuField[] sudokuFields;
+    SudokuRow sudokuRow;
 
     @BeforeEach
     void setUp() {
@@ -23,7 +23,6 @@ class SudokuRowTest {
 
         sudokuRow = new SudokuRow(sudokuFields);
     }
-
 
     /**
      * Case description:
@@ -43,4 +42,14 @@ class SudokuRowTest {
         assertTrue(Arrays.deepEquals(sudokuFields, sudokuRow.getRow()));
     }
 
+    /**
+     * Case description:
+     * - toString should contains all variables
+     */
+    @Test
+    void toStringTestCase() {
+        String groupToString = sudokuRow.toString();
+        assertTrue(groupToString.contains("SudokuRow"));
+        assertTrue(groupToString.contains((new SudokuGroup(sudokuFields){}).toString()));
+    }
 }

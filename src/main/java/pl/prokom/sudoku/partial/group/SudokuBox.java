@@ -2,11 +2,13 @@ package pl.prokom.sudoku.partial.group;
 
 import pl.prokom.sudoku.partial.field.SudokuField;
 
+//TODO: implement clone, equals, hashcode
+
 /**
  * Class created to store each box in SudokuBoard.
  */
 public class SudokuBox extends SudokuGroup {
-    public SudokuBox(SudokuField[] sudokuFields) {
+    public SudokuBox(final SudokuField[] sudokuFields) {
         super(sudokuFields);
     }
 
@@ -20,12 +22,16 @@ public class SudokuBox extends SudokuGroup {
         SudokuField[][] sudokuFields = new SudokuField[size][size];
 
         for (int row = 0; row < size; row++) {
-            for (int column = 0; column < size; column++) {
-                sudokuFields[row][column] = fields[row * size + column];
-            }
+            System.arraycopy(fields, row * size, sudokuFields[row], 0, size);
         }
 
         return sudokuFields;
     }
 
+    @Override
+    public String toString() {
+        return "SudokuBox{"
+                + super.toString()
+                + '}';
+    }
 }

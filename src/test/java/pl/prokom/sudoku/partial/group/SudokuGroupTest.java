@@ -2,14 +2,19 @@ package pl.prokom.sudoku.partial.group;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.prokom.sudoku.exception.IllegalFieldValueException;
+import pl.prokom.sudoku.exception.IllegalPropertyChangeEventSourceException;
 import pl.prokom.sudoku.partial.field.SudokuField;
-import static org.junit.jupiter.api.Assertions.*;
+
+import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class SudokuGroupTest {
-    SudokuGroup sudokuGroup;
     SudokuField[] sudokuFields;
+    SudokuGroup sudokuGroup;
 
     @BeforeEach
     void setUp() {
@@ -19,12 +24,13 @@ class SudokuGroupTest {
                 .map(x -> new SudokuField(index.getAndIncrement()))
                 .toArray(SudokuField[]::new);
 
-        sudokuGroup = new SudokuGroup(sudokuFields) {};
+        sudokuGroup = new SudokuGroup(sudokuFields) {
+        };
     }
 
     /**
      * Case description:
-     * - getColumn return the same object that was pushed in SudokuGroup
+     * - getColumn return the same object that was pushed in SudokuColumn
      */
     @Test
     void getColumnTestCase() {
@@ -42,14 +48,33 @@ class SudokuGroupTest {
 
     /**
      * Case description:
+     * - same values in columnFields should return false
+     */
+    @Test
+    void verifySameTestCase() {
+        assertTrue(sudokuGroup.verify());
+
+        AtomicInteger index = new AtomicInteger(1);
+        sudokuFields = Arrays.stream(sudokuFields)
+                .map(x -> new SudokuField(index.getAndIncrement()))
+                .toArray(SudokuField[]::new);
+
+        sudokuFields[0] = new SudokuField(2);
+
+        sudokuGroup = new SudokuGroup(sudokuFields) {
+        };
+
+        assertFalse(sudokuGroup.verify());
+
+    }
+
+    /**
+     * Case description:
      * - checks if values are unique
      */
     @Test
     void verifyTestCase() {
         assertTrue(sudokuGroup.verify());
-
-        sudokuGroup.getSudokuFields()[0].setFieldValue(2);
-        assertFalse(sudokuGroup.verify());
 
         sudokuGroup.getSudokuFields()[0].resetValue();
         assertFalse(sudokuGroup.verify());
@@ -57,8 +82,62 @@ class SudokuGroupTest {
         sudokuGroup.getSudokuFields()[0].setFieldValue(1);
         assertTrue(sudokuGroup.verify());
 
-        sudokuGroup.getSudokuFields()[sudokuFields.length-1].resetValue();
+        sudokuGroup.getSudokuFields()[sudokuFields.length - 1].resetValue();
         assertFalse(sudokuGroup.verify());
     }
 
+    /**
+     * Case description:
+     * - throw error when method called from unsupported caller
+     */
+    @Test
+    void propertyChangeTestCase() {
+        PropertyChangeEvent pce = new PropertyChangeEvent("", "value", "0", "1");
+        assertThrows(IllegalPropertyChangeEventSourceException.class, () -> sudokuGroup.propertyChange(pce));
+    }
+
+    /**
+     * Case description:
+     * - allows to add legal value to field
+     */
+    @Test
+    void isAllowedToSetTestCase() {
+        sudokuFields = Arrays.stream(sudokuFields)
+                .map(x -> new SudokuField())
+                .toArray(SudokuField[]::new);
+        sudokuGroup = new SudokuGroup(sudokuFields) {
+        };
+
+        assertDoesNotThrow(() -> sudokuGroup.getSudokuFields()[0].setFieldValue(5));
+
+        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields()[1].setFieldValue(5));
+
+        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields()[0].setFieldValue(10));
+    }
+
+    /**
+     * Case description:
+     * - setting equal value shoud not throw exception as of used listener property:
+     * _    - In case the value set is same as that of the previous one, the event is not fired
+     */
+    @Test
+    void isAllowedToSetEqualValueTestCase() {
+        assertEquals(1, sudokuGroup.getSudokuFields()[0].getFieldValue());
+
+        sudokuGroup.getSudokuFields()[0].setFieldValue(1);
+        assertEquals(1, sudokuGroup.getSudokuFields()[0].getFieldValue());
+    }
+
+    /**
+     * Case description:
+     * - toString should contains all variables
+     */
+    @Test
+    void toStringTestCase() {
+        String groupToString = sudokuGroup.toString();
+        assertTrue(groupToString.contains("SudokuGroup"));
+        for (SudokuField sudokuField : sudokuFields) {
+            assertTrue(groupToString.contains(sudokuField.toString()));
+        }
+    }
 }
