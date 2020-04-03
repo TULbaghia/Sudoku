@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
 import pl.prokom.sudoku.exception.IllegalPropertyChangeEventSourceException;
 import pl.prokom.sudoku.partial.field.SudokuField;
@@ -18,7 +20,7 @@ import pl.prokom.sudoku.partial.field.SudokuField;
 /**
  * Class extended by every sudoku groups to help organize things and decrease code redundancy.
  */
-public abstract class SudokuGroup implements PropertyChangeListener {
+public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
     /**
      * Stores references to given Fields.
      */
@@ -30,10 +32,7 @@ public abstract class SudokuGroup implements PropertyChangeListener {
      * @param sudokuFields group of fields- Box, Column, Row or other
      */
     public SudokuGroup(final SudokuField[] sudokuFields) {
-        this.sudokuFields = sudokuFields;
-        for (SudokuField sudokuField : this.sudokuFields) {
-            sudokuField.addPropertyChangeListener(this);
-        }
+        setSudokuFields(sudokuFields);
     }
 
     /**
@@ -43,6 +42,18 @@ public abstract class SudokuGroup implements PropertyChangeListener {
      */
     public SudokuField[] getSudokuFields() {
         return sudokuFields;
+    }
+
+    /**
+     * Setter of {@code sudokuFields}.
+     *
+     * @param sudokuFields group of fields- Box, Column, Row or other
+     */
+    private void setSudokuFields(final SudokuField[] sudokuFields) {
+        this.sudokuFields = sudokuFields;
+        for (SudokuField sudokuField : this.sudokuFields) {
+            sudokuField.addPropertyChangeListener(this);
+        }
     }
 
     /**
@@ -96,4 +107,51 @@ public abstract class SudokuGroup implements PropertyChangeListener {
                 + "sudokuFields=" + Arrays.deepToString(sudokuFields)
                 + '}';
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof SudokuGroup)) {
+            return false;
+        }
+        SudokuGroup that = (SudokuGroup) object;
+
+        if (this.sudokuFields.length != that.sudokuFields.length) {
+            return false;
+        }
+
+        EqualsBuilder equalsBuilder = new EqualsBuilder();
+
+        for (int i = 0; i < sudokuFields.length; i++) {
+            equalsBuilder.append(this.sudokuFields[i], that.sudokuFields[i]);
+        }
+
+        return equalsBuilder.isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(17, 37);
+
+        for (SudokuField sudokuField : sudokuFields) {
+            hashCodeBuilder.append(sudokuField);
+        }
+
+        return hashCodeBuilder.toHashCode();
+    }
+
+    @Override
+    public SudokuGroup clone() {
+        try {
+            SudokuGroup sudokuGroup = (SudokuGroup) super.clone();
+            sudokuGroup.setSudokuFields(Arrays.stream(this.sudokuFields)
+                    .map(SudokuField::clone)
+                    .toArray(SudokuField[]::new));
+
+            return sudokuGroup;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
