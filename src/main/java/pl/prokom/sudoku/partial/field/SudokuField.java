@@ -1,6 +1,7 @@
 package pl.prokom.sudoku.partial.field;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.SudokuBoard;
 import pl.prokom.sudoku.exceptions.IllegalFieldValueException;
 
@@ -71,26 +72,46 @@ public class SudokuField implements Cloneable {
         this.value = value;
     }
 
-    public void reset()  {
+    /**
+     * Method to reset field {@code this.value} to 0.
+     */
+    public void resetValue() {
         this.value = 0;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public String toString() {
+        return "SudokuField{"
+                + "value=" + this.value
+                + ", maxValue=" + this.maxValue
+                + '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-
-        if (obj == null || getClass() != obj.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
 
-        SudokuField that = (SudokuField) obj;
+        SudokuField that = (SudokuField) object;
 
         return new EqualsBuilder()
-                .append(value, that.value)
+                .append(this.value, that.value)
+                .append(this.maxValue, that.maxValue)
                 .isEquals();
     }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(this.value)
+                .append(this.maxValue)
+                .toHashCode();
+    }
+
 
     @Override
     public final SudokuField clone() {
