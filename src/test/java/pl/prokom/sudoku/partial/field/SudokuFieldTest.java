@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
 
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -142,13 +144,27 @@ class SudokuFieldTest {
     /**
      * Case description:
      * - cloned object should be equal to self
-     * - clonned object is not same as original
+     * - cloned object is not same as original
+     * - cloned object does not have listeners
      */
     @Test
-    void cloneTestCase() {
+    void cloneTestCase() throws NoSuchFieldException, IllegalAccessException {
+        Field field = sudokuField.getClass().getDeclaredField("pcs");
+        field.setAccessible(true);
+
         sudokuField = new SudokuField(3);
+        PropertyChangeListener pcl = propertyChangeEvent -> {};
+
+        PropertyChangeSupport pcs = (PropertyChangeSupport) field.get(sudokuField);
+
+        sudokuField.addPropertyChangeListener(pcl);
+        assertEquals(1, pcs.getPropertyChangeListeners().length);
 
         assertEquals(sudokuField, sudokuField.clone());
         assertNotSame(sudokuField, sudokuField.clone());
+
+        assertEquals(0, pcs.getPropertyChangeListeners().length);
+
     }
+
 }

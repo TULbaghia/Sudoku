@@ -114,10 +114,16 @@ public class SudokuField implements Cloneable {
     @Override
     public SudokuField clone() {
         try {
-            return (SudokuField) super.clone();
+            SudokuField sudokuField = (SudokuField) super.clone();
+            PropertyChangeListener[] pcls = sudokuField.pcs.getPropertyChangeListeners();
+            for (PropertyChangeListener pcl : pcls) {
+                sudokuField.pcs.removePropertyChangeListener(pcl);
+            }
+            return sudokuField;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
         return null;
     }
+
 }
