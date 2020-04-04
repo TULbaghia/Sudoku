@@ -140,4 +140,79 @@ class SudokuGroupTest {
             assertTrue(groupToString.contains(sudokuField.toString()));
         }
     }
+
+    /**
+     * Case description:
+     * - object should be equal to self,
+     * - object should be equal to created with same parameters
+     * - object should be equal to one create with different array
+     * - object should not be equal when values are different
+     * - object should not be equal when array length is different
+     */
+    @Test
+    void equalsTestCase() {
+        assertEquals(sudokuGroup, sudokuGroup);
+
+        assertNotEquals(sudokuGroup, "");
+        assertEquals(sudokuGroup, new SudokuGroup(sudokuFields) {});
+
+        SudokuField[] sudokuFields = Arrays.stream(this.sudokuFields).map(SudokuField::clone).toArray(SudokuField[]::new);
+        for(int i=0; i<sudokuFields.length; i++) {
+            assertNotSame(sudokuFields[i], this.sudokuFields[i]);
+        }
+        assertEquals(sudokuGroup, new SudokuGroup(sudokuFields) {});
+
+        sudokuFields[0] = new SudokuField(5);
+        assertNotEquals(sudokuGroup, new SudokuGroup(sudokuFields) {});
+
+        assertNotEquals(sudokuGroup, new SudokuGroup(new SudokuField[]{new SudokuField(4)}) {});
+    }
+
+    /**
+     * Case description:
+     * - same object should return same hashcode
+     * - object with same settings shoud return same hashCode
+     * - object with different settings return different hashCode
+     */
+    @Test
+    void hashCodeTestCase() {
+        assertEquals(sudokuGroup.hashCode(), sudokuGroup.hashCode());
+
+        assertEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFields) {}.hashCode());
+
+        SudokuField[] sudokuFields = Arrays.stream(this.sudokuFields).map(SudokuField::clone).toArray(SudokuField[]::new);
+        for(int i=0; i<sudokuFields.length; i++) {
+            assertNotSame(sudokuFields[i], this.sudokuFields[i]);
+        }
+        assertEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFields) {}.hashCode());
+
+        sudokuFields[0] = new SudokuField(5);
+        assertNotEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFields) {}.hashCode());
+
+        assertNotEquals(sudokuGroup.hashCode(), new SudokuGroup(new SudokuField[]{new SudokuField(4)}) {}.hashCode());
+    }
+
+    /**
+     * Case description:
+     * - cloned object should be equal to self
+     * - clonned object is not same as original
+     */
+    @Test
+    void cloneTestCase() {
+        SudokuGroup sudokuGroup = this.sudokuGroup.clone();
+        assertEquals(this.sudokuGroup, sudokuGroup);
+        assertNotSame(this.sudokuGroup, sudokuGroup);
+        for(int i=0; i<sudokuGroup.getSudokuFields().length; i++) {
+            assertNotSame(this.sudokuGroup.getSudokuFields()[i], sudokuGroup.getSudokuFields()[i]);
+        }
+
+        int tmp = sudokuGroup.getSudokuFields()[0].getFieldValue();
+        sudokuGroup.getSudokuFields()[0].resetValue();
+        assertNotEquals(this.sudokuGroup, sudokuGroup);
+
+        assertDoesNotThrow(() -> sudokuGroup.getSudokuFields()[0].setFieldValue(tmp));
+        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields()[0].setFieldValue(-1));
+    }
+
+
 }
