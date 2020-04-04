@@ -12,10 +12,8 @@ import pl.prokom.sudoku.exception.IllegalFieldValueException;
 import pl.prokom.sudoku.exception.IllegalPropertyChangeEventSourceException;
 import pl.prokom.sudoku.partial.field.SudokuField;
 
-
-//TODO: check whether sudokuFields's getter should return copy of array ??
-//TODO: check whether derived methods should return copy of array and getSudokuFields just reference
-//TODO: implement clone
+//TODO: think if getSudokuFields should return deep clone of sudokuFields
+//TODO: check whether derived methods should return deep copy of array and getSudokuFields reference
 
 /**
  * Class extended by every sudoku groups to help organize things and decrease code redundancy.
@@ -153,5 +151,4 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
         }
         return null;
     }
-
 }

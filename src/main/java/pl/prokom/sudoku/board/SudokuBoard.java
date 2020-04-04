@@ -1,7 +1,12 @@
 package pl.prokom.sudoku.board;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
 import pl.prokom.sudoku.partial.field.SudokuField;
 import pl.prokom.sudoku.partial.group.SudokuBox;
@@ -12,26 +17,19 @@ import pl.prokom.sudoku.solver.SudokuSolver;
 
 //TODO: handle ArrayIndexOutOfBound exception
 //TODO: change initialize field to generator stream with null predicate
-//TODO: change sudokuGroups to 1D array with filter predicate to select correct instanceof obj
 //TODO: miniBoxCount should always be equal to miniBoxCount- only one variable should be used
 
 /**
  * Class holds SudokuBoard object and allows to interact with it.
  */
-public class SudokuBoard {
+public class SudokuBoard implements Cloneable {
     private final int miniBoxSize;
     private final int miniBoxCount;
     private final int boardSize;
 
     private SudokuSolver<SudokuBoard> sudokuSolver;
     private SudokuField[][] sudokuFields;
-    /**
-     * Stores groups of objects:.
-     * - [0] = SudokuColumn
-     * - [1] = SudokuRow
-     * - [2] = SudokuBox
-     */
-    private SudokuGroup[][] sudokuGroups;
+    private List<SudokuGroup> sudokuGroups;
 
     public SudokuBoard(SudokuSolver<SudokuBoard> sudokuSolver) {
         this(sudokuSolver, null);
@@ -71,33 +69,27 @@ public class SudokuBoard {
     }
 
     private void initializeGroups() {
-        sudokuGroups = new SudokuGroup[3][];
+        sudokuGroups = new ArrayList<>(3 * boardSize);
         initializeColumnGroup();
         initializeRowGroup();
         initializeBoxGroup();
     }
 
     private void initializeColumnGroup() {
-        sudokuGroups[0] = new SudokuColumn[boardSize];
         for (int i = 0; i < boardSize; i++) {
             SudokuField[] tmp = new SudokuField[boardSize];
             for (int j = 0; j < boardSize; j++) {
                 tmp[j] = sudokuFields[j][i];
             }
-            sudokuGroups[0][i] = new SudokuColumn(tmp);
+            sudokuGroups.add(new SudokuColumn(tmp));
         }
     }
 
     private void initializeRowGroup() {
-        sudokuGroups[1] = new SudokuRow[boardSize];
-        for (int i = 0; i < boardSize; i++) {
-            sudokuGroups[1][i] = new SudokuRow(sudokuFields[i]);
-        }
+        Arrays.stream(sudokuFields).forEach(x -> sudokuGroups.add(new SudokuRow(x)));
     }
 
     private void initializeBoxGroup() {
-        sudokuGroups[2] = new SudokuBox[boardSize];
-
         for (int maxRow = 0; maxRow < miniBoxCount; maxRow++) {
             for (int maxCol = 0; maxCol < miniBoxCount; maxCol++) {
                 SudokuField[] tmp = new SudokuField[boardSize];
@@ -108,21 +100,30 @@ public class SudokuBoard {
                             minRow * miniBoxCount,
                             miniBoxSize);
                 }
-                sudokuGroups[2][maxRow * miniBoxCount + maxCol] = new SudokuBox(tmp);
+                sudokuGroups.add(new SudokuBox(tmp));
             }
         }
     }
 
     public SudokuColumn getColumn(final int column) {
-        return (SudokuColumn) sudokuGroups[0][column];
+        return sudokuGroups.stream()
+                .filter(x -> x instanceof SudokuColumn).skip(column).findFirst()
+                .map(x -> (SudokuColumn) x)
+                .get();
     }
 
     public SudokuRow getRow(final int row) {
-        return (SudokuRow) sudokuGroups[1][row];
+        return sudokuGroups.stream()
+                .filter(x -> x instanceof SudokuRow).skip(row).findFirst()
+                .map(x -> (SudokuRow) x)
+                .get();
     }
 
     public SudokuBox getBox(final int row, final int column) {
-        return (SudokuBox) sudokuGroups[2][row * miniBoxCount + column];
+        return sudokuGroups.stream()
+                .filter(x -> x instanceof SudokuBox).skip(row * miniBoxCount + column).findFirst()
+                .map(x -> (SudokuBox) x)
+                .get();
     }
 
     private SudokuField getSudokuField(int row, int column) {
@@ -147,14 +148,7 @@ public class SudokuBoard {
     }
 
     private boolean checkBoard() {
-        for (SudokuGroup[] sudokuGroup : sudokuGroups) {
-            for (SudokuGroup groupItem : sudokuGroup) {
-                if (!groupItem.verify()) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return sudokuGroups.stream().allMatch(SudokuGroup::verify);
     }
 
     public boolean isSolved() {
@@ -171,5 +165,87 @@ public class SudokuBoard {
 
     public final int getBoardSize() {
         return boardSize;
+    }
+
+    private SudokuField[][] getCopyOfBoard() {
+        SudokuField[][] sudokuFields = new SudokuField[boardSize][boardSize];
+        for (int i = 0; i < boardSize; i++) {
+            sudokuFields[i] = Arrays.stream(this.sudokuFields[i])
+                    .map(SudokuField::clone)
+                    .toArray(SudokuField[]::new);
+        }
+        return sudokuFields;
+    }
+
+    @Override
+    public String toString() {
+        return "SudokuBoard{"
+                + "miniBoxSize=" + miniBoxSize
+                + ", miniBoxCount=" + miniBoxCount
+                + ", boardSize=" + boardSize
+                + ", sudokuSolver=" + sudokuSolver.toString()
+                + ", sudokuFields=" + Arrays.deepToString(sudokuFields)
+                + ", sudokuGroups=" + sudokuGroups.toString()
+                + '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        SudokuBoard that = (SudokuBoard) object;
+
+        if (this.boardSize != that.boardSize) {
+            return false;
+        }
+
+        EqualsBuilder equalsBuilder = new EqualsBuilder()
+                .append(this.miniBoxSize, that.miniBoxSize)
+                .append(this.miniBoxCount, that.miniBoxCount)
+                .append(this.boardSize, that.boardSize)
+                .append(this.sudokuSolver, that.sudokuSolver);
+
+        for (int i = 0; i < this.boardSize; i++) {
+            for (int j = 0; j < this.boardSize; j++) {
+                equalsBuilder.append(this.sudokuFields[i][j], that.sudokuFields[i][j]);
+            }
+        }
+
+        return equalsBuilder.isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(17, 37)
+                .append(this.miniBoxSize)
+                .append(this.miniBoxCount)
+                .append(this.boardSize)
+                .append(this.sudokuSolver);
+
+        for (int i = 0; i < this.boardSize; i++) {
+            for (int j = 0; j < this.boardSize; j++) {
+                hashCodeBuilder.append(this.sudokuFields[i][j]);
+            }
+        }
+
+        return hashCodeBuilder.append(this.getClass().getName()).toHashCode();
+    }
+
+    @Override
+    public SudokuBoard clone() {
+        try {
+            SudokuBoard sudokuBoard = (SudokuBoard) super.clone();
+            sudokuBoard.initializeFields(getCopyOfBoard());
+            sudokuBoard.initializeGroups();
+            return sudokuBoard;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

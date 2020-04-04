@@ -4,8 +4,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.partial.field.SudokuField;
 
-//TODO: implement clone, equals, hashcode
-
 /**
  * Class created to store each row in SudokuBoard.
  */
@@ -51,5 +49,4 @@ public class SudokuRow extends SudokuGroup {
     public SudokuRow clone() {
         return (SudokuRow) super.clone();
     }
-
 }

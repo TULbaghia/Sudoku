@@ -213,6 +213,4 @@ class SudokuGroupTest {
         assertDoesNotThrow(() -> sudokuGroup.getSudokuFields()[0].setFieldValue(tmp));
         assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields()[0].setFieldValue(-1));
     }
-
-
 }

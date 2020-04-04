@@ -166,5 +166,4 @@ class SudokuFieldTest {
         assertEquals(0, pcs.getPropertyChangeListeners().length);
 
     }
-
 }

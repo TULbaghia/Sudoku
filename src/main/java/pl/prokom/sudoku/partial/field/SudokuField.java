@@ -10,7 +10,6 @@ import pl.prokom.sudoku.exception.IllegalFieldValueException;
  * Made for storing fields values in SudokuBoard and other collections.
  */
 public class SudokuField implements Cloneable {
-
     /**
      * Handles observers of created object.
      */
@@ -125,5 +124,4 @@ public class SudokuField implements Cloneable {
         }
         return null;
     }
-
 }

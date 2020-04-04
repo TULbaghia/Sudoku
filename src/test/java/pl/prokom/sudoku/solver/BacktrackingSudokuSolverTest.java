@@ -47,4 +47,55 @@ class BacktrackingSudokuSolverTest {
         sudokuSolver.solve(sudokuBoard);
         assertTrue(sudokuBoard.isSolved());
     }
+
+    /**
+     * Case description:
+     * - toString should contains all variables
+     */
+    @Test
+    void toStringTestCase() {
+        String groupToString = sudokuBoard.toString();
+        assertTrue(groupToString.contains("BacktrackingSudokuSolver"));
+    }
+
+    /**
+     * Case description:
+     * - object should be equal to self,
+     * - object should be equal to created with same parameters
+     */
+    @Test
+    void equalsTestCase() {
+        assertEquals(sudokuSolver, sudokuSolver);
+
+        assertNotEquals(sudokuSolver, null);
+        assertNotEquals(sudokuSolver, "NE");
+
+        assertEquals(sudokuSolver, new BacktrackingSudokuSolver());
+    }
+
+    /**
+     * Case description:
+     * - same object should return same hashcode
+     * - object with same settings shoud return same hashCode
+     * - object with different settings return different hashCode
+     */
+    @Test
+    void hashCodeTestCase() {
+        assertEquals(sudokuSolver.hashCode(), sudokuSolver.hashCode());
+
+        assertNotEquals(sudokuSolver.hashCode(), "NE".hashCode());
+
+        assertEquals(sudokuSolver.hashCode(), new BacktrackingSudokuSolver().hashCode());
+    }
+
+    /**
+     * Case description:
+     * - cloned object should be equal to self
+     * - cloned object is not same as original
+     */
+    @Test
+    void cloneTestCase() {
+        assertEquals(sudokuSolver, ((BacktrackingSudokuSolver) sudokuSolver).clone());
+        assertNotSame(sudokuSolver, ((BacktrackingSudokuSolver) sudokuSolver).clone());
+    }
 }

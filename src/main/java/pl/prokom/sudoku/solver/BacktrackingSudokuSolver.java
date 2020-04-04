@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.board.SudokuBoard;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
 
@@ -12,7 +14,7 @@ import pl.prokom.sudoku.exception.IllegalFieldValueException;
 /**
  * Implementation of Backtracking algorithm to solve sudoku.
  */
-public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
+public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard>, Cloneable {
     /**
      * Iterative backtracking sudoku solver.
      *
@@ -88,5 +90,44 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard> {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "BacktrackingSudokuSolver{"
+                + '}';
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        BacktrackingSudokuSolver that = (BacktrackingSudokuSolver) object;
+
+        return new EqualsBuilder()
+                .append(this.getClass().getName(), that.getClass().getName())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(this.getClass().getName())
+                .toHashCode();
+    }
+
+    @Override
+    public BacktrackingSudokuSolver clone() {
+        try {
+            return (BacktrackingSudokuSolver) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

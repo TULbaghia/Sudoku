@@ -52,6 +52,7 @@ class SudokuRowTest {
         assertTrue(groupToString.contains("SudokuRow"));
         assertTrue(groupToString.contains((new SudokuGroup(sudokuFields){}).toString()));
     }
+
     /**
      * Case description:
      * - object should be equal to self,
@@ -117,5 +118,4 @@ class SudokuRowTest {
         assertNotEquals(sudokuRow, sudokuColumn);
         assertNotSame(sudokuRow, sudokuColumn);
     }
-
 }

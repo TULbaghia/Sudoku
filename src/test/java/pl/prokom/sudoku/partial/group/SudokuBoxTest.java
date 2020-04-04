@@ -132,5 +132,4 @@ class SudokuBoxTest {
         assertNotEquals(sudokuColumn, sudokuBox);
         assertNotSame(sudokuColumn, sudokuBox);
     }
-
 }
