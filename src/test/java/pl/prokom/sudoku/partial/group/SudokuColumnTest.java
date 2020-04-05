@@ -5,21 +5,20 @@ import org.junit.jupiter.api.Test;
 import pl.prokom.sudoku.partial.field.SudokuField;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SudokuColumnTest {
-    SudokuField[] sudokuFields;
+    List<SudokuField> sudokuFields;
     SudokuColumn sudokuColumn;
 
     @BeforeEach
     void setUp() {
         AtomicInteger index = new AtomicInteger(1);
-        sudokuFields = new SudokuField[9];
-        sudokuFields = Arrays.stream(sudokuFields)
-                .map(x -> new SudokuField(index.getAndIncrement()))
-                .toArray(SudokuField[]::new);
+        sudokuFields = Arrays.asList(Stream.generate(() -> new SudokuField(index.getAndIncrement())).limit(9).toArray(SudokuField[]::new));
 
         sudokuColumn = new SudokuColumn(sudokuFields);
     }
@@ -30,16 +29,16 @@ class SudokuColumnTest {
      */
     @Test
     void getColumnTestCase() {
-        assertArrayEquals(sudokuFields, sudokuColumn.getColumn());
+        assertEquals(sudokuFields, sudokuColumn.getColumn());
         assertSame(sudokuFields, sudokuColumn.getColumn());
-        sudokuFields[0].resetValue();
+        sudokuFields.get(0).resetValue();
 
-        for (int i = 0; i < sudokuFields.length; i++) {
-            assertSame(sudokuFields[i], sudokuColumn.getColumn()[i]);
+        for (int i = 0; i < sudokuFields.size(); i++) {
+            assertSame(sudokuFields.get(i), sudokuColumn.getColumn().get(i));
         }
 
-        sudokuFields[1].resetValue();
-        assertTrue(Arrays.deepEquals(sudokuFields, sudokuColumn.getColumn()));
+        sudokuFields.get(1).resetValue();
+        assertEquals(sudokuFields, sudokuColumn.getColumn());
     }
 
     /**
@@ -68,11 +67,11 @@ class SudokuColumnTest {
 
         assertEquals(sudokuColumn, new SudokuColumn(sudokuFields));
 
-        SudokuField[] sudokuFields = Arrays.stream(this.sudokuFields).map(SudokuField::clone).toArray(SudokuField[]::new);
-        for(int i=0; i<sudokuFields.length; i++) {
-            assertNotSame(sudokuFields[i], this.sudokuFields[i]);
+        List<SudokuField> sudokuFields = Arrays.asList(this.sudokuFields.stream().map(SudokuField::clone).toArray(SudokuField[]::new));
+        for(int i=0; i<sudokuFields.size(); i++) {
+            assertNotSame(sudokuFields.get(i), this.sudokuFields.get(i));
         }
-        sudokuFields[0] = new SudokuField();
+        sudokuFields.set(0, new SudokuField());
 
         assertNotEquals(sudokuColumn, new SudokuColumn(sudokuFields));
     }
@@ -92,11 +91,11 @@ class SudokuColumnTest {
 
         assertEquals(sudokuColumn.hashCode(), new SudokuColumn(sudokuFields).hashCode());
 
-        SudokuField[] sudokuFields = Arrays.stream(this.sudokuFields).map(SudokuField::clone).toArray(SudokuField[]::new);
-        for(int i=0; i<sudokuFields.length; i++) {
-            assertNotSame(sudokuFields[i], this.sudokuFields[i]);
+        List<SudokuField> sudokuFields = Arrays.asList(this.sudokuFields.stream().map(SudokuField::clone).toArray(SudokuField[]::new));
+        for(int i=0; i<sudokuFields.size(); i++) {
+            assertNotSame(sudokuFields.get(i), this.sudokuFields.get(i));
         }
-        sudokuFields[0] = new SudokuField();
+        sudokuFields.set(0, new SudokuField());
 
         assertNotEquals(sudokuColumn.hashCode(), new SudokuColumn(sudokuFields).hashCode());
     }

@@ -2,6 +2,7 @@ package pl.prokom.sudoku.partial.field;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
@@ -114,10 +115,7 @@ public class SudokuField implements Cloneable {
     public SudokuField clone() {
         try {
             SudokuField sudokuField = (SudokuField) super.clone();
-            PropertyChangeListener[] pcls = sudokuField.pcs.getPropertyChangeListeners();
-            for (PropertyChangeListener pcl : pcls) {
-                sudokuField.pcs.removePropertyChangeListener(pcl);
-            }
+            sudokuField.pcs = new PropertyChangeSupport(sudokuField);
             return sudokuField;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();

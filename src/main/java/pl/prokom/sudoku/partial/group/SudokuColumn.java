@@ -1,5 +1,6 @@
 package pl.prokom.sudoku.partial.group;
 
+import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.partial.field.SudokuField;
@@ -8,11 +9,11 @@ import pl.prokom.sudoku.partial.field.SudokuField;
  * Class created to store each column in SudokuBoard.
  */
 public class SudokuColumn extends SudokuGroup {
-    public SudokuColumn(final SudokuField[] sudokuFields) {
+    public SudokuColumn(final List<SudokuField> sudokuFields) {
         super(sudokuFields);
     }
 
-    public SudokuField[] getColumn() {
+    public List<SudokuField> getColumn() {
         return super.getSudokuFields();
     }
 

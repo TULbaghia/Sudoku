@@ -10,6 +10,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,18 +37,24 @@ class SudokuBoardTest {
      */
     @Test
     void parametrizedConstructorTestCase() {
-        SudokuField[][] sudokuFields = new SudokuField[sudokuBoard.getBoardSize()][];
-        sudokuFields[0] = new SudokuField[]{new SudokuField(), null, null, null, null, null, null, null, null};
-        sudokuFields[1] = new SudokuField[]{null, new SudokuField(), null, null, null, null, null, null, null};
-        sudokuFields[2] = new SudokuField[]{null, null, new SudokuField(), null, null, null, null, null, null};
+        SudokuField[][] sudokuFields = new SudokuField[sudokuBoard.getBoardSize()][sudokuBoard.getBoardSize()];
+        sudokuFields[0][1] = new SudokuField(5);
+        sudokuFields[1][2] = new SudokuField(6);
+        sudokuFields[2][3] = new SudokuField(7);
 
-        sudokuBoard = new SudokuBoard(new BacktrackingSudokuSolver(), sudokuFields);
+        List<List<SudokuField>> sudokuList = Arrays.stream(sudokuFields)
+                .map(Arrays::asList)
+                .collect(Collectors.toList());
+
+        sudokuBoard = new SudokuBoard(new BacktrackingSudokuSolver(), sudokuList);
 
         for (int i = 0; i < sudokuFields.length; i++) {
-            SudokuField[] sudokuColumn = sudokuBoard.getColumn(i).getColumn();
-            assertEquals(sudokuFields[i].length, sudokuColumn.length);
+            List<SudokuField> sudokuColumn = sudokuBoard.getColumn(i).getColumn();
+            assertEquals(sudokuFields[i].length, sudokuColumn.size());
             for (int j = 0; j < sudokuFields.length; j++) {
-                assertSame(sudokuFields[j][i], sudokuColumn[j]);
+                if(sudokuFields[j][i] != null) {
+                    assertEquals(sudokuFields[j][i], sudokuColumn.get(j));
+                }
             }
         }
     }
@@ -56,14 +64,15 @@ class SudokuBoardTest {
      * - columns in groups and fileds are the same objects segregated correctly
      */
     @Test
+    @SuppressWarnings("unchecked")
     void getColumnTestCase() throws NoSuchFieldException, IllegalAccessException {
-        SudokuField[][] sudokuFields = (SudokuField[][]) getPrivateField("sudokuFields");
+        List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
-        for (int i = 0; i < sudokuFields.length; i++) {
-            SudokuField[] sudokuColumn = sudokuBoard.getColumn(i).getColumn();
-            assertEquals(sudokuFields[i].length, sudokuColumn.length);
-            for (int j = 0; j < sudokuFields.length; j++) {
-                assertSame(sudokuFields[j][i], sudokuColumn[j]);
+        for (int i = 0; i < sudokuFields.size(); i++) {
+            List<SudokuField> sudokuColumn = sudokuBoard.getColumn(i).getColumn();
+            assertEquals(sudokuFields.get(i).size(), sudokuColumn.size());
+            for (int j = 0; j < sudokuFields.size(); j++) {
+                assertSame(sudokuFields.get(j).get(i), sudokuColumn.get(j));
             }
         }
     }
@@ -73,14 +82,15 @@ class SudokuBoardTest {
      * - rows in groups and fields are the same object segregated correctly.
      */
     @Test
+    @SuppressWarnings("unchecked")
     void getRowTestCase() throws NoSuchFieldException, IllegalAccessException {
-        SudokuField[][] sudokuFields = (SudokuField[][]) getPrivateField("sudokuFields");
+        List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
-        for (int i = 0; i < sudokuFields.length; i++) {
-            SudokuField[] sudokuRow = sudokuBoard.getRow(i).getRow();
-            assertEquals(sudokuFields[i].length, sudokuRow.length);
-            for (int j = 0; j < sudokuFields[i].length; j++) {
-                assertSame(sudokuFields[i][j], sudokuRow[j]);
+        for (int i = 0; i < sudokuFields.size(); i++) {
+            List<SudokuField> sudokuRow = sudokuBoard.getRow(i).getRow();
+            assertEquals(sudokuFields.get(i).size(), sudokuRow.size());
+            for (int j = 0; j < sudokuFields.get(i).size(); j++) {
+                assertSame(sudokuFields.get(i).get(j), sudokuRow.get(j));
             }
         }
     }
@@ -90,8 +100,9 @@ class SudokuBoardTest {
      * - boxes in groups and fields are the same object segregated correctly.
      */
     @Test
+    @SuppressWarnings("unchecked")
     void getBoxTestCase() throws NoSuchFieldException, IllegalAccessException {
-        SudokuField[][] sudokuFields = (SudokuField[][]) getPrivateField("sudokuFields");
+        List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
         for (int maxRow = 0; maxRow < sudokuBoard.getMiniBoxCount(); maxRow++) {
             for (int maxCol = 0; maxCol < sudokuBoard.getMiniBoxCount(); maxCol++) {
@@ -99,7 +110,7 @@ class SudokuBoardTest {
                 for (int minRow = 0; minRow < sudokuBoard.getMiniBoxSize(); minRow++) {
                     for (int minCol = 0; minCol < sudokuBoard.getMiniBoxSize(); minCol++) {
                         assertSame(sudokuBox[minRow][minCol],
-                                sudokuFields[maxRow * sudokuBoard.getMiniBoxSize() + minRow][maxCol * sudokuBoard.getMiniBoxSize() + minCol]);
+                                sudokuFields.get(maxRow * sudokuBoard.getMiniBoxSize() + minRow).get(maxCol * sudokuBoard.getMiniBoxSize() + minCol));
                     }
                 }
             }
@@ -120,12 +131,13 @@ class SudokuBoardTest {
      * - check if get value is same as the one in board
      */
     @Test
+    @SuppressWarnings("unchecked")
     void getTestCase() throws NoSuchFieldException, IllegalAccessException {
-        SudokuField[][] sudokuFields = (SudokuField[][]) getPrivateField("sudokuFields");
+        List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
-        for (int row = 0; row < sudokuFields.length; row++) {
-            for (int col = 0; col < sudokuFields[row].length; col++) {
-                assertSame(sudokuFields[row][col].getFieldValue(), sudokuBoard.get(row, col));
+        for (int row = 0; row < sudokuFields.size(); row++) {
+            for (int col = 0; col < sudokuFields.get(row).size(); col++) {
+                assertSame(sudokuFields.get(row).get(col).getFieldValue(), sudokuBoard.get(row, col));
             }
         }
     }
@@ -164,20 +176,18 @@ class SudokuBoardTest {
      * - method returns copy of board with new references
      */
     @Test
+    @SuppressWarnings("unchecked")
     void getCopyOfBoardTestCase() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Method method = sudokuBoard.getClass().getDeclaredMethod("getCopyOfBoard");
         method.setAccessible(true);
 
-        Field field = sudokuBoard.getClass().getDeclaredField("sudokuFields");
-        field.setAccessible(true);
-
-        SudokuField[][] newFields = (SudokuField[][]) method.invoke(sudokuBoard);
-        SudokuField[][] oldFields = (SudokuField[][]) field.get(sudokuBoard);
+        List<List<SudokuField>> newFields = (List<List<SudokuField>>) method.invoke(sudokuBoard);
+        List<List<SudokuField>> oldFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
         for (int i = 0; i < sudokuBoard.getBoardSize(); i++) {
             for (int j = 0; j < sudokuBoard.getBoardSize(); j++) {
-                assertEquals(oldFields[i][j], newFields[i][j]);
-                assertNotSame(oldFields[i][j], newFields[i][j]);
+                assertEquals(oldFields.get(i).get(j), newFields.get(i).get(j));
+                assertNotSame(oldFields.get(i).get(j), newFields.get(i).get(j));
             }
         }
     }
@@ -198,10 +208,12 @@ class SudokuBoardTest {
      * - toString should contains all variables
      */
     @Test
-    void toStringTestCase() {
-        SudokuField[][] sudokuFields = new SudokuField[9][9];
-        sudokuBoard = new SudokuBoard(sudokuSolver, sudokuFields);
+    @SuppressWarnings("unchecked")
+    void toStringTestCase() throws NoSuchFieldException, IllegalAccessException {
+        sudokuBoard = new SudokuBoard(sudokuSolver, null);
         sudokuBoard.solveGame();
+
+        List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
         String groupToString = sudokuBoard.toString();
         assertTrue(groupToString.contains("SudokuBoard"));
@@ -209,7 +221,7 @@ class SudokuBoardTest {
         assertTrue(groupToString.contains("miniBoxCount=" + sudokuBoard.getMiniBoxCount()));
         assertTrue(groupToString.contains("boardSize=" + sudokuBoard.getBoardSize()));
         assertTrue(groupToString.contains("sudokuSolver=" + sudokuSolver.toString()));
-        assertTrue(groupToString.contains("sudokuFields=" + Arrays.deepToString(sudokuFields)));
+        assertTrue(groupToString.contains("sudokuFields=" + sudokuFields.toString()));
         for (int i = 0; i < sudokuBoard.getBoardSize(); i++) {
             assertTrue(groupToString.contains(sudokuBoard.getRow(i).toString()));
             assertTrue(groupToString.contains(sudokuBoard.getColumn(i).toString()));
@@ -270,6 +282,7 @@ class SudokuBoardTest {
      * - cloned object is not same as original
      */
     @Test
+    @SuppressWarnings("unchecked")
     void cloneTestCase() throws NoSuchFieldException, IllegalAccessException {
         SudokuBoard clone = sudokuBoard.clone();
         Field field = sudokuBoard.getClass().getDeclaredField("sudokuFields");
@@ -279,16 +292,16 @@ class SudokuBoardTest {
         assertEquals(sudokuBoard, clone);
         assertNotSame(sudokuBoard, clone);
 
-        SudokuField[][] fields1 = (SudokuField[][]) field.get(sudokuBoard);
-        SudokuField[][] fields2 = (SudokuField[][]) field.get(clone);
+        List<List<SudokuField>> fields1 = (List<List<SudokuField>>) field.get(sudokuBoard);
+        List<List<SudokuField>> fields2 = (List<List<SudokuField>>) field.get(clone);
 
 
         for (int i = 0; i < sudokuBoard.getBoardSize(); i++) {
             assertNotSame(sudokuBoard.getColumn(i), clone.getColumn(i));
             assertNotSame(sudokuBoard.getColumn(i), clone.getRow(i));
             for (int j = 0; j < sudokuBoard.getBoardSize(); j++) {
-                assertEquals(fields1[i][j], fields2[i][j]);
-                assertNotSame(fields1[i][j], fields2[i][j]);
+                assertEquals(fields1.get(i).get(j), fields2.get(i).get(j));
+                assertNotSame(fields1.get(i).get(j), fields2.get(i).get(j));
             }
         }
     }

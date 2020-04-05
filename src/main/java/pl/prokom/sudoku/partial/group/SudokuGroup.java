@@ -3,6 +3,7 @@ package pl.prokom.sudoku.partial.group;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -22,14 +23,14 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
     /**
      * Stores references to given Fields.
      */
-    private SudokuField[] sudokuFields;
+    private List<SudokuField> sudokuFields;
 
     /**
      * Create object from given sudokuFields.
      *
      * @param sudokuFields group of fields- Box, Column, Row or other
      */
-    public SudokuGroup(final SudokuField[] sudokuFields) {
+    public SudokuGroup(final List<SudokuField> sudokuFields) {
         setSudokuFields(sudokuFields);
     }
 
@@ -38,7 +39,7 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
      *
      * @return reference to {@code sudokuFields}
      */
-    public SudokuField[] getSudokuFields() {
+    public List<SudokuField> getSudokuFields() {
         return sudokuFields;
     }
 
@@ -47,11 +48,9 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
      *
      * @param sudokuFields group of fields- Box, Column, Row or other
      */
-    private void setSudokuFields(final SudokuField[] sudokuFields) {
+    private void setSudokuFields(final List<SudokuField> sudokuFields) {
         this.sudokuFields = sudokuFields;
-        for (SudokuField sudokuField : this.sudokuFields) {
-            sudokuField.addPropertyChangeListener(this);
-        }
+        this.sudokuFields.forEach(x -> x.addPropertyChangeListener(this));
     }
 
     /**
@@ -60,12 +59,12 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
      * @return true when no errors
      */
     public final boolean verify() {
-        SortedSet<Integer> uniqueValues = Arrays.stream(sudokuFields)
+        SortedSet<Integer> uniqueValues = sudokuFields.stream()
                 .map(SudokuField::getFieldValue)
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        return sudokuFields.length == uniqueValues.size()
-                && uniqueValues.last() == sudokuFields.length
+        return sudokuFields.size() == uniqueValues.size()
+                && uniqueValues.last() == sudokuFields.size()
                 && uniqueValues.first() == 1;
     }
 
@@ -75,10 +74,10 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
      * @return true when value exists; false otherwise
      */
     private boolean isValueAllowedToSet(final int value) {
-        return Arrays.stream(sudokuFields)
+        return sudokuFields.stream()
                 .map(SudokuField::getFieldValue)
                 .noneMatch(x -> x == value)
-                && value <= sudokuFields.length;
+                && value <= sudokuFields.size();
     }
 
     /**
@@ -102,7 +101,7 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
     @Override
     public String toString() {
         return "SudokuGroup{"
-                + "sudokuFields=" + Arrays.deepToString(sudokuFields)
+                + "sudokuFields=" + sudokuFields.toString()
                 + '}';
     }
 
@@ -113,37 +112,25 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
         }
         SudokuGroup that = (SudokuGroup) object;
 
-        if (this.sudokuFields.length != that.sudokuFields.length) {
-            return false;
-        }
-
-        EqualsBuilder equalsBuilder = new EqualsBuilder();
-
-        for (int i = 0; i < sudokuFields.length; i++) {
-            equalsBuilder.append(this.sudokuFields[i], that.sudokuFields[i]);
-        }
-
-        return equalsBuilder.isEquals();
+        return new EqualsBuilder()
+                .append(this.sudokuFields, that.sudokuFields)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(17, 37);
-
-        for (SudokuField sudokuField : sudokuFields) {
-            hashCodeBuilder.append(sudokuField);
-        }
-
-        return hashCodeBuilder.toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(sudokuFields)
+                .toHashCode();
     }
 
     @Override
     public SudokuGroup clone() {
         try {
             SudokuGroup sudokuGroup = (SudokuGroup) super.clone();
-            sudokuGroup.setSudokuFields(Arrays.stream(this.sudokuFields)
+            sudokuGroup.setSudokuFields(Arrays.asList(sudokuFields.stream()
                     .map(SudokuField::clone)
-                    .toArray(SudokuField[]::new));
+                    .toArray(SudokuField[]::new)));
 
             return sudokuGroup;
         } catch (CloneNotSupportedException e) {

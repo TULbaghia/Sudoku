@@ -8,24 +8,22 @@ import pl.prokom.sudoku.partial.field.SudokuField;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SudokuGroupTest {
-    SudokuField[] sudokuFields;
+    List<SudokuField> sudokuFiels;
     SudokuGroup sudokuGroup;
 
     @BeforeEach
     void setUp() {
         AtomicInteger index = new AtomicInteger(1);
-        sudokuFields = new SudokuField[9];
-        sudokuFields = Arrays.stream(sudokuFields)
-                .map(x -> new SudokuField(index.getAndIncrement()))
-                .toArray(SudokuField[]::new);
+        sudokuFiels = Arrays.asList(Stream.generate(() -> new SudokuField(index.getAndIncrement())).limit(9).toArray(SudokuField[]::new));
 
-        sudokuGroup = new SudokuGroup(sudokuFields) {
-        };
+        sudokuGroup = new SudokuGroup(sudokuFiels) {};
     }
 
     /**
@@ -34,16 +32,16 @@ class SudokuGroupTest {
      */
     @Test
     void getColumnTestCase() {
-        assertArrayEquals(sudokuFields, sudokuGroup.getSudokuFields());
-        assertSame(sudokuFields, sudokuGroup.getSudokuFields());
-        sudokuFields[0].resetValue();
+        assertEquals(sudokuFiels, sudokuGroup.getSudokuFields());
+        assertSame(sudokuFiels, sudokuGroup.getSudokuFields());
+        sudokuFiels.get(0).resetValue();
 
-        for (int i = 0; i < sudokuFields.length; i++) {
-            assertSame(sudokuFields[i], sudokuGroup.getSudokuFields()[i]);
+        for (int i = 0; i < sudokuFiels.size(); i++) {
+            assertSame(sudokuFiels.get(i), sudokuGroup.getSudokuFields().get(i));
         }
 
-        sudokuFields[1].resetValue();
-        assertTrue(Arrays.deepEquals(sudokuFields, sudokuGroup.getSudokuFields()));
+        sudokuFiels.get(1).resetValue();
+        assertEquals(sudokuFiels, sudokuGroup.getSudokuFields());
     }
 
     /**
@@ -55,14 +53,11 @@ class SudokuGroupTest {
         assertTrue(sudokuGroup.verify());
 
         AtomicInteger index = new AtomicInteger(1);
-        sudokuFields = Arrays.stream(sudokuFields)
-                .map(x -> new SudokuField(index.getAndIncrement()))
-                .toArray(SudokuField[]::new);
+        sudokuFiels = Arrays.asList(Stream.generate(() -> new SudokuField(index.getAndIncrement())).limit(9).toArray(SudokuField[]::new));
 
-        sudokuFields[0] = new SudokuField(2);
+        sudokuFiels.set(2, new SudokuField(2));
 
-        sudokuGroup = new SudokuGroup(sudokuFields) {
-        };
+        sudokuGroup = new SudokuGroup(sudokuFiels) {};
 
         assertFalse(sudokuGroup.verify());
 
@@ -76,13 +71,13 @@ class SudokuGroupTest {
     void verifyTestCase() {
         assertTrue(sudokuGroup.verify());
 
-        sudokuGroup.getSudokuFields()[0].resetValue();
+        sudokuGroup.getSudokuFields().get(0).resetValue();
         assertFalse(sudokuGroup.verify());
 
-        sudokuGroup.getSudokuFields()[0].setFieldValue(1);
+        sudokuGroup.getSudokuFields().get(0).setFieldValue(1);
         assertTrue(sudokuGroup.verify());
 
-        sudokuGroup.getSudokuFields()[sudokuFields.length - 1].resetValue();
+        sudokuGroup.getSudokuFields().get(sudokuFiels.size() - 1).resetValue();
         assertFalse(sudokuGroup.verify());
     }
 
@@ -102,17 +97,12 @@ class SudokuGroupTest {
      */
     @Test
     void isAllowedToSetTestCase() {
-        sudokuFields = Arrays.stream(sudokuFields)
-                .map(x -> new SudokuField())
-                .toArray(SudokuField[]::new);
-        sudokuGroup = new SudokuGroup(sudokuFields) {
-        };
+        sudokuGroup.getSudokuFields().get(4).resetValue();
+        assertDoesNotThrow(() -> sudokuGroup.getSudokuFields().get(0).setFieldValue(5));
 
-        assertDoesNotThrow(() -> sudokuGroup.getSudokuFields()[0].setFieldValue(5));
+        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields().get(1).setFieldValue(5));
 
-        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields()[1].setFieldValue(5));
-
-        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields()[0].setFieldValue(10));
+        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields().get(0).setFieldValue(10));
     }
 
     /**
@@ -122,10 +112,10 @@ class SudokuGroupTest {
      */
     @Test
     void isAllowedToSetEqualValueTestCase() {
-        assertEquals(1, sudokuGroup.getSudokuFields()[0].getFieldValue());
+        assertEquals(1, sudokuGroup.getSudokuFields().get(0).getFieldValue());
 
-        sudokuGroup.getSudokuFields()[0].setFieldValue(1);
-        assertEquals(1, sudokuGroup.getSudokuFields()[0].getFieldValue());
+        sudokuGroup.getSudokuFields().get(0).setFieldValue(1);
+        assertEquals(1, sudokuGroup.getSudokuFields().get(0).getFieldValue());
     }
 
     /**
@@ -136,7 +126,7 @@ class SudokuGroupTest {
     void toStringTestCase() {
         String groupToString = sudokuGroup.toString();
         assertTrue(groupToString.contains("SudokuGroup"));
-        for (SudokuField sudokuField : sudokuFields) {
+        for (SudokuField sudokuField : sudokuFiels) {
             assertTrue(groupToString.contains(sudokuField.toString()));
         }
     }
@@ -154,18 +144,18 @@ class SudokuGroupTest {
         assertEquals(sudokuGroup, sudokuGroup);
 
         assertNotEquals(sudokuGroup, "");
-        assertEquals(sudokuGroup, new SudokuGroup(sudokuFields) {});
+        assertEquals(sudokuGroup, new SudokuGroup(sudokuFiels) {});
 
-        SudokuField[] sudokuFields = Arrays.stream(this.sudokuFields).map(SudokuField::clone).toArray(SudokuField[]::new);
-        for(int i=0; i<sudokuFields.length; i++) {
-            assertNotSame(sudokuFields[i], this.sudokuFields[i]);
+        List<SudokuField> sudokuFields = Arrays.asList(sudokuFiels.stream().map(SudokuField::clone).toArray(SudokuField[]::new));
+        for(int i=0; i<sudokuFields.size(); i++) {
+            assertNotSame(sudokuFields.get(i), this.sudokuFiels.get(i));
         }
-        assertEquals(sudokuGroup, new SudokuGroup(sudokuFields) {});
+        assertEquals(sudokuGroup, new SudokuGroup(sudokuFiels) {});
 
-        sudokuFields[0] = new SudokuField(5);
+        sudokuFields.set(0, new SudokuField(5));
         assertNotEquals(sudokuGroup, new SudokuGroup(sudokuFields) {});
 
-        assertNotEquals(sudokuGroup, new SudokuGroup(new SudokuField[]{new SudokuField(4)}) {});
+        assertNotEquals(sudokuGroup, new SudokuGroup(Arrays.asList(new SudokuField[]{new SudokuField(1)})) {});
     }
 
     /**
@@ -178,18 +168,18 @@ class SudokuGroupTest {
     void hashCodeTestCase() {
         assertEquals(sudokuGroup.hashCode(), sudokuGroup.hashCode());
 
-        assertEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFields) {}.hashCode());
+        assertEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFiels) {}.hashCode());
 
-        SudokuField[] sudokuFields = Arrays.stream(this.sudokuFields).map(SudokuField::clone).toArray(SudokuField[]::new);
-        for(int i=0; i<sudokuFields.length; i++) {
-            assertNotSame(sudokuFields[i], this.sudokuFields[i]);
+        List<SudokuField> sudokuFields = Arrays.asList(sudokuFiels.stream().map(SudokuField::clone).toArray(SudokuField[]::new));
+        for(int i=0; i<sudokuFields.size(); i++) {
+            assertNotSame(sudokuFields.get(i), this.sudokuFiels.get(i));
         }
-        assertEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFields) {}.hashCode());
+        assertEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFiels) {}.hashCode());
 
-        sudokuFields[0] = new SudokuField(5);
+        sudokuFields.set(0, new SudokuField(5));
         assertNotEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFields) {}.hashCode());
 
-        assertNotEquals(sudokuGroup.hashCode(), new SudokuGroup(new SudokuField[]{new SudokuField(4)}) {}.hashCode());
+        assertNotEquals(sudokuGroup.hashCode(), new SudokuGroup(Arrays.asList(new SudokuField[]{new SudokuField(1)})) {}.hashCode());
     }
 
     /**
@@ -202,15 +192,15 @@ class SudokuGroupTest {
         SudokuGroup sudokuGroup = this.sudokuGroup.clone();
         assertEquals(this.sudokuGroup, sudokuGroup);
         assertNotSame(this.sudokuGroup, sudokuGroup);
-        for(int i=0; i<sudokuGroup.getSudokuFields().length; i++) {
-            assertNotSame(this.sudokuGroup.getSudokuFields()[i], sudokuGroup.getSudokuFields()[i]);
+        for(int i=0; i<sudokuGroup.getSudokuFields().size(); i++) {
+            assertNotSame(this.sudokuGroup.getSudokuFields().get(i), sudokuGroup.getSudokuFields().get(i));
         }
 
-        int tmp = sudokuGroup.getSudokuFields()[0].getFieldValue();
-        sudokuGroup.getSudokuFields()[0].resetValue();
+        int tmp = sudokuGroup.getSudokuFields().get(0).getFieldValue();
+        sudokuGroup.getSudokuFields().get(0).resetValue();
         assertNotEquals(this.sudokuGroup, sudokuGroup);
 
-        assertDoesNotThrow(() -> sudokuGroup.getSudokuFields()[0].setFieldValue(tmp));
-        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields()[0].setFieldValue(-1));
+        assertDoesNotThrow(() -> sudokuGroup.getSudokuFields().get(0).setFieldValue(tmp));
+        assertThrows(IllegalFieldValueException.class, () -> sudokuGroup.getSudokuFields().get(0).setFieldValue(-1));
     }
 }

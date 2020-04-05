@@ -155,15 +155,19 @@ class SudokuFieldTest {
         sudokuField = new SudokuField(3);
         PropertyChangeListener pcl = propertyChangeEvent -> {};
 
-        PropertyChangeSupport pcs = (PropertyChangeSupport) field.get(sudokuField);
+        PropertyChangeSupport pcs_original = (PropertyChangeSupport) field.get(sudokuField);
 
         sudokuField.addPropertyChangeListener(pcl);
-        assertEquals(1, pcs.getPropertyChangeListeners().length);
+        assertEquals(1, pcs_original.getPropertyChangeListeners().length);
 
-        assertEquals(sudokuField, sudokuField.clone());
-        assertNotSame(sudokuField, sudokuField.clone());
+        SudokuField clone = sudokuField.clone();
+        PropertyChangeSupport pcs_clone = (PropertyChangeSupport) field.get(clone);
 
-        assertEquals(0, pcs.getPropertyChangeListeners().length);
+        assertEquals(sudokuField, clone);
+        assertNotSame(sudokuField, clone);
+
+        assertEquals(1, pcs_original.getPropertyChangeListeners().length);
+        assertEquals(0, pcs_clone.getPropertyChangeListeners().length);
 
     }
 }
