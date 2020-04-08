@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
@@ -14,44 +15,40 @@ import pl.prokom.sudoku.partial.group.SudokuGroup;
 import pl.prokom.sudoku.partial.group.SudokuRow;
 import pl.prokom.sudoku.solver.SudokuSolver;
 
-//TODO: handle ArrayIndexOutOfBound exception
-//TODO: change initialize field to generator stream with null predicate
-//TODO: miniBoxCount should always be equal to miniBoxCount- only one variable should be used
-//TODO: move from for's to sth else in initialize*Group
+//TODO: handle {Array,*}IndexOutOfBoundException
 
 /**
  * Class holds SudokuBoard object and allows to interact with it.
  */
 public class SudokuBoard implements Cloneable {
-    private final int miniBoxSize;
-    private final int miniBoxCount;
+    private final int miniBoxDim;
     private final int boardSize;
 
     private SudokuSolver<SudokuBoard> sudokuSolver;
     private List<List<SudokuField>> sudokuFields;
     private List<SudokuGroup> sudokuGroups;
 
-    public SudokuBoard(SudokuSolver<SudokuBoard> sudokuSolver) {
+    public SudokuBoard(final SudokuSolver<SudokuBoard> sudokuSolver) {
         this(sudokuSolver, null);
     }
 
-    public SudokuBoard(SudokuSolver<SudokuBoard> sudokuSolver,
-                       List<List<SudokuField>> sudokuFields) {
-        this(sudokuSolver, sudokuFields, 3, 3);
+    public SudokuBoard(final SudokuSolver<SudokuBoard> sudokuSolver,
+                       final List<List<SudokuField>> sudokuFields) {
+        this(sudokuSolver, sudokuFields, 3);
     }
 
-    public SudokuBoard(SudokuSolver<SudokuBoard> sudokuSolver, List<List<SudokuField>> sudokuFields,
-                       final int miniBoxCount, final int miniBoxSize) {
+    public SudokuBoard(final SudokuSolver<SudokuBoard> sudokuSolver,
+                       final List<List<SudokuField>> sudokuFields, final int miniBoxDim) {
         this.sudokuSolver = sudokuSolver;
-        this.miniBoxCount = miniBoxCount;
-        this.miniBoxSize = miniBoxSize;
-        this.boardSize = miniBoxSize * miniBoxCount;
+        this.miniBoxDim = miniBoxDim;
+        this.boardSize = miniBoxDim * miniBoxDim;
         initializeFields(sudokuFields);
         initializeGroups();
     }
 
     private void initializeFields(List<List<SudokuField>> fields) {
-        sudokuFields = Arrays.stream(new SudokuField[boardSize][boardSize])
+        sudokuFields = Stream.generate(() -> new SudokuField[boardSize])
+                .limit(boardSize)
                 .map(Arrays::asList)
                 .collect(Collectors.toList());
 
@@ -77,11 +74,12 @@ public class SudokuBoard implements Cloneable {
 
     private void initializeColumnGroup() {
         for (int i = 0; i < boardSize; i++) {
-            SudokuField[] tmp = new SudokuField[boardSize];
-            for (int j = 0; j < boardSize; j++) {
-                tmp[j] = getSudokuField(j, i);
-            }
-            sudokuGroups.add(new SudokuColumn(Arrays.asList(tmp)));
+            int finalI = i;
+            sudokuGroups.add(new SudokuColumn(
+                    sudokuFields.stream()
+                            .map(list -> list.get(finalI))
+                            .collect(Collectors.toList())
+            ));
         }
     }
 
@@ -90,18 +88,21 @@ public class SudokuBoard implements Cloneable {
     }
 
     private void initializeBoxGroup() {
-        for (int maxRow = 0; maxRow < miniBoxCount; maxRow++) {
-            for (int maxCol = 0; maxCol < miniBoxCount; maxCol++) {
-                SudokuField[] tmp = new SudokuField[boardSize];
-                for (int minRow = 0; minRow < miniBoxSize; minRow++) {
-                    for (int miniCol = 0; miniCol < miniBoxSize; miniCol++) {
-                        tmp[minRow * miniBoxSize + miniCol] = getSudokuField(
-                                maxRow * miniBoxSize + minRow, maxCol * miniBoxSize + miniCol);
-                    }
-                }
-                sudokuGroups.add(new SudokuBox(Arrays.asList(tmp)));
+        List<List<SudokuField>> boxGroups = Stream
+                .generate(() -> new SudokuField[boardSize])
+                .limit(boardSize)
+                .map(Arrays::asList)
+                .collect(Collectors.toList());
+
+        for (int row = 0; row < boardSize; row++) {
+            for (int col = 0; col < boardSize; col++) {
+                boxGroups.get((row / miniBoxDim) * miniBoxDim + col / miniBoxDim)
+                        .set((row % miniBoxDim) * miniBoxDim + col % miniBoxDim,
+                                getSudokuField(row, col));
             }
         }
+
+        boxGroups.forEach(list -> sudokuGroups.add(new SudokuBox(list)));
     }
 
     public SudokuColumn getColumn(final int column) {
@@ -120,7 +121,7 @@ public class SudokuBoard implements Cloneable {
 
     public SudokuBox getBox(final int row, final int column) {
         return sudokuGroups.stream()
-                .filter(x -> x instanceof SudokuBox).skip(row * miniBoxCount + column).findFirst()
+                .filter(x -> x instanceof SudokuBox).skip(row * miniBoxDim + column).findFirst()
                 .map(x -> (SudokuBox) x)
                 .get();
     }
@@ -154,12 +155,8 @@ public class SudokuBoard implements Cloneable {
         return checkBoard();
     }
 
-    public final int getMiniBoxSize() {
-        return miniBoxSize;
-    }
-
-    public final int getMiniBoxCount() {
-        return miniBoxCount;
+    public final int getMiniBoxDim() {
+        return miniBoxDim;
     }
 
     public final int getBoardSize() {
@@ -182,8 +179,7 @@ public class SudokuBoard implements Cloneable {
     @Override
     public String toString() {
         return "SudokuBoard{"
-                + "miniBoxSize=" + miniBoxSize
-                + ", miniBoxCount=" + miniBoxCount
+                + "miniBoxDim=" + miniBoxDim
                 + ", boardSize=" + boardSize
                 + ", sudokuSolver=" + sudokuSolver.toString()
                 + ", sudokuFields=" + sudokuFields.toString()
@@ -203,8 +199,7 @@ public class SudokuBoard implements Cloneable {
         SudokuBoard that = (SudokuBoard) object;
 
         return new EqualsBuilder()
-                .append(this.miniBoxSize, that.miniBoxSize)
-                .append(this.miniBoxCount, that.miniBoxCount)
+                .append(this.miniBoxDim, that.miniBoxDim)
                 .append(this.boardSize, that.boardSize)
                 .append(this.sudokuSolver, that.sudokuSolver)
                 .append(this.sudokuFields, that.sudokuFields)
@@ -215,8 +210,7 @@ public class SudokuBoard implements Cloneable {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(this.getClass().getName())
-                .append(this.miniBoxSize)
-                .append(this.miniBoxCount)
+                .append(this.miniBoxDim)
                 .append(this.boardSize)
                 .append(this.sudokuSolver)
                 .append(this.sudokuFields)

@@ -104,13 +104,13 @@ class SudokuBoardTest {
     void getBoxTestCase() throws NoSuchFieldException, IllegalAccessException {
         List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
-        for (int maxRow = 0; maxRow < sudokuBoard.getMiniBoxCount(); maxRow++) {
-            for (int maxCol = 0; maxCol < sudokuBoard.getMiniBoxCount(); maxCol++) {
+        for (int maxRow = 0; maxRow < sudokuBoard.getMiniBoxDim(); maxRow++) {
+            for (int maxCol = 0; maxCol < sudokuBoard.getMiniBoxDim(); maxCol++) {
                 SudokuField[][] sudokuBox = sudokuBoard.getBox(maxRow, maxCol).getBox2D();
-                for (int minRow = 0; minRow < sudokuBoard.getMiniBoxSize(); minRow++) {
-                    for (int minCol = 0; minCol < sudokuBoard.getMiniBoxSize(); minCol++) {
+                for (int minRow = 0; minRow < sudokuBoard.getMiniBoxDim(); minRow++) {
+                    for (int minCol = 0; minCol < sudokuBoard.getMiniBoxDim(); minCol++) {
                         assertSame(sudokuBox[minRow][minCol],
-                                sudokuFields.get(maxRow * sudokuBoard.getMiniBoxSize() + minRow).get(maxCol * sudokuBoard.getMiniBoxSize() + minCol));
+                                sudokuFields.get(maxRow * sudokuBoard.getMiniBoxDim() + minRow).get(maxCol * sudokuBoard.getMiniBoxDim() + minCol));
                     }
                 }
             }
@@ -123,7 +123,7 @@ class SudokuBoardTest {
      */
     @Test
     void getBoardSizeTestCase() {
-        assertEquals(sudokuBoard.getMiniBoxSize() * sudokuBoard.getMiniBoxCount(), sudokuBoard.getBoardSize());
+        assertEquals(sudokuBoard.getMiniBoxDim() * sudokuBoard.getMiniBoxDim(), sudokuBoard.getBoardSize());
     }
 
     /**
@@ -217,8 +217,7 @@ class SudokuBoardTest {
 
         String groupToString = sudokuBoard.toString();
         assertTrue(groupToString.contains("SudokuBoard"));
-        assertTrue(groupToString.contains("miniBoxSize=" + sudokuBoard.getMiniBoxSize()));
-        assertTrue(groupToString.contains("miniBoxCount=" + sudokuBoard.getMiniBoxCount()));
+        assertTrue(groupToString.contains("miniBoxDim=" + sudokuBoard.getMiniBoxDim()));
         assertTrue(groupToString.contains("boardSize=" + sudokuBoard.getBoardSize()));
         assertTrue(groupToString.contains("sudokuSolver=" + sudokuSolver.toString()));
         assertTrue(groupToString.contains("sudokuFields=" + sudokuFields.toString()));
@@ -250,7 +249,7 @@ class SudokuBoardTest {
 
         assertNotEquals(sudokuBoard, newSudokuBoard);
 
-        assertNotEquals(sudokuBoard, new SudokuBoard(new BacktrackingSudokuSolver(), null, 4, 4));
+        assertNotEquals(sudokuBoard, new SudokuBoard(new BacktrackingSudokuSolver(), null, 4));
     }
 
     /**
@@ -273,7 +272,7 @@ class SudokuBoardTest {
 
         assertNotEquals(sudokuBoard.hashCode(), newSudokuBoard.hashCode());
 
-        assertNotEquals(sudokuBoard.hashCode(), new SudokuBoard(new BacktrackingSudokuSolver(), null, 4, 4).hashCode());
+        assertNotEquals(sudokuBoard.hashCode(), new SudokuBoard(new BacktrackingSudokuSolver(), null, 4).hashCode());
     }
 
     /**
@@ -288,13 +287,11 @@ class SudokuBoardTest {
         Field field = sudokuBoard.getClass().getDeclaredField("sudokuFields");
         field.setAccessible(true);
 
-
         assertEquals(sudokuBoard, clone);
         assertNotSame(sudokuBoard, clone);
 
         List<List<SudokuField>> fields1 = (List<List<SudokuField>>) field.get(sudokuBoard);
         List<List<SudokuField>> fields2 = (List<List<SudokuField>>) field.get(clone);
-
 
         for (int i = 0; i < sudokuBoard.getBoardSize(); i++) {
             assertNotSame(sudokuBoard.getColumn(i), clone.getColumn(i));

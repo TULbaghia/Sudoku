@@ -58,15 +58,16 @@ public class SudokuField implements Cloneable {
         if (value < 1) {
             throw new IllegalFieldValueException("Value '" + value + "' is not in allowed range.");
         }
-        pcs.firePropertyChange("value", this.value, value);
-        this.value = value;
+        if (this.value != value) {
+            pcs.firePropertyChange("value", this.value, value);
+            this.value = value;
+        }
     }
 
     /**
      * Method to reset field {@code this.value} to 0.
      */
     public void resetValue() {
-        pcs.firePropertyChange("value", this.value, value);
         this.value = 0;
     }
 
