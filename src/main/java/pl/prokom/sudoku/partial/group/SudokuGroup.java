@@ -13,7 +13,7 @@ import pl.prokom.sudoku.exception.IllegalFieldValueException;
 import pl.prokom.sudoku.exception.IllegalPropertyChangeEventSourceException;
 import pl.prokom.sudoku.partial.field.SudokuField;
 
-//TODO: think if getSudokuFields should return deep clone of sudokuFields
+//TODO: think whether getSudokuFields should return deep clone of sudokuFields
 //TODO: check whether derived methods should return deep copy of array and getSudokuFields reference
 
 /**

@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.board.SudokuBoard;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
 
-//TODO: handle incorrectly filled board the one that have no solution (throw exception)
+//TODO: handle incorrectly filled board- the one that have no solutions avaliable (throw exception)
 
 /**
  * Implementation of Backtracking algorithm to solve sudoku.

@@ -17,6 +17,7 @@ import pl.prokom.sudoku.solver.SudokuSolver;
 //TODO: handle ArrayIndexOutOfBound exception
 //TODO: change initialize field to generator stream with null predicate
 //TODO: miniBoxCount should always be equal to miniBoxCount- only one variable should be used
+//TODO: move from for's to sth else in initialize*Group
 
 /**
  * Class holds SudokuBoard object and allows to interact with it.

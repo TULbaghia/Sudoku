@@ -2,7 +2,6 @@ package pl.prokom.sudoku.partial.field;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Arrays;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
