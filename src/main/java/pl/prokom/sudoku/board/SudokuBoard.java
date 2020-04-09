@@ -1,5 +1,9 @@
 package pl.prokom.sudoku.board;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +17,7 @@ import pl.prokom.sudoku.partial.group.SudokuBox;
 import pl.prokom.sudoku.partial.group.SudokuColumn;
 import pl.prokom.sudoku.partial.group.SudokuGroup;
 import pl.prokom.sudoku.partial.group.SudokuRow;
+import pl.prokom.sudoku.solver.BacktrackingSudokuSolver;
 import pl.prokom.sudoku.solver.SudokuSolver;
 
 //TODO: handle {Array,*}IndexOutOfBoundException
@@ -20,13 +25,13 @@ import pl.prokom.sudoku.solver.SudokuSolver;
 /**
  * Class holds SudokuBoard object and allows to interact with it.
  */
-public class SudokuBoard implements Cloneable {
+public class SudokuBoard implements Cloneable, Serializable {
     private final int miniBoxDim;
     private final int boardSize;
 
-    private SudokuSolver<SudokuBoard> sudokuSolver;
+    private transient SudokuSolver<SudokuBoard> sudokuSolver;
     private List<List<SudokuField>> sudokuFields;
-    private List<SudokuGroup> sudokuGroups;
+    private transient List<SudokuGroup> sudokuGroups;
 
     public SudokuBoard(final SudokuSolver<SudokuBoard> sudokuSolver) {
         this(sudokuSolver, null);
@@ -174,6 +179,18 @@ public class SudokuBoard implements Cloneable {
                     .toArray(SudokuField[]::new)));
         }
         return sudokuFields;
+    }
+
+    /**
+     * Customizing deserialization process of SudokuBoard class instance.
+     *
+     * @param in deserialization stream under customization.
+     */
+    private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+        in.defaultReadObject();
+        initializeGroups();
+        SudokuSolver<SudokuBoard> deserializedSolver = new BacktrackingSudokuSolver();
+        sudokuSolver = deserializedSolver;
     }
 
     @Override

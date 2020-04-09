@@ -2,6 +2,7 @@ package pl.prokom.sudoku.partial.field;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import pl.prokom.sudoku.exception.IllegalFieldValueException;
@@ -9,7 +10,7 @@ import pl.prokom.sudoku.exception.IllegalFieldValueException;
 /**
  * Made for storing fields values in SudokuBoard and other collections.
  */
-public class SudokuField implements Cloneable {
+public class SudokuField implements Cloneable, Serializable {
     /**
      * Handles observers of created object.
      */
