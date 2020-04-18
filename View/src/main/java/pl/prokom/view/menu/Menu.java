@@ -22,7 +22,6 @@ public class Menu extends Application {
         Scene scene = new Scene(stackPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Main menu");
-        primaryStage.setOpacity(0.8);
         primaryStage.show();
     }
 }

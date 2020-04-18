@@ -24,12 +24,7 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
      * @param fileName value that has to be assigned to this.fileName.
      */
     FileSudokuBoardDao(final String fileName) {
-        try {
             this.fileName = fileName;
-        } catch (Exception e) {
-            System.out.println("Invalid filename.");
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -38,18 +33,15 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
      * @return reference to {@code SudokuBoard}
      */
     @Override
-    public SudokuBoard read() throws IOException, ClassNotFoundException {
+    public SudokuBoard read() {
         SudokuBoard deserialized = null;
-        System.out.println(Paths.get(fileName));
         Path filePath = Paths.get(fileName);
         try (ObjectInputStream iStream = new ObjectInputStream(Files.newInputStream(filePath))) {
             deserialized = (SudokuBoard) iStream.readObject();
         } catch (IOException e) {
-            System.out.println("Invalid file processing.");
-            e.printStackTrace();
+            throw new IllegalArgumentException(e);
         } catch (ClassNotFoundException e) {
             System.out.println("Illegal class processed.");
-            e.printStackTrace();
         }
         return deserialized;
     }
@@ -60,13 +52,12 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
      * @param object is an instance of SudokuBoard, which is currenty being serialized
      */
     @Override
-    public void write(SudokuBoard object) throws IOException {
+    public void write(SudokuBoard object) {
         Path filePath = Paths.get(fileName);
         try (ObjectOutputStream oStream = new ObjectOutputStream(Files.newOutputStream(filePath))) {
             oStream.writeObject(object);
         } catch (IOException e) {
-            System.out.println("Invalid file processing.");
-            e.printStackTrace();
+            throw new IllegalArgumentException(e);
         }
     }
 

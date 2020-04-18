@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public interface Dao<T> {
 
-    T read() throws IOException, ClassNotFoundException;
+    T read();
 
-    void write(final T object) throws IOException;
+    void write(final T object);
 
 }

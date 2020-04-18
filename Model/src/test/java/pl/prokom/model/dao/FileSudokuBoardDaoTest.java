@@ -3,6 +3,7 @@ package pl.prokom.model.dao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.prokom.model.board.SudokuBoard;
+import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
@@ -37,7 +38,7 @@ public class FileSudokuBoardDaoTest {
      *  - check if one is reference to another (if they are the same).
      */
     @Test
-    void serializeDeserializeTest() throws IOException, ClassNotFoundException {
+    void serializeDeserializeTest() {
         fileSudokuBoardDao.write(sudokuBoard);
         SudokuBoard sudokuDeserialized = fileSudokuBoardDao.read();
 
@@ -51,7 +52,7 @@ public class FileSudokuBoardDaoTest {
      * - confirms that there are 2 different instances
      */
     @Test
-    void cellValuesAfterSerialization() throws IOException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+    void cellValuesAfterSerialization() throws NoSuchFieldException, IllegalAccessException {
         fileSudokuBoardDao.write(sudokuBoard);
         SudokuBoard sudokuDeserialized = fileSudokuBoardDao.read();
         Field field = sudokuBoard.getClass().getDeclaredField("sudokuFields");
@@ -70,4 +71,18 @@ public class FileSudokuBoardDaoTest {
         }
     }
 
+    /**
+     * Case description:
+     * - trying to read from illegal file throws IllegalArgumentException
+     * - trying to write to illegal file throws IllegalArgumentException
+     */
+    @Test
+    void exceptionsTest() throws NoSuchFieldException, IllegalAccessException {
+        fileSudokuBoardDao.write(sudokuBoard);
+        Field field = fileSudokuBoardDao.getClass().getDeclaredField("fileName");
+        field.setAccessible(true);
+        field.set(fileSudokuBoardDao, "//");
+        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.read());
+        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.write(sudokuBoard));
+    }
 }
