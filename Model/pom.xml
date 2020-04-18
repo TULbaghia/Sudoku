@@ -12,7 +12,6 @@
     </parent>
     <artifactId>ModelProject</artifactId>
     <packaging>jar</packaging>
-    <url>localhost</url>
     <description>SudokuGame internal model project.</description>
 
     <properties>
