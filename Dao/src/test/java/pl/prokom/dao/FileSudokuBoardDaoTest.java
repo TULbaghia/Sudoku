@@ -1,14 +1,13 @@
-package pl.prokom.model.dao;
+package pl.prokom.dao;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.prokom.model.board.SudokuBoard;
-import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class FileSudokuBoardDaoTest {
         fileSudokuBoardDao.write(sudokuBoard);
         SudokuBoard sudokuDeserialized = fileSudokuBoardDao.read();
 
-        assertEquals(sudokuBoard, sudokuDeserialized);
+        Assertions.assertEquals(sudokuBoard, sudokuDeserialized);
         assertNotSame(sudokuBoard, sudokuDeserialized);
     }
 
@@ -65,7 +64,7 @@ public class FileSudokuBoardDaoTest {
             assertNotSame(sudokuBoard.getColumn(i), sudokuDeserialized.getColumn(i));
             assertNotSame(sudokuBoard.getColumn(i), sudokuDeserialized.getRow(i));
             for (int j = 0; j < sudokuBoard.getBoardSize(); j++) {
-                assertEquals(fields1.get(i).get(j), fields2.get(i).get(j));
+                Assertions.assertEquals(fields1.get(i).get(j), fields2.get(i).get(j));
                 assertNotSame(fields1.get(i).get(j), fields2.get(i).get(j));
             }
         }

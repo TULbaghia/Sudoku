@@ -1,4 +1,4 @@
-package pl.prokom.model.dao;
+package pl.prokom.dao;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

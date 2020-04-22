@@ -1,6 +1,4 @@
-package pl.prokom.model.dao;
-
-import java.io.IOException;
+package pl.prokom.dao;
 
 public interface Dao<T> {
 
