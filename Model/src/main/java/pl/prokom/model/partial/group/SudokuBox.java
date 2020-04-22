@@ -19,6 +19,10 @@ public class SudokuBox extends SudokuGroup {
         return super.getSudokuFields();
     }
 
+    /**
+     * Get reference to 2D array of Box.
+     * @return 2D reference array of box on field
+     */
     public SudokuField[][] getBox2D() {
         SudokuField[] fields = getSudokuFields().toArray(SudokuField[]::new);
         int size = (int) Math.sqrt(fields.length);

@@ -10,12 +10,10 @@
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>DaoProject</artifactId>
+    <artifactId>Dao-File</artifactId>
     <packaging>jar</packaging>
-    <url>localhost</url>
 
     <name>${project.artifactId}-${project.version}</name>
-    <description>SudokuGameDao internal model project.</description>
 
     <dependencies>
         <dependency>
@@ -33,9 +31,15 @@
             <groupId>pl.prokom</groupId>
             <artifactId>ModelProject</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>pl.prokom</groupId>
+            <artifactId>Dao-API</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
@@ -109,6 +113,7 @@
         </plugins>
     </build>
 
+
     <reporting>
         <plugins>
             <plugin>
@@ -147,5 +152,4 @@
             </plugin>
         </plugins>
     </reporting>
-
 </project>

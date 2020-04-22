@@ -12,7 +12,7 @@
 
     <artifactId>Parent</artifactId>
 
-    <name>TestAgregator</name>
+    <name>TestAggregator</name>
     <description>This module aggregates test inside project</description>
 
 
@@ -25,7 +25,13 @@
 
         <dependency>
             <groupId>pl.prokom</groupId>
-            <artifactId>DaoProject</artifactId>
+            <artifactId>Dao-API</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pl.prokom</groupId>
+            <artifactId>Dao-File</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -87,6 +93,7 @@
             </plugin>
         </plugins>
     </build>
+
 
     <reporting>
         <plugins>

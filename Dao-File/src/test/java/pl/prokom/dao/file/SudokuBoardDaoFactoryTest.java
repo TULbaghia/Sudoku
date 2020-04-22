@@ -1,4 +1,4 @@
-package pl.prokom.dao;
+package pl.prokom.dao.file;
 
 public class SudokuBoardDaoFactoryTest {
 }

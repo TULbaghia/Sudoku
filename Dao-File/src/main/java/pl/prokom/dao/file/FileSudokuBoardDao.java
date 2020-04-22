@@ -1,4 +1,4 @@
-package pl.prokom.dao;
+package pl.prokom.dao.file;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import pl.prokom.dao.file.api.Dao;
 import pl.prokom.model.board.SudokuBoard;
 
 /**
@@ -36,9 +38,9 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
     public SudokuBoard read() {
         SudokuBoard deserialized = null;
         Path filePath = Paths.get(fileName);
-        try(ObjectInputStream iStream = new ObjectInputStream(Files.newInputStream(filePath))) {
+        try (ObjectInputStream iStream = new ObjectInputStream(Files.newInputStream(filePath))) {
             deserialized = (SudokuBoard) iStream.readObject();
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException(e);
         } catch (ClassNotFoundException e) {
             System.out.println("Illegal class processed.");

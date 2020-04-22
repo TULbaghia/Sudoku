@@ -17,6 +17,7 @@
     <name>${project.artifactId}-${project.version}</name>
     <description>SudokuGame internal model project.</description>
 
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -29,6 +30,7 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
@@ -102,6 +104,7 @@
         </plugins>
     </build>
 
+
     <reporting>
         <plugins>
             <plugin>
@@ -140,5 +143,4 @@
             </plugin>
         </plugins>
     </reporting>
-
 </project>

@@ -1,8 +1,9 @@
-package pl.prokom.dao;
+package pl.prokom.dao.file;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.prokom.dao.file.api.Dao;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;

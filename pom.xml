@@ -11,11 +11,13 @@
     <url>localhost</url>
 
     <modules>
+        <module>Dao-API</module>
+        <module>Dao-File</module>
         <module>Parent</module>
         <module>Model</module>
         <module>View</module>
-        <module>Dao</module>
     </modules>
+
 
     <dependencyManagement>
         <dependencies>
@@ -33,6 +35,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
     <build>
         <pluginManagement>
@@ -147,6 +150,7 @@
         </plugins>
     </build>
 
+
     <reporting>
         <plugins>
             <plugin>
@@ -189,12 +193,14 @@
         </plugins>
     </reporting>
 
+
     <distributionManagement>
         <site>
             <id>${project.artifactId}-site</id>
             <url>${project.baseUri}</url>
         </site>
     </distributionManagement>
+
 
     <properties>
         <project.encoding>UTF-8</project.encoding>
@@ -204,5 +210,4 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
-
 </project>
