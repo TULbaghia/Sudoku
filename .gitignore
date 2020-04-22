@@ -1,12 +1,5 @@
-/target/
+*target/
 /.idea/
-sudoku.iml
-/Model/ModelProject.iml
+*.iml
 /Model/test.txt
-/View/ViewProject.iml
-/Model/target
-/View/target
-SudokuGameProject.iml
-/Dao/DaoProject.iml
 /Dao/test.txt
-/Dao/target
