@@ -10,11 +10,11 @@ import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SudokuFieldTest {
+public class SudokuFieldTest {
     SudokuField sudokuField;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         sudokuField = new SudokuField();
     }
 
@@ -23,7 +23,7 @@ class SudokuFieldTest {
      * - Empty constructor should create field with value equal to 0
      */
     @Test
-    void emptyConstructorTestCase() {
+    public void emptyConstructorTestCase() {
         sudokuField = new SudokuField();
 
         assertEquals(0, sudokuField.getFieldValue());
@@ -34,7 +34,7 @@ class SudokuFieldTest {
      * - Parametrized constructor sets value to given one
      */
     @Test
-    void parametrizedOneConstructorTestCase() {
+    public void parametrizedOneConstructorTestCase() {
         sudokuField = new SudokuField(1);
 
         assertEquals(1, sudokuField.getFieldValue());
@@ -45,7 +45,7 @@ class SudokuFieldTest {
      * - get value should be same as setting value
      */
     @Test
-    void setValueTestCase() {
+    public void setValueTestCase() {
         assertEquals(0, sudokuField.getFieldValue());
 
         sudokuField.setFieldValue(1);
@@ -63,7 +63,7 @@ class SudokuFieldTest {
      * - values outside of range should throw exception
      */
     @Test
-    void exceptionSetValueTestCase() {
+    public void exceptionSetValueTestCase() {
         assertThrows(IllegalFieldValueException.class, () -> sudokuField.setFieldValue(-1));
         assertThrows(IllegalFieldValueException.class, () -> sudokuField.setFieldValue(0));
     }
@@ -73,7 +73,7 @@ class SudokuFieldTest {
      * - resetting sets value to 0
      */
     @Test
-    void resetValueTestCase() {
+    public void resetValueTestCase() {
         sudokuField.setFieldValue(5);
         assertEquals(5, sudokuField.getFieldValue());
         sudokuField.resetValue();
@@ -85,7 +85,7 @@ class SudokuFieldTest {
      * - resetting sets value to 0
      */
     @Test
-    void addPropertyChangeListenerTestCase() {
+    public void addPropertyChangeListenerTestCase() {
         PropertyChangeListener pcl = propertyChangeEvent -> {
             assertEquals(0, propertyChangeEvent.getOldValue());
             assertEquals(1, propertyChangeEvent.getNewValue());
@@ -100,7 +100,7 @@ class SudokuFieldTest {
      * - get value should be same as setting value
      */
     @Test
-    void toStringTestCase() {
+    public void toStringTestCase() {
         sudokuField = new SudokuField(5);
         String toString = sudokuField.toString();
         assertTrue(toString.contains("SudokuField"));
@@ -113,7 +113,7 @@ class SudokuFieldTest {
      * - object should be equal to created with same parameters
      */
     @Test
-    void equalsTestCase() {
+    public void equalsTestCase() {
         sudokuField = new SudokuField(3);
         assertEquals(sudokuField, sudokuField);
 
@@ -132,7 +132,7 @@ class SudokuFieldTest {
      * - object with different settings return different hashCode
      */
     @Test
-    void hashCodeTestCase() {
+    public void hashCodeTestCase() {
         sudokuField = new SudokuField(3);
 
         assertEquals(sudokuField.hashCode(), sudokuField.hashCode());
@@ -148,7 +148,7 @@ class SudokuFieldTest {
      * - cloned object does not have listeners
      */
     @Test
-    void cloneTestCase() throws NoSuchFieldException, IllegalAccessException {
+    public void cloneTestCase() throws NoSuchFieldException, IllegalAccessException {
         Field field = sudokuField.getClass().getDeclaredField("pcs");
         field.setAccessible(true);
 

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IllegalPropertyChangeEventSourceExceptionTest {
+public class IllegalPropertyChangeEventSourceExceptionTest {
 
     /**
      * Case description:
@@ -12,7 +12,7 @@ class IllegalPropertyChangeEventSourceExceptionTest {
      * - thrown message equal to given
      */
     @Test
-    void ConstructorTestCase() {
+    public void ConstructorTestCase() {
         String exceptionMessage = "Custom test message";
         IllegalPropertyChangeEventSourceException exception = assertThrows(IllegalPropertyChangeEventSourceException.class, () -> {
             throw new IllegalPropertyChangeEventSourceException(exceptionMessage);

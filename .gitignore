@@ -1,8 +1,3 @@
-/target/
+*target/
 /.idea/
-sudoku.iml
-/Model/ModelProject.iml
-/Model/test.txt
-/View/ViewProject.iml
-/Model/target
-/View/target
+*.iml

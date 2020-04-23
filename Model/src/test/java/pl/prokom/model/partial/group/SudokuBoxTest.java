@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SudokuBoxTest {
+public class SudokuBoxTest {
     List<SudokuField> sudokuFields;
     SudokuBox sudokuBox;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         AtomicInteger index = new AtomicInteger(1);
         sudokuFields = Arrays.asList(Stream.generate(() -> new SudokuField(index.getAndIncrement())).limit(9).toArray(SudokuField[]::new));
 
@@ -29,7 +29,7 @@ class SudokuBoxTest {
      * - getBox return the same object that was pushed in SudokuBox
      */
     @Test
-    void getBoxTestCase() {
+    public void getBoxTestCase() {
         assertEquals(sudokuFields, sudokuBox.getBox());
         assertSame(sudokuFields, sudokuBox.getBox());
         sudokuFields.get(0).resetValue();
@@ -47,7 +47,7 @@ class SudokuBoxTest {
      * - getBox2D return the same object that was pushed in SudokuBox
      */
     @Test
-    void getBox2DTestCase() {
+    public void getBox2DTestCase() {
         SudokuField[][] fields = sudokuBox.getBox2D();
         assertEquals(sudokuFields.size(), fields.length * fields[0].length);
 
@@ -61,7 +61,7 @@ class SudokuBoxTest {
      * - toString should contains all variables
      */
     @Test
-    void toStringTestCase() {
+    public void toStringTestCase() {
         String groupToString = sudokuBox.toString();
         assertTrue(groupToString.contains("SudokuBox"));
         assertTrue(groupToString.contains((new SudokuGroup(sudokuFields){}).toString()));
@@ -73,7 +73,7 @@ class SudokuBoxTest {
      * - object should be equal to created with same parameters
      */
     @Test
-    void equalsTestCase() {
+    public void equalsTestCase() {
         assertEquals(sudokuBox, sudokuBox);
 
         assertNotEquals(sudokuBox, null);
@@ -98,7 +98,7 @@ class SudokuBoxTest {
      * - object with different settings return different hashCode
      */
     @Test
-    void hashCodeTestCase() {
+    public void hashCodeTestCase() {
         assertEquals(sudokuBox.hashCode(), sudokuBox.hashCode());
 
         assertNotEquals(sudokuBox.hashCode(), new SudokuColumn(sudokuFields).hashCode());
@@ -121,7 +121,7 @@ class SudokuBoxTest {
      * - clonned object is not same as original
      */
     @Test
-    void cloneTestCase() {
+    public void cloneTestCase() {
         SudokuBox sudokuBox = this.sudokuBox.clone();
         assertEquals(this.sudokuBox.getClass().getName(), sudokuBox.getClass().getName());
         assertEquals(this.sudokuBox, sudokuBox);

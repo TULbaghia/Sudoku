@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SudokuRowTest {
+public class SudokuRowTest {
     List<SudokuField> sudokuFields;
     SudokuRow sudokuRow;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         AtomicInteger index = new AtomicInteger(1);
         sudokuFields = Arrays.asList(Stream.generate(() -> new SudokuField(index.getAndIncrement())).limit(9).toArray(SudokuField[]::new));
 
@@ -28,7 +28,7 @@ class SudokuRowTest {
      * - getRow return the same object that was pushed in SudokuRow
      */
     @Test
-    void getRowTestCase() {
+    public void getRowTestCase() {
         assertEquals(sudokuFields, sudokuRow.getRow());
         assertSame(sudokuFields, sudokuRow.getRow());
         sudokuFields.get(0).resetValue();
@@ -46,7 +46,7 @@ class SudokuRowTest {
      * - toString should contains all variables
      */
     @Test
-    void toStringTestCase() {
+    public void toStringTestCase() {
         String groupToString = sudokuRow.toString();
         assertTrue(groupToString.contains("SudokuRow"));
         assertTrue(groupToString.contains((new SudokuGroup(sudokuFields){}).toString()));
@@ -58,7 +58,7 @@ class SudokuRowTest {
      * - object should be equal to created with same parameters
      */
     @Test
-    void equalsTestCase() {
+    public void equalsTestCase() {
         assertEquals(sudokuRow, sudokuRow);
 
         assertNotEquals(sudokuRow, null);
@@ -83,7 +83,7 @@ class SudokuRowTest {
      * - object with different settings return different hashCode
      */
     @Test
-    void hashCodeTestCase() {
+    public void hashCodeTestCase() {
         assertEquals(sudokuRow.hashCode(), sudokuRow.hashCode());
 
         assertNotEquals(sudokuRow.hashCode(), new SudokuColumn(sudokuFields).hashCode());
@@ -106,7 +106,7 @@ class SudokuRowTest {
      * - clonned object is not same as original
      */
     @Test
-    void cloneTestCase() {
+    public void cloneTestCase() {
         SudokuRow sudokuRow = this.sudokuRow.clone();
         assertEquals(this.sudokuRow.getClass().getName(), sudokuRow.getClass().getName());
         assertEquals(this.sudokuRow, sudokuRow);

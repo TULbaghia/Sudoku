@@ -1,4 +1,4 @@
-package pl.prokom.model.dao;
+package pl.prokom.dao.file;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,12 +6,14 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import pl.prokom.dao.api.Dao;
 import pl.prokom.model.board.SudokuBoard;
 
 /**
  * Class created to serialize/deserialize instances of SudokuBoard class.
  */
-public class FileSudokuBoardDao implements Dao<SudokuBoard> {
+public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
 
     /**
      * Stores a path to serialization process output/input file.
@@ -61,4 +63,8 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
         }
     }
 
+    @Override
+    public void close() throws Exception {
+
+    }
 }
