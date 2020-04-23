@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SudokuGroupTest {
+public class SudokuGroupTest {
     List<SudokuField> sudokuFiels;
     SudokuGroup sudokuGroup;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         AtomicInteger index = new AtomicInteger(1);
         sudokuFiels = Arrays.asList(Stream.generate(() -> new SudokuField(index.getAndIncrement())).limit(9).toArray(SudokuField[]::new));
 
@@ -31,7 +31,7 @@ class SudokuGroupTest {
      * - getColumn return the same object that was pushed in SudokuColumn
      */
     @Test
-    void getColumnTestCase() {
+    public void getColumnTestCase() {
         assertEquals(sudokuFiels, sudokuGroup.getSudokuFields());
         assertSame(sudokuFiels, sudokuGroup.getSudokuFields());
         sudokuFiels.get(0).resetValue();
@@ -49,7 +49,7 @@ class SudokuGroupTest {
      * - same values in columnFields should return false
      */
     @Test
-    void verifySameTestCase() {
+    public void verifySameTestCase() {
         assertTrue(sudokuGroup.verify());
 
         AtomicInteger index = new AtomicInteger(1);
@@ -68,7 +68,7 @@ class SudokuGroupTest {
      * - checks if values are unique
      */
     @Test
-    void verifyTestCase() {
+    public void verifyTestCase() {
         assertTrue(sudokuGroup.verify());
 
         sudokuGroup.getSudokuFields().get(0).resetValue();
@@ -86,7 +86,7 @@ class SudokuGroupTest {
      * - throw error when method called from unsupported caller
      */
     @Test
-    void propertyChangeTestCase() {
+    public void propertyChangeTestCase() {
         PropertyChangeEvent pce = new PropertyChangeEvent("", "value", "0", "1");
         assertThrows(IllegalPropertyChangeEventSourceException.class, () -> sudokuGroup.propertyChange(pce));
     }
@@ -96,7 +96,7 @@ class SudokuGroupTest {
      * - allows to add legal value to field
      */
     @Test
-    void isAllowedToSetTestCase() {
+    public void isAllowedToSetTestCase() {
         sudokuGroup.getSudokuFields().get(4).resetValue();
         assertDoesNotThrow(() -> sudokuGroup.getSudokuFields().get(0).setFieldValue(5));
 
@@ -111,7 +111,7 @@ class SudokuGroupTest {
      * _    - In case the value set is same as that of the previous one, the event is not fired
      */
     @Test
-    void isAllowedToSetEqualValueTestCase() {
+    public void isAllowedToSetEqualValueTestCase() {
         assertEquals(1, sudokuGroup.getSudokuFields().get(0).getFieldValue());
 
         sudokuGroup.getSudokuFields().get(0).setFieldValue(1);
@@ -123,7 +123,7 @@ class SudokuGroupTest {
      * - toString should contains all variables
      */
     @Test
-    void toStringTestCase() {
+    public void toStringTestCase() {
         String groupToString = sudokuGroup.toString();
         assertTrue(groupToString.contains("SudokuGroup"));
         for (SudokuField sudokuField : sudokuFiels) {
@@ -140,7 +140,7 @@ class SudokuGroupTest {
      * - object should not be equal when array length is different
      */
     @Test
-    void equalsTestCase() {
+    public void equalsTestCase() {
         assertEquals(sudokuGroup, sudokuGroup);
 
         assertNotEquals(sudokuGroup, "");
@@ -165,7 +165,7 @@ class SudokuGroupTest {
      * - object with different settings return different hashCode
      */
     @Test
-    void hashCodeTestCase() {
+    public void hashCodeTestCase() {
         assertEquals(sudokuGroup.hashCode(), sudokuGroup.hashCode());
 
         assertEquals(sudokuGroup.hashCode(), new SudokuGroup(sudokuFiels) {}.hashCode());
@@ -188,7 +188,7 @@ class SudokuGroupTest {
      * - clonned object is not same as original
      */
     @Test
-    void cloneTestCase() {
+    public void cloneTestCase() {
         SudokuGroup sudokuGroup = this.sudokuGroup.clone();
         assertEquals(this.sudokuGroup, sudokuGroup);
         assertNotSame(this.sudokuGroup, sudokuGroup);

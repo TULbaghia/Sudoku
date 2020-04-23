@@ -1,4 +1,4 @@
-package pl.prokom.dao.file.api;
+package pl.prokom.dao.api;
 
 public interface Dao<T> {
     T read();

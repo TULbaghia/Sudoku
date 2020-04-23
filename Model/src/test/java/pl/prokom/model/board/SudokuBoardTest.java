@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SudokuBoardTest {
+public class SudokuBoardTest {
     SudokuBoard sudokuBoard;
     SudokuSolver<SudokuBoard> sudokuSolver;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         sudokuSolver = new BacktrackingSudokuSolver();
         sudokuBoard = new SudokuBoard(sudokuSolver);
     }
@@ -36,7 +36,7 @@ class SudokuBoardTest {
      * - parametrized Constructor does not override given board
      */
     @Test
-    void parametrizedConstructorTestCase() {
+    public void parametrizedConstructorTestCase() {
         SudokuField[][] sudokuFields = new SudokuField[sudokuBoard.getBoardSize()][sudokuBoard.getBoardSize()];
         sudokuFields[0][1] = new SudokuField(5);
         sudokuFields[1][2] = new SudokuField(6);
@@ -65,7 +65,7 @@ class SudokuBoardTest {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void getColumnTestCase() throws NoSuchFieldException, IllegalAccessException {
+    public void getColumnTestCase() throws NoSuchFieldException, IllegalAccessException {
         List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
         for (int i = 0; i < sudokuFields.size(); i++) {
@@ -83,7 +83,7 @@ class SudokuBoardTest {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void getRowTestCase() throws NoSuchFieldException, IllegalAccessException {
+    public void getRowTestCase() throws NoSuchFieldException, IllegalAccessException {
         List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
         for (int i = 0; i < sudokuFields.size(); i++) {
@@ -101,7 +101,7 @@ class SudokuBoardTest {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void getBoxTestCase() throws NoSuchFieldException, IllegalAccessException {
+    public void getBoxTestCase() throws NoSuchFieldException, IllegalAccessException {
         List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
         for (int maxRow = 0; maxRow < sudokuBoard.getMiniBoxDim(); maxRow++) {
@@ -122,7 +122,7 @@ class SudokuBoardTest {
      * - check if getter of boardSize works correctly
      */
     @Test
-    void getBoardSizeTestCase() {
+    public void getBoardSizeTestCase() {
         assertEquals(sudokuBoard.getMiniBoxDim() * sudokuBoard.getMiniBoxDim(), sudokuBoard.getBoardSize());
     }
 
@@ -132,7 +132,7 @@ class SudokuBoardTest {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void getTestCase() throws NoSuchFieldException, IllegalAccessException {
+    public void getTestCase() throws NoSuchFieldException, IllegalAccessException {
         List<List<SudokuField>> sudokuFields = (List<List<SudokuField>>) getPrivateField("sudokuFields");
 
         for (int row = 0; row < sudokuFields.size(); row++) {
@@ -147,7 +147,7 @@ class SudokuBoardTest {
      * - check if get value is same as the one in board
      */
     @Test
-    void setTestCase() {
+    public void setTestCase() {
         assertEquals(0, sudokuBoard.get(0, 0));
 
         sudokuBoard.set(0, 0, 5);
@@ -162,7 +162,7 @@ class SudokuBoardTest {
      * - check if get reset field sets its value to 0
      */
     @Test
-    void resetTestCase() {
+    public void resetTestCase() {
         assertEquals(0, sudokuBoard.get(0, 0));
 
         sudokuBoard.set(0, 0, 5);
@@ -177,7 +177,7 @@ class SudokuBoardTest {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void getCopyOfBoardTestCase() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public void getCopyOfBoardTestCase() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Method method = sudokuBoard.getClass().getDeclaredMethod("getCopyOfBoard");
         method.setAccessible(true);
 
@@ -197,7 +197,7 @@ class SudokuBoardTest {
      * - check if get reset field sets its value to 0
      */
     @Test
-    void solveTestCase() {
+    public void solveTestCase() {
         assertFalse(sudokuBoard.isSolved());
         sudokuBoard.solveGame();
         assertTrue(sudokuBoard.isSolved());
@@ -209,7 +209,7 @@ class SudokuBoardTest {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void toStringTestCase() throws NoSuchFieldException, IllegalAccessException {
+    public void toStringTestCase() throws NoSuchFieldException, IllegalAccessException {
         sudokuBoard = new SudokuBoard(sudokuSolver, null);
         sudokuBoard.solveGame();
 
@@ -235,7 +235,7 @@ class SudokuBoardTest {
      * - object should be equal to created with same parameters
      */
     @Test
-    void equalsTestCase() {
+    public void equalsTestCase() {
         assertEquals(sudokuBoard, sudokuBoard);
 
         assertNotEquals(sudokuBoard, null);
@@ -259,7 +259,7 @@ class SudokuBoardTest {
      * - object with different settings return different hashCode
      */
     @Test
-    void hashCodeTestCase() {
+    public void hashCodeTestCase() {
         assertEquals(sudokuBoard.hashCode(), sudokuBoard.hashCode());
 
         assertNotEquals(sudokuBoard.hashCode(), "NE".hashCode());
@@ -282,7 +282,7 @@ class SudokuBoardTest {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void cloneTestCase() throws NoSuchFieldException, IllegalAccessException {
+    public void cloneTestCase() throws NoSuchFieldException, IllegalAccessException {
         SudokuBoard clone = sudokuBoard.clone();
         Field field = sudokuBoard.getClass().getDeclaredField("sudokuFields");
         field.setAccessible(true);

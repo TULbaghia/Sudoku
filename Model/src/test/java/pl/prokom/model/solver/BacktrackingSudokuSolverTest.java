@@ -10,13 +10,13 @@ import static org.junit.jupiter.api.Assertions.*;
 //TODO: check timings/(algorithm implementation) for column >= 4
 //TODO: implement other sudokuSolver (better testing purpose)
 
-class BacktrackingSudokuSolverTest {
+public class BacktrackingSudokuSolverTest {
 
     SudokuBoard sudokuBoard;
     SudokuSolver<SudokuBoard> sudokuSolver;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         sudokuSolver = new BacktrackingSudokuSolver();
         sudokuBoard = new SudokuBoard(sudokuSolver);
     }
@@ -26,7 +26,7 @@ class BacktrackingSudokuSolverTest {
      * - checks if solver properly solves game
      */
     @Test
-    void solveTestCase() {
+    public void solveTestCase() {
         assertFalse(sudokuBoard.isSolved());
         sudokuSolver.solve(sudokuBoard);
         assertTrue(sudokuBoard.isSolved());
@@ -37,7 +37,7 @@ class BacktrackingSudokuSolverTest {
      * - checks if solver properly solves game with filled values
      */
     @Test
-    void solvePartiallyFilledTestCase() {
+    public void solvePartiallyFilledTestCase() {
         IntStream.range(1, 10).forEach(x -> sudokuBoard.set(0, x - 1, x));
         sudokuBoard.set(1, 0, 9);
         sudokuBoard.set(1, 1, 8);
@@ -53,7 +53,7 @@ class BacktrackingSudokuSolverTest {
      * - toString should contains all variables
      */
     @Test
-    void toStringTestCase() {
+    public void toStringTestCase() {
         String groupToString = sudokuBoard.toString();
         assertTrue(groupToString.contains("BacktrackingSudokuSolver"));
     }
@@ -64,7 +64,7 @@ class BacktrackingSudokuSolverTest {
      * - object should be equal to created with same parameters
      */
     @Test
-    void equalsTestCase() {
+    public void equalsTestCase() {
         assertEquals(sudokuSolver, sudokuSolver);
 
         assertNotEquals(sudokuSolver, null);
@@ -80,7 +80,7 @@ class BacktrackingSudokuSolverTest {
      * - object with different settings return different hashCode
      */
     @Test
-    void hashCodeTestCase() {
+    public void hashCodeTestCase() {
         assertEquals(sudokuSolver.hashCode(), sudokuSolver.hashCode());
 
         assertNotEquals(sudokuSolver.hashCode(), "NE".hashCode());
@@ -94,7 +94,7 @@ class BacktrackingSudokuSolverTest {
      * - cloned object is not same as original
      */
     @Test
-    void cloneTestCase() {
+    public void cloneTestCase() {
         assertEquals(sudokuSolver, ((BacktrackingSudokuSolver) sudokuSolver).clone());
         assertNotSame(sudokuSolver, ((BacktrackingSudokuSolver) sudokuSolver).clone());
     }

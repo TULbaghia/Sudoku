@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IllegalFieldValueExceptionTest {
+public class IllegalFieldValueExceptionTest {
 
     /**
      * Case description:
@@ -12,7 +12,7 @@ class IllegalFieldValueExceptionTest {
      * - thrown message equal to given
      */
     @Test
-    void ConstructorTestCase() {
+    public void ConstructorTestCase() {
         String exceptionMessage = "Custom test message";
         IllegalFieldValueException exception = assertThrows(IllegalFieldValueException.class, () -> {
             throw new IllegalFieldValueException(exceptionMessage);

@@ -3,7 +3,7 @@ package pl.prokom.dao.file;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.prokom.dao.file.api.Dao;
+import pl.prokom.dao.api.Dao;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
@@ -20,15 +20,17 @@ public class FileSudokuBoardDaoTest {
     SudokuBoard sudokuBoard;
     SudokuSolver<SudokuBoard> sudokuSolver;
     Dao<SudokuBoard> fileSudokuBoardDao;
+    String testPath;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         sudokuSolver = new BacktrackingSudokuSolver();
         sudokuBoard = new SudokuBoard(sudokuSolver);
         sudokuBoard.solveGame();
 
         SudokuBoardDaoFactory factory = new SudokuBoardDaoFactory();
-        fileSudokuBoardDao = factory.getFileDao("test.txt");
+        testPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        fileSudokuBoardDao = factory.getFileDao(testPath + "test.txt");
     }
 
     /**
@@ -38,7 +40,7 @@ public class FileSudokuBoardDaoTest {
      *  - check if one is reference to another (if they are the same).
      */
     @Test
-    void serializeDeserializeTest() {
+    public void serializeDeserializeTest() {
         fileSudokuBoardDao.write(sudokuBoard);
         SudokuBoard sudokuDeserialized = fileSudokuBoardDao.read();
 
@@ -52,7 +54,7 @@ public class FileSudokuBoardDaoTest {
      * - confirms that there are 2 different instances
      */
     @Test
-    void cellValuesAfterSerialization() throws NoSuchFieldException, IllegalAccessException {
+    public void cellValuesAfterSerialization() throws NoSuchFieldException, IllegalAccessException {
         fileSudokuBoardDao.write(sudokuBoard);
         SudokuBoard sudokuDeserialized = fileSudokuBoardDao.read();
         Field field = sudokuBoard.getClass().getDeclaredField("sudokuFields");
@@ -77,7 +79,7 @@ public class FileSudokuBoardDaoTest {
      * - trying to write to illegal file throws IllegalArgumentException
      */
     @Test
-    void exceptionsTest() throws NoSuchFieldException, IllegalAccessException {
+    public void exceptionsTest() throws NoSuchFieldException, IllegalAccessException {
         fileSudokuBoardDao.write(sudokuBoard);
         Field field = fileSudokuBoardDao.getClass().getDeclaredField("fileName");
         field.setAccessible(true);

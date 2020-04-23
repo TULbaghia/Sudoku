@@ -1,6 +1,6 @@
 package pl.prokom.dao.file;
 
-import pl.prokom.dao.file.api.Dao;
+import pl.prokom.dao.api.Dao;
 import pl.prokom.model.board.SudokuBoard;
 
 public class SudokuBoardDaoFactory {
