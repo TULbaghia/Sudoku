@@ -10,7 +10,7 @@ import pl.prokom.model.exception.IllegalFieldValueException;
 /**
  * Made for storing fields values in SudokuBoard and other collections.
  */
-public class SudokuField implements Cloneable, Serializable {
+public class SudokuField implements Cloneable, Serializable, Comparable<SudokuField> {
     /**
      * Handles observers of created object.
      */
@@ -122,5 +122,10 @@ public class SudokuField implements Cloneable, Serializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public int compareTo(SudokuField sudokuField) {
+        return Integer.compare(this.getFieldValue() - sudokuField.getFieldValue(), 0);
     }
 }

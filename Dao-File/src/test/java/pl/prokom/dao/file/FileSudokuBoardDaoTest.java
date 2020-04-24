@@ -31,6 +31,7 @@ public class FileSudokuBoardDaoTest {
         SudokuBoardDaoFactory factory = new SudokuBoardDaoFactory();
         testPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
         fileSudokuBoardDao = factory.getFileDao(testPath + "test.txt");
+
     }
 
     /**

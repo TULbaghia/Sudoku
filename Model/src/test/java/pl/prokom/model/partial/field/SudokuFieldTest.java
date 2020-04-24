@@ -85,6 +85,23 @@ public class SudokuFieldTest {
      * - resetting sets value to 0
      */
     @Test
+    public void comparingTest() {
+        sudokuField.setFieldValue(5);
+        SudokuField sudokuFieldOther = sudokuField.clone();
+        assertEquals(0, sudokuField.compareTo(sudokuFieldOther));
+
+        sudokuField.setFieldValue(1);
+        assertEquals(-1, sudokuField.compareTo(sudokuFieldOther));
+
+        sudokuField.setFieldValue(8);
+        assertEquals(1, sudokuField.compareTo(sudokuFieldOther));
+    }
+
+    /**
+     * Case description:
+     * - resetting sets value to 0
+     */
+    @Test
     public void addPropertyChangeListenerTestCase() {
         PropertyChangeListener pcl = propertyChangeEvent -> {
             assertEquals(0, propertyChangeEvent.getOldValue());

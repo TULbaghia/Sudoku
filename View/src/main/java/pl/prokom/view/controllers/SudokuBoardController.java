@@ -1,11 +1,5 @@
 package pl.prokom.view.controllers;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -19,6 +13,11 @@ import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.
@@ -31,8 +30,16 @@ public class SudokuBoardController {
      */
     @FXML
     Button button1, button2, button3, button4, button5, button6, button7, button8, button9;
+
+    /**
+     * GridPane instance with all sudokuBoard cells as a TextField instances.
+     */
     @FXML
     GridPane gridPane;
+
+    /**
+     * User menu RadioButtons.
+     */
     @FXML
     RadioButton rb_easy, rb_medium, rb_hard, rb_english, rb_polish;
 
@@ -40,18 +47,16 @@ public class SudokuBoardController {
     private SudokuBoardLevel sudokuBoardLevel;
 
     /**
-     *Intializing controller functions.
+     * Intializing controller functions.
      * - init sudokuBoard,
      * - filling sudoku GUI table,
      */
     @FXML
     public void initialize() {
-        SudokuSolver<SudokuBoard> sudokuSolver = new BacktrackingSudokuSolver();
-        sudokuBoard = new SudokuBoard(sudokuSolver);
-        sudokuBoard.solveGame();
         sudokuBoardLevel = SudokuBoardLevel.EASY;
         initSudokuCells(sudokuBoardLevel);
         rb_easy.setSelected(true);
+        rb_easy.setDisable(true);
         rb_polish.setSelected(true);
     }
 
@@ -59,37 +64,51 @@ public class SudokuBoardController {
      * Filling sudokuBoard, depends on difficulty level, chosen by setting specific RadioButton instance.
      */
     @FXML
-    public void onActionRadiobuttonEasy(){
-        if(rb_easy.isSelected()){
+    public void onActionRadiobuttonEasy() {
+        if (rb_easy.isSelected()) {
             initSudokuCells(SudokuBoardLevel.EASY);
             rb_medium.setSelected(false);
             rb_hard.setSelected(false);
+            rb_medium.setDisable(false);
+            rb_hard.setDisable(false);
+            rb_easy.setDisable(true);
         }
     }
 
     @FXML
-    public void onActionRadiobuttonMedium(){
-        if(rb_medium.isSelected()){
+    public void onActionRadiobuttonMedium() {
+        if (rb_medium.isSelected()) {
             initSudokuCells(SudokuBoardLevel.MEDIUM);
             rb_easy.setSelected(false);
             rb_hard.setSelected(false);
+            rb_easy.setDisable(false);
+            rb_hard.setDisable(false);
+            rb_medium.setDisable(true);
         }
     }
 
     @FXML
-    public void onActionRadiobuttonHard(){
-        if(rb_hard.isSelected()){
+    public void onActionRadiobuttonHard() {
+        if (rb_hard.isSelected()) {
             initSudokuCells(SudokuBoardLevel.HARD);
             rb_easy.setSelected(false);
             rb_medium.setSelected(false);
+            rb_easy.setDisable(false);
+            rb_medium.setDisable(false);
+            rb_hard.setDisable(true);
         }
     }
 
     /**
      * Filling sudokuBoard gridPane by textFields with chosen number of ciphers.
+     *
      * @param sudokuBoardLevel - difficuly level which is chosen by user (default = EASY).
      */
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
+        SudokuSolver<SudokuBoard> sudokuSolver = new BacktrackingSudokuSolver();
+        sudokuBoard = new SudokuBoard(sudokuSolver);
+        sudokuBoard.solveGame();
+
         Integer cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
         List<Integer> randomValues =
                 IntStream.range(0, cellsNumber).boxed().collect(Collectors.toList());
@@ -98,7 +117,7 @@ public class SudokuBoardController {
 
         gridPane.getChildren()
                 .filtered(node -> node instanceof TextField)
-                .forEach(node -> ((TextField)node).setText(""));
+                .forEach(node -> ((TextField) node).clear());
 
         randomValues.stream().forEach(c -> {
                     TextField textField;
