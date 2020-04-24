@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
@@ -27,25 +28,11 @@ public class SudokuBoardController {
      * button1-9
      */
     @FXML
-    Button button1;
-    @FXML
-    Button button2;
-    @FXML
-    Button button3;
-    @FXML
-    Button button4;
-    @FXML
-    Button button5;
-    @FXML
-    Button button6;
-    @FXML
-    Button button7;
-    @FXML
-    Button button8;
-    @FXML
-    Button button9;
+    Button button1, button2, button3, button4, button5, button6, button7, button8, button9;
     @FXML
     GridPane gridPane;
+    @FXML
+    RadioButton rb_easy, rb_medium, rb_hard, rb_english, rb_polish;
 
     private SudokuBoard sudokuBoard;
     private SudokuBoardLevel sudokuBoardLevel;
@@ -62,6 +49,8 @@ public class SudokuBoardController {
         sudokuBoard.solveGame();
         sudokuBoardLevel = SudokuBoardLevel.EASY;
         initSudokuCells(sudokuBoardLevel);
+        rb_easy.setSelected(true);
+        rb_polish.setSelected(true);
     }
 
     /**
