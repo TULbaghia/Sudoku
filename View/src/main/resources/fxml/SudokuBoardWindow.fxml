@@ -123,8 +123,8 @@
          </cursor>
       </GridPane>
       <Label alignment="CENTER" layoutX="95.0" layoutY="7.0" prefHeight="8.0" prefWidth="95.0" text="Poziom trudności:" />
-      <RadioButton fx:id="rb_medium" layoutX="114.0" layoutY="58.0" mnemonicParsing="false" text="Średni" />
-      <RadioButton fx:id="rb_hard" layoutX="114.0" layoutY="83.0" mnemonicParsing="false" text="Trudny" />
-      <RadioButton fx:id="rb_easy" layoutX="114.0" layoutY="34.0" mnemonicParsing="false" text="Łatwy" />
+      <RadioButton fx:id="rb_medium" layoutX="114.0" layoutY="58.0" mnemonicParsing="false" onAction="#onActionRadiobuttonMedium" text="Średni" />
+      <RadioButton fx:id="rb_hard" layoutX="114.0" layoutY="83.0" mnemonicParsing="false" onAction="#onActionRadiobuttonHard" text="Trudny" />
+      <RadioButton fx:id="rb_easy" layoutX="114.0" layoutY="34.0" mnemonicParsing="false" onAction="#onActionRadiobuttonEasy" text="Łatwy" />
    </children>
 </Pane>

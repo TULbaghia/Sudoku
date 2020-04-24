@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -54,6 +56,36 @@ public class SudokuBoardController {
     }
 
     /**
+     * Filling sudokuBoard, depends on difficulty level, chosen by setting specific RadioButton instance.
+     */
+    @FXML
+    public void onActionRadiobuttonEasy(){
+        if(rb_easy.isSelected()){
+            initSudokuCells(SudokuBoardLevel.EASY);
+            rb_medium.setSelected(false);
+            rb_hard.setSelected(false);
+        }
+    }
+
+    @FXML
+    public void onActionRadiobuttonMedium(){
+        if(rb_medium.isSelected()){
+            initSudokuCells(SudokuBoardLevel.MEDIUM);
+            rb_easy.setSelected(false);
+            rb_hard.setSelected(false);
+        }
+    }
+
+    @FXML
+    public void onActionRadiobuttonHard(){
+        if(rb_hard.isSelected()){
+            initSudokuCells(SudokuBoardLevel.HARD);
+            rb_easy.setSelected(false);
+            rb_medium.setSelected(false);
+        }
+    }
+
+    /**
      * Filling sudokuBoard gridPane by textFields with chosen number of ciphers.
      * @param sudokuBoardLevel - difficuly level which is chosen by user (default = EASY).
      */
@@ -63,6 +95,10 @@ public class SudokuBoardController {
                 IntStream.range(0, cellsNumber).boxed().collect(Collectors.toList());
         Collections.shuffle(randomValues);
         randomValues = randomValues.subList(0, sudokuBoardLevel.getFilledCells());
+
+        gridPane.getChildren()
+                .filtered(node -> node instanceof TextField)
+                .forEach(node -> ((TextField)node).setText(""));
 
         randomValues.stream().forEach(c -> {
                     TextField textField;
@@ -75,4 +111,5 @@ public class SudokuBoardController {
                 }
         );
     }
+
 }
