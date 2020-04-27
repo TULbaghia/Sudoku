@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox fx:id="setLanguagePolish" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.LanguageChoiceButtonsController">
+   <children>
+      <ToggleButton fx:id="tgbPolish" mnemonicParsing="false" onAction="#setLanguagePolish" text="Polski">
+         <HBox.margin>
+            <Insets right="10.0" />
+         </HBox.margin>
+         <toggleGroup>
+            <ToggleGroup fx:id="languageSet" />
+         </toggleGroup>
+      </ToggleButton>
+      <ToggleButton fx:id="tgbEnglish" mnemonicParsing="false" onAction="#setLanguageEnglish" text="English" toggleGroup="$languageSet" />
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</HBox>

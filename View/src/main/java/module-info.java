@@ -4,8 +4,8 @@ module pl.prokom.view {
     requires javafx.controls;
     requires pl.prokom.model;
 
-    exports pl.prokom.view.menu;
     // fixed IllegalAccessErrors from SudokuBoardWindow.start().
     exports pl.prokom.view.controllers;
+    exports pl.prokom.view.menu;
     opens pl.prokom.view.controllers;
 }

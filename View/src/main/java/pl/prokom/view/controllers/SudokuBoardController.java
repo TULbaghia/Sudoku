@@ -25,23 +25,15 @@ import java.util.stream.IntStream;
 public class SudokuBoardController {
 
     /**
-     * User-chosen currently setting number.
-     * button1-9
+     * Reference to MainPaneWindowController instance to reach this.
      */
-    @FXML
-    Button button1, button2, button3, button4, button5, button6, button7, button8, button9;
+    private MainPaneWindowController mainController;
 
     /**
      * GridPane instance with all sudokuBoard cells as a TextField instances.
      */
     @FXML
     GridPane gridPane;
-
-    /**
-     * User menu RadioButtons.
-     */
-    @FXML
-    RadioButton rb_easy, rb_medium, rb_hard, rb_english, rb_polish;
 
     private SudokuBoard sudokuBoard;
     private SudokuBoardLevel sudokuBoardLevel;
@@ -55,48 +47,6 @@ public class SudokuBoardController {
     public void initialize() {
         sudokuBoardLevel = SudokuBoardLevel.EASY;
         initSudokuCells(sudokuBoardLevel);
-        rb_easy.setSelected(true);
-        rb_easy.setDisable(true);
-        rb_polish.setSelected(true);
-    }
-
-    /**
-     * Filling sudokuBoard, depends on difficulty level, chosen by setting specific RadioButton instance.
-     */
-    @FXML
-    public void onActionRadiobuttonEasy() {
-        if (rb_easy.isSelected()) {
-            initSudokuCells(SudokuBoardLevel.EASY);
-            rb_medium.setSelected(false);
-            rb_hard.setSelected(false);
-            rb_medium.setDisable(false);
-            rb_hard.setDisable(false);
-            rb_easy.setDisable(true);
-        }
-    }
-
-    @FXML
-    public void onActionRadiobuttonMedium() {
-        if (rb_medium.isSelected()) {
-            initSudokuCells(SudokuBoardLevel.MEDIUM);
-            rb_easy.setSelected(false);
-            rb_hard.setSelected(false);
-            rb_easy.setDisable(false);
-            rb_hard.setDisable(false);
-            rb_medium.setDisable(true);
-        }
-    }
-
-    @FXML
-    public void onActionRadiobuttonHard() {
-        if (rb_hard.isSelected()) {
-            initSudokuCells(SudokuBoardLevel.HARD);
-            rb_easy.setSelected(false);
-            rb_medium.setSelected(false);
-            rb_easy.setDisable(false);
-            rb_medium.setDisable(false);
-            rb_hard.setDisable(true);
-        }
     }
 
     /**
@@ -131,4 +81,7 @@ public class SudokuBoardController {
         );
     }
 
+    public void setMainController(MainPaneWindowController mainController) {
+        this.mainController = mainController;
+    }
 }
