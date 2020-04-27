@@ -13,7 +13,7 @@ import pl.prokom.model.board.SudokuBoard;
 /**
  * Class created to serialize/deserialize instances of SudokuBoard class.
  */
-public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
+public class FileSudokuBoardDao implements Dao<SudokuBoard> {
 
     /**
      * Stores a path to serialization process output/input file.
@@ -64,7 +64,5 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
-
-    }
+    public void close() throws Exception {}
 }

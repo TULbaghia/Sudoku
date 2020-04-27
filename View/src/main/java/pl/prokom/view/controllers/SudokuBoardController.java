@@ -29,6 +29,10 @@ public class SudokuBoardController {
      */
     private MainPaneWindowController mainController;
 
+    public SudokuBoardController(MainPaneWindowController mainController) {
+        this.mainController = mainController;
+    }
+
     /**
      * GridPane instance with all sudokuBoard cells as a TextField instances.
      */
@@ -79,9 +83,5 @@ public class SudokuBoardController {
                     gridPane.add(textField, c / 9, c % 9);
                 }
         );
-    }
-
-    public void setMainController(MainPaneWindowController mainController) {
-        this.mainController = mainController;
     }
 }

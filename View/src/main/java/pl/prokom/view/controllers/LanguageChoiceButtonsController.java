@@ -12,6 +12,10 @@ public class LanguageChoiceButtonsController {
      */
     private MainPaneWindowController mainController;
 
+    public LanguageChoiceButtonsController(MainPaneWindowController mainController) {
+        this.mainController = mainController;
+    }
+
     /**
      * ToggleButtons responsible for changing theme language.
      */
@@ -28,7 +32,7 @@ public class LanguageChoiceButtonsController {
 
     }
 
-    public void setMainController(MainPaneWindowController mainController) {
-        this.mainController = mainController;
+    @FXML
+    public void initialize(){
     }
 }

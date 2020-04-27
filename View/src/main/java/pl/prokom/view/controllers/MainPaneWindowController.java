@@ -9,6 +9,11 @@ public class MainPaneWindowController {
      */
     @FXML
     private Pane mainPaneWindow;
+
+    public MainPaneWindowController() {
+//        this.mainPaneWindow = mainPaneWindow;
+    }
+
     /**
      * Reference to class, which controls difficulty level buttons - DifficultyLevelButtonsController.
      */
@@ -29,8 +34,8 @@ public class MainPaneWindowController {
 
     @FXML
     public void initialize(){
-        difficultyLevelButtonsController.setMainController(this);
-        languageChoiceButtonsController.setMainController(this);
-        sudokuBoardController.setMainController(this);
+        difficultyLevelButtonsController = new DifficultyLevelButtonsController(this);
+        languageChoiceButtonsController = new LanguageChoiceButtonsController(this);
+        sudokuBoardController = new SudokuBoardController(this);
     }
 }

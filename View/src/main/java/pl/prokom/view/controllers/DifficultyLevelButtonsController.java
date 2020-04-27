@@ -11,6 +11,10 @@ public class DifficultyLevelButtonsController {
      */
     private MainPaneWindowController mainController;
 
+    public DifficultyLevelButtonsController(MainPaneWindowController mainController) {
+        this.mainController = mainController;
+    }
+
     /**
      * ToggleButtons responsible for changing SudokuBoard diff. level.
      */
@@ -32,7 +36,7 @@ public class DifficultyLevelButtonsController {
 
     }
 
-    public void setMainController(MainPaneWindowController mainController) {
-        this.mainController = mainController;
+    @FXML
+    public void initialize(){
     }
 }
