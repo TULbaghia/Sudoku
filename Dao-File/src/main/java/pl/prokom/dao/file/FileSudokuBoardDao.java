@@ -40,10 +40,8 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
         Path filePath = Paths.get(fileName);
         try (ObjectInputStream iStream = new ObjectInputStream(Files.newInputStream(filePath))) {
             deserialized = (SudokuBoard) iStream.readObject();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
-        } catch (ClassNotFoundException e) {
-            System.out.println("Illegal class processed.");
         }
         return deserialized;
     }
