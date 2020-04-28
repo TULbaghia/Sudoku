@@ -1,8 +1,6 @@
 package pl.prokom.view.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import pl.prokom.model.board.SudokuBoardLevel;
 

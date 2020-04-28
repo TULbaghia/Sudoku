@@ -17,7 +17,7 @@ public class MainPaneWindowController extends MainPaneWindow {
 
     public MainPaneWindowController() { }
 
-    public void setApplication(Pane mainPaneWindow) {
+    public void setParentController(Pane mainPaneWindow) {
         this.mainPaneWindow = mainPaneWindow;
     }
 
@@ -52,9 +52,11 @@ public class MainPaneWindowController extends MainPaneWindow {
         Pane anchor = loader.load();
         languageChoiceButtonsController = loader.getController();
         languageChoiceButtonsController.setParentController(this);
-        GridPane.setConstraints(anchor, 5, 1);
-//        GridPane.setRowSpan(anchor, 3);
-        GridPane.setColumnSpan(anchor, 2);
+
+        GridPane.setConstraints(anchor, 14, 1);
+        GridPane.setRowSpan(anchor, 3);
+        GridPane.setColumnSpan(anchor, 3);
+
         this.mainPaneWindow.getChildren().add(anchor);
     }
 
@@ -64,7 +66,11 @@ public class MainPaneWindowController extends MainPaneWindow {
         Pane anchor = loader.load();
         difficultyLevelButtonsController = loader.getController();
         difficultyLevelButtonsController.setParentController(this);
-        GridPane.setConstraints(anchor, 1, 0);
+
+        GridPane.setConstraints(anchor, 1, 1);
+        GridPane.setColumnSpan(anchor, 4);
+        GridPane.setRowSpan(anchor, 3);
+
         difficultyLevelButtonsController.tgbEasy.setSelected(true);
         this.mainPaneWindow.getChildren().add(anchor);
     }
@@ -75,8 +81,11 @@ public class MainPaneWindowController extends MainPaneWindow {
         Pane anchor = loader.load();
         sudokuBoardController = loader.getController();
         sudokuBoardController.setParentController(this);
-        GridPane.setConstraints(anchor, 3, 7);
-        GridPane.setRowSpan(anchor, 4);
+
+        GridPane.setConstraints(anchor, 10, 9);
+        GridPane.setColumnSpan(anchor, 7);
+        GridPane.setRowSpan(anchor, 8);
+
         this.mainPaneWindow.getChildren().add(anchor);
     }
 

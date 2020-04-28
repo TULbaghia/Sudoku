@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox fx:id="setLanguagePolish" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.LanguageChoiceButtonsController">
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.VBox?>
+
+<Pane style="-fx-background-color: #FF000010;" fx:id="setLanguagePolish" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.LanguageChoiceButtonsController">
    <children>
-      <ToggleButton fx:id="tgbPolish" mnemonicParsing="false" onAction="#setLanguagePolish" text="Polski">
-         <HBox.margin>
-            <Insets right="10.0" />
-         </HBox.margin>
-         <toggleGroup>
-            <ToggleGroup fx:id="languageSet" />
-         </toggleGroup>
-      </ToggleButton>
-      <ToggleButton fx:id="tgbEnglish" mnemonicParsing="false" onAction="#setLanguageEnglish" text="English" toggleGroup="$languageSet" />
+      <Label prefHeight="32.5" prefWidth="150.0" text="Język" alignment="CENTER">
+         <font>
+            <Font size="16.0"/>
+         </font>
+      </Label>
+      <HBox layoutY="35.0" prefWidth="150.0">
+         <children>
+            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+               <ToggleButton fx:id="tgbPolish" mnemonicParsing="false" onAction="#setLanguagePolish" text="Polski">
+                  <toggleGroup>
+                     <ToggleGroup fx:id="languageSet"/>
+                  </toggleGroup>
+               </ToggleButton>
+            </VBox>
+            <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+               <ToggleButton fx:id="tgbEnglish" mnemonicParsing="false" onAction="#setLanguageEnglish" text="English" toggleGroup="$languageSet"/>
+            </VBox>
+         </children>
+      </HBox>
    </children>
-</HBox>
+</Pane>
+
