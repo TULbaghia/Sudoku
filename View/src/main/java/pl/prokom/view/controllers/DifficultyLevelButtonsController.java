@@ -2,7 +2,9 @@ package pl.prokom.view.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import pl.prokom.model.board.SudokuBoardLevel;
 
 public class DifficultyLevelButtonsController {
 
@@ -25,20 +27,22 @@ public class DifficultyLevelButtonsController {
 
     @FXML
     public void setLevelEasy() {
-
+        mainController.getSudokuBoardController().initSudokuCells(SudokuBoardLevel.EASY);
     }
 
     @FXML
     public void setLevelMedium() {
-
+        mainController.getSudokuBoardController().initSudokuCells(SudokuBoardLevel.MEDIUM);
     }
 
     @FXML
     public void setLevelHard() {
-
+        mainController.getSudokuBoardController().initSudokuCells(SudokuBoardLevel.HARD);
     }
 
     @FXML
     public void initialize(){
+
     }
+
 }
