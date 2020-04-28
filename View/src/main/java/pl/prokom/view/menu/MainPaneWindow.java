@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import pl.prokom.view.controllers.MainPaneWindowController;
 
 public class MainPaneWindow extends Application {
 
@@ -22,6 +23,7 @@ public class MainPaneWindow extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/MainPaneWindow.fxml"));
         Pane mainPaneWindow = loader.load();
+        loader.<MainPaneWindowController>getController().setApplication(mainPaneWindow);
 
         Scene scene = new Scene(mainPaneWindow);
         primaryStage.setScene(scene);

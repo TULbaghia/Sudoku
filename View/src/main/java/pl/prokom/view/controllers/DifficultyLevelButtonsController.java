@@ -11,8 +11,10 @@ public class DifficultyLevelButtonsController {
      */
     private MainPaneWindowController mainController;
 
-    public DifficultyLevelButtonsController(MainPaneWindowController mainController) {
-        this.mainController = mainController;
+    public DifficultyLevelButtonsController() {}
+
+    public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        this.mainController = mainPaneWindowController;
     }
 
     /**

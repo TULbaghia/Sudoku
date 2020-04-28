@@ -29,8 +29,10 @@ public class SudokuBoardController {
      */
     private MainPaneWindowController mainController;
 
-    public SudokuBoardController(MainPaneWindowController mainController) {
-        this.mainController = mainController;
+    public SudokuBoardController() {}
+
+    public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        this.mainController = mainPaneWindowController;
     }
 
     /**
