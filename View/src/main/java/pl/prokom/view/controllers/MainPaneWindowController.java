@@ -2,6 +2,7 @@ package pl.prokom.view.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import pl.prokom.view.menu.MainPaneWindow;
 
@@ -51,6 +52,9 @@ public class MainPaneWindowController extends MainPaneWindow {
         Pane anchor = loader.load();
         languageChoiceButtonsController = loader.getController();
         languageChoiceButtonsController.setParentController(this);
+        GridPane.setConstraints(anchor, 5, 1);
+//        GridPane.setRowSpan(anchor, 3);
+        GridPane.setColumnSpan(anchor, 2);
 
         this.mainPaneWindow.getChildren().add(anchor);
     }
@@ -61,6 +65,7 @@ public class MainPaneWindowController extends MainPaneWindow {
         Pane anchor = loader.load();
         difficultyLevelButtonsController = loader.getController();
         difficultyLevelButtonsController.setParentController(this);
+        GridPane.setConstraints(anchor, 1, 0);
 
         this.mainPaneWindow.getChildren().add(anchor);
     }
@@ -71,6 +76,8 @@ public class MainPaneWindowController extends MainPaneWindow {
         Pane anchor = loader.load();
         sudokuBoardController = loader.getController();
         sudokuBoardController.setParentController(this);
+        GridPane.setConstraints(anchor, 3, 7);
+        GridPane.setRowSpan(anchor, 4);
 
         this.mainPaneWindow.getChildren().add(anchor);
     }
