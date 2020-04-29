@@ -95,6 +95,8 @@ public class SudokuFieldTest {
 
         sudokuField.setFieldValue(8);
         assertEquals(1, sudokuField.compareTo(sudokuFieldOther));
+
+        assertThrows(NullPointerException.class, () -> sudokuField.compareTo(null));
     }
 
     /**

@@ -261,15 +261,15 @@ public class SudokuBoard implements Cloneable, Serializable {
 
     @Override
     public SudokuBoard clone() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos);
+        ) {
             oos.writeObject(this);
-
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            return (SudokuBoard) ois.readObject();
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+                 ObjectInputStream ois = new ObjectInputStream(bais);
+                    ) {
+                return (SudokuBoard) ois.readObject();
+            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

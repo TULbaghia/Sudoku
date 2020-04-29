@@ -22,7 +22,9 @@ public class DifficultyLevelButtonsController {
      */
     @FXML
     ToggleButton tgbEasy;
+    @FXML
     ToggleButton tgbMedium;
+    @FXML
     ToggleButton tgbHard;
 
     @FXML
