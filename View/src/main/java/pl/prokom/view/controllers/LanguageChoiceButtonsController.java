@@ -3,6 +3,7 @@ package pl.prokom.view.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import pl.prokom.view.stage.StageCreator;
 
@@ -34,21 +35,26 @@ public class LanguageChoiceButtonsController {
     ToggleButton tgbEnglish;
     @FXML
     ToggleGroup languageSet;
+    @FXML
+    Pane setLanguagePolish;
 
     @FXML
     public void setLanguagePolish() throws IOException {
         Locale.setDefault(new Locale("pl"));
-        Stage stage = (Stage) this.mainController.getMainPaneWindow().getScene().getWindow();
-        stageCreator.prepareCreator(stage, bundle.getBundle("bundles.interaction", Locale.getDefault()));
+        stageCreator.prepareCreator(extractStage(), bundle.getBundle("bundles.interaction", Locale.getDefault()));
         stageCreator.createStage();
     }
 
     @FXML
     public void setLanguageEnglish() throws IOException {
         Locale.setDefault(new Locale("en"));
-        Stage stage = (Stage) this.mainController.getMainPaneWindow().getScene().getWindow();
-        stageCreator.prepareCreator(stage, bundle.getBundle("bundles.interaction", Locale.getDefault()));
+        stageCreator.prepareCreator(extractStage(), bundle.getBundle("bundles.interaction", Locale.getDefault()));
         stageCreator.createStage();
+    }
+
+    public Stage extractStage(){
+        Stage stage = (Stage) this.mainController.getMainPaneWindow().getScene().getWindow();
+        return stage;
     }
 
 
