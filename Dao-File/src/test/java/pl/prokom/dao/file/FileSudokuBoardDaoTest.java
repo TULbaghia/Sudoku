@@ -9,6 +9,8 @@ import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -36,8 +38,8 @@ public class FileSudokuBoardDaoTest {
     /**
      * Case description:
      * - serialize instance of SudokuBoard, deserialize that instance, then:
-     *  - check for equality,
-     *  - check if one is reference to another (if they are the same).
+     * - check for equality,
+     * - check if one is reference to another (if they are the same).
      */
     @Test
     public void serializeDeserializeTest() {
@@ -86,5 +88,24 @@ public class FileSudokuBoardDaoTest {
         field.set(fileSudokuBoardDao, "//");
         assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.read());
         assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.write(sudokuBoard));
+    }
+
+    /**
+     * Case description:
+     * - trying to read from file without serialized class
+     */
+    @Test
+    public void exceptionReadClassNotFoundTest() throws NoSuchFieldException, IllegalAccessException {
+        fileSudokuBoardDao.write(sudokuBoard);
+        try (RandomAccessFile fh = new RandomAccessFile(testPath+"test.txt", "rw")) {
+            fh.seek(30L);
+            fh.write('Y');
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Field field = fileSudokuBoardDao.getClass().getDeclaredField("fileName");
+        field.setAccessible(true);
+        field.set(fileSudokuBoardDao, testPath + "test.txt");
+        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.read());
     }
 }

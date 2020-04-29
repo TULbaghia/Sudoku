@@ -1,7 +1,10 @@
 package pl.prokom.model.board;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.partial.group.SudokuBox;
@@ -41,6 +45,12 @@ public class SudokuBoard implements Cloneable, Serializable {
         this(sudokuSolver, sudokuFields, 3);
     }
 
+    /**
+     * Constructor that handles object creation.
+     * @param sudokuSolver type of SudokuSolver that you want to use
+     * @param sudokuFields list of fields, which values are copied to SudokuBoard (default null)
+     * @param miniBoxDim number of boxes and box sizes in sudokuBoard (default 3)
+     */
     public SudokuBoard(final SudokuSolver<SudokuBoard> sudokuSolver,
                        final List<List<SudokuField>> sudokuFields, final int miniBoxDim) {
         this.sudokuSolver = sudokuSolver;
@@ -109,6 +119,11 @@ public class SudokuBoard implements Cloneable, Serializable {
         boxGroups.forEach(list -> sudokuGroups.add(new SudokuBox(list)));
     }
 
+    /**
+     * Returns reference to queried column.
+     * @param column number of column from 0..8
+     * @return reference to queried SudokuColumn
+     */
     public SudokuColumn getColumn(final int column) {
         return sudokuGroups.stream()
                 .filter(x -> x instanceof SudokuColumn).skip(column).findFirst()
@@ -116,6 +131,11 @@ public class SudokuBoard implements Cloneable, Serializable {
                 .get();
     }
 
+    /**
+     * Returns reference to queried row.
+     * @param row number of row from 0..8
+     * @return reference to queried SudokuRow
+     */
     public SudokuRow getRow(final int row) {
         return sudokuGroups.stream()
                 .filter(x -> x instanceof SudokuRow).skip(row).findFirst()
@@ -123,6 +143,12 @@ public class SudokuBoard implements Cloneable, Serializable {
                 .get();
     }
 
+    /**
+     * Returns reference to queried 3x3 box.
+     * @param row number of row from 0..2
+     * @param column number of column from 0..2
+     * @return reference to queried SudokuBoard
+     */
     public SudokuBox getBox(final int row, final int column) {
         return sudokuGroups.stream()
                 .filter(x -> x instanceof SudokuBox).skip(row * miniBoxDim + column).findFirst()
@@ -194,13 +220,13 @@ public class SudokuBoard implements Cloneable, Serializable {
 
     @Override
     public String toString() {
-        return "SudokuBoard{"
-                + "miniBoxDim=" + miniBoxDim
-                + ", boardSize=" + boardSize
-                + ", sudokuSolver=" + sudokuSolver.toString()
-                + ", sudokuFields=" + sudokuFields.toString()
-                + ", sudokuGroups=" + sudokuGroups.toString()
-                + '}';
+        return new ToStringBuilder(this)
+                .append("miniBoxDim", miniBoxDim)
+                .append("boardSize", boardSize)
+                .append("sudokuSolver", sudokuSolver)
+                .append("sudokuFields", sudokuFields)
+                .append("sudokuGroups", sudokuGroups)
+                .toString();
     }
 
     @Override
@@ -235,12 +261,16 @@ public class SudokuBoard implements Cloneable, Serializable {
 
     @Override
     public SudokuBoard clone() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
         try {
-            SudokuBoard sudokuBoard = (SudokuBoard) super.clone();
-            sudokuBoard.initializeFields(getCopyOfBoard());
-            sudokuBoard.initializeGroups();
-            return sudokuBoard;
-        } catch (CloneNotSupportedException e) {
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (SudokuBoard) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;

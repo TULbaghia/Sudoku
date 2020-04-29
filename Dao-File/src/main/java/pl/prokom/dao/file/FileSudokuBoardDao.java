@@ -6,14 +6,13 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import pl.prokom.dao.api.Dao;
 import pl.prokom.model.board.SudokuBoard;
 
 /**
  * Class created to serialize/deserialize instances of SudokuBoard class.
  */
-public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
+public class FileSudokuBoardDao implements Dao<SudokuBoard> {
 
     /**
      * Stores a path to serialization process output/input file.
@@ -40,10 +39,8 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
         Path filePath = Paths.get(fileName);
         try (ObjectInputStream iStream = new ObjectInputStream(Files.newInputStream(filePath))) {
             deserialized = (SudokuBoard) iStream.readObject();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
-        } catch (ClassNotFoundException e) {
-            System.out.println("Illegal class processed.");
         }
         return deserialized;
     }
@@ -64,7 +61,5 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard>, AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
-
-    }
+    public void close() {}
 }

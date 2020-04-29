@@ -5,12 +5,13 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.prokom.model.exception.IllegalFieldValueException;
 
 /**
  * Made for storing fields values in SudokuBoard and other collections.
  */
-public class SudokuField implements Cloneable, Serializable {
+public class SudokuField implements Cloneable, Serializable, Comparable<SudokuField> {
     /**
      * Handles observers of created object.
      */
@@ -83,9 +84,9 @@ public class SudokuField implements Cloneable, Serializable {
 
     @Override
     public String toString() {
-        return "SudokuField{"
-                + "value=" + this.value
-                + '}';
+        return new ToStringBuilder(this)
+                .append("value", value)
+                .toString();
     }
 
     @Override
@@ -122,5 +123,10 @@ public class SudokuField implements Cloneable, Serializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public int compareTo(SudokuField sudokuField) {
+        return Integer.compare(this.getFieldValue(), sudokuField.getFieldValue());
     }
 }

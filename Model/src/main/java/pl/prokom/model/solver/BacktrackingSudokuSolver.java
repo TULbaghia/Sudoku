@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.exception.IllegalFieldValueException;
 
@@ -92,10 +93,11 @@ public class BacktrackingSudokuSolver implements SudokuSolver<SudokuBoard>, Clon
         return true;
     }
 
+
     @Override
     public String toString() {
-        return "BacktrackingSudokuSolver{"
-                + '}';
+        return new ToStringBuilder(this)
+                .toString();
     }
 
     @Override
