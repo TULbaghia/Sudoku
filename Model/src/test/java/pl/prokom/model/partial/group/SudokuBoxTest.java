@@ -64,7 +64,6 @@ public class SudokuBoxTest {
     public void toStringTestCase() {
         String groupToString = sudokuBox.toString();
         assertTrue(groupToString.contains("SudokuBox"));
-        assertTrue(groupToString.contains((new SudokuGroup(sudokuFields){}).toString()));
     }
 
     /**

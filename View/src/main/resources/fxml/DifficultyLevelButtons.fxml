@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Pane style="-fx-background-color: #FF000010;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="350.0" prefHeight="75.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.DifficultyLevelButtonsController">
+   <children>
+      <Label prefHeight="32.5" prefWidth="350.0" text="Poziom trudności" alignment="CENTER">
+         <font>
+            <Font size="16.0"/>
+         </font>
+      </Label>
+      <HBox layoutY="35.0" prefWidth="350.0">
+         <children>
+            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+               <ToggleButton fx:id="tgbEasy" mnemonicParsing="false" onAction="#setLevelEasy" prefHeight="30.0" prefWidth="100.0" text="Łatwy">
+                  <toggleGroup>
+                     <ToggleGroup fx:id="difficultyLevels"/>
+                  </toggleGroup>
+               </ToggleButton>
+            </VBox>
+            <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+               <ToggleButton fx:id="tgbMedium" mnemonicParsing="false" onAction="#setLevelMedium" prefHeight="30.0" prefWidth="100.0" text="Średni" toggleGroup="$difficultyLevels">
+               </ToggleButton>
+            </VBox>
+            <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+               <ToggleButton fx:id="tgbHard" mnemonicParsing="false" onAction="#setLevelHard" prefHeight="30.0" prefWidth="100.0" text="Trudny" toggleGroup="$difficultyLevels">
+               </ToggleButton>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+   </padding>
+</Pane>

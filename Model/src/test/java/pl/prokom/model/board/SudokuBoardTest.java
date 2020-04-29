@@ -6,6 +6,7 @@ import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -293,12 +294,19 @@ public class SudokuBoardTest {
         List<List<SudokuField>> fields1 = (List<List<SudokuField>>) field.get(sudokuBoard);
         List<List<SudokuField>> fields2 = (List<List<SudokuField>>) field.get(clone);
 
+        Field field1 = fields1.get(0).get(0).getClass().getDeclaredField("pcs");
+        field1.setAccessible(true);
+
         for (int i = 0; i < sudokuBoard.getBoardSize(); i++) {
             assertNotSame(sudokuBoard.getColumn(i), clone.getColumn(i));
             assertNotSame(sudokuBoard.getColumn(i), clone.getRow(i));
             for (int j = 0; j < sudokuBoard.getBoardSize(); j++) {
                 assertEquals(fields1.get(i).get(j), fields2.get(i).get(j));
                 assertNotSame(fields1.get(i).get(j), fields2.get(i).get(j));
+                PropertyChangeSupport pcs1 = (PropertyChangeSupport) field1.get(fields1.get(i).get(j));
+                PropertyChangeSupport pcs2 = (PropertyChangeSupport) field1.get(fields2.get(i).get(j));
+                assertEquals(3, pcs1.getPropertyChangeListeners().length);
+                assertEquals(3, pcs2.getPropertyChangeListeners().length);
             }
         }
     }

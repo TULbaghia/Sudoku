@@ -1,9 +1,11 @@
 package pl.prokom.view.controllers;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
@@ -13,35 +15,27 @@ import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.
  */
 public class SudokuBoardController {
 
     /**
-     * User-chosen currently setting number.
-     * button1-9
+     * Reference to MainPaneWindowController instance to reach this.
      */
-    @FXML
-    Button button1, button2, button3, button4, button5, button6, button7, button8, button9;
+    private MainPaneWindowController mainController;
+
+    public SudokuBoardController() {}
+
+    public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        this.mainController = mainPaneWindowController;
+    }
 
     /**
      * GridPane instance with all sudokuBoard cells as a TextField instances.
      */
     @FXML
     GridPane gridPane;
-
-    /**
-     * User menu RadioButtons.
-     */
-    @FXML
-    RadioButton rb_easy, rb_medium, rb_hard, rb_english, rb_polish;
 
     private SudokuBoard sudokuBoard;
     private SudokuBoardLevel sudokuBoardLevel;
@@ -55,48 +49,6 @@ public class SudokuBoardController {
     public void initialize() {
         sudokuBoardLevel = SudokuBoardLevel.EASY;
         initSudokuCells(sudokuBoardLevel);
-        rb_easy.setSelected(true);
-        rb_easy.setDisable(true);
-        rb_polish.setSelected(true);
-    }
-
-    /**
-     * Filling sudokuBoard, depends on difficulty level, chosen by setting specific RadioButton instance.
-     */
-    @FXML
-    public void onActionRadiobuttonEasy() {
-        if (rb_easy.isSelected()) {
-            initSudokuCells(SudokuBoardLevel.EASY);
-            rb_medium.setSelected(false);
-            rb_hard.setSelected(false);
-            rb_medium.setDisable(false);
-            rb_hard.setDisable(false);
-            rb_easy.setDisable(true);
-        }
-    }
-
-    @FXML
-    public void onActionRadiobuttonMedium() {
-        if (rb_medium.isSelected()) {
-            initSudokuCells(SudokuBoardLevel.MEDIUM);
-            rb_easy.setSelected(false);
-            rb_hard.setSelected(false);
-            rb_easy.setDisable(false);
-            rb_hard.setDisable(false);
-            rb_medium.setDisable(true);
-        }
-    }
-
-    @FXML
-    public void onActionRadiobuttonHard() {
-        if (rb_hard.isSelected()) {
-            initSudokuCells(SudokuBoardLevel.HARD);
-            rb_easy.setSelected(false);
-            rb_medium.setSelected(false);
-            rb_easy.setDisable(false);
-            rb_medium.setDisable(false);
-            rb_hard.setDisable(true);
-        }
     }
 
     /**
@@ -119,7 +71,7 @@ public class SudokuBoardController {
                 .filtered(node -> node instanceof TextField)
                 .forEach(node -> ((TextField) node).clear());
 
-        randomValues.stream().forEach(c -> {
+        randomValues.forEach(c -> {
                     TextField textField;
                     textField = new TextField(String.valueOf(sudokuBoard.get(c / 9, c % 9)));
                     textField.setAlignment(Pos.CENTER);
@@ -130,5 +82,4 @@ public class SudokuBoardController {
                 }
         );
     }
-
 }

@@ -49,7 +49,6 @@ public class SudokuColumnTest {
     public void toStringTestCase() {
         String groupToString = sudokuColumn.toString();
         assertTrue(groupToString.contains("SudokuColumn"));
-        assertTrue(groupToString.contains((new SudokuGroup(sudokuFields){}).toString()));
     }
 
     /**

@@ -3,6 +3,7 @@ package pl.prokom.model.partial.group;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.prokom.model.partial.field.SudokuField;
 
 //TODO: change getBox2D from array to List<List<>>
@@ -38,9 +39,9 @@ public class SudokuBox extends SudokuGroup {
 
     @Override
     public String toString() {
-        return "SudokuBox{"
-                + super.toString()
-                + '}';
+        return new ToStringBuilder(this)
+                .appendSuper(super.toString())
+                .toString();
     }
 
     @Override
