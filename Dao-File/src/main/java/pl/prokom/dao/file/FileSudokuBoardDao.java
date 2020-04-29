@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import pl.prokom.dao.api.Dao;
 import pl.prokom.model.board.SudokuBoard;
 
@@ -62,5 +61,5 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
     }
 
     @Override
-    public void close() throws Exception {}
+    public void close() {}
 }

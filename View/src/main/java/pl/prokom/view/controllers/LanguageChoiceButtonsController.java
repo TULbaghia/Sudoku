@@ -1,14 +1,8 @@
 package pl.prokom.view.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-
-import java.io.IOException;
 
 public class LanguageChoiceButtonsController {
 
@@ -28,19 +22,17 @@ public class LanguageChoiceButtonsController {
      * ToggleButtons responsible for changing theme language.
      */
     @FXML
-    ToggleButton tgbPolish, tgbEnglish;
+    ToggleButton tgbPolish;
+    ToggleButton tgbEnglish;
 
     @FXML
     public void setLanguagePolish() {
-
     }
 
     @FXML
     public void setLanguageEnglish() {
-
     }
 
     @FXML
-    public void initialize(){
-    }
+    public void initialize(){}
 }

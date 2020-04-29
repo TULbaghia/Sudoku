@@ -1,12 +1,11 @@
 package pl.prokom.view.controllers;
 
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import pl.prokom.view.menu.MainPaneWindow;
-
-import java.io.IOException;
 
 public class MainPaneWindowController extends MainPaneWindow {
     /**
@@ -22,7 +21,7 @@ public class MainPaneWindowController extends MainPaneWindow {
     }
 
     /**
-     * Reference to class, which controls difficulty level buttons - DifficultyLevelButtonsController.
+     * Reference to class, that controls difficulty level buttons- DifficultyLevelButtonsController.
      */
     @FXML
     private DifficultyLevelButtonsController difficultyLevelButtonsController;
@@ -39,6 +38,10 @@ public class MainPaneWindowController extends MainPaneWindow {
     @FXML
     private SudokuBoardController sudokuBoardController;
 
+    /**
+     * Initializer of controllers in pane.
+     * @throws IOException When fxml file not found
+     */
     @FXML
     public void initialize() throws IOException {
         loadLanguageController();
@@ -46,7 +49,7 @@ public class MainPaneWindowController extends MainPaneWindow {
         loadSudokuBoardController();
     }
 
-    public void loadLanguageController() throws IOException {
+    private void loadLanguageController() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(this.getClass().getResource("/fxml/LanguageChoiceButtons.fxml"));
         Pane anchor = loader.load();
@@ -60,7 +63,7 @@ public class MainPaneWindowController extends MainPaneWindow {
         this.mainPaneWindow.getChildren().add(anchor);
     }
 
-    public void loadDiffucultyButtonContoller() throws IOException {
+    private void loadDiffucultyButtonContoller() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(this.getClass().getResource("/fxml/DifficultyLevelButtons.fxml"));
         Pane anchor = loader.load();
@@ -75,7 +78,7 @@ public class MainPaneWindowController extends MainPaneWindow {
         this.mainPaneWindow.getChildren().add(anchor);
     }
 
-    public void loadSudokuBoardController() throws IOException {
+    private void loadSudokuBoardController() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(this.getClass().getResource("/fxml/SudokuBoardGridPane.fxml"));
         Pane anchor = loader.load();

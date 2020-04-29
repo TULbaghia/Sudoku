@@ -21,7 +21,9 @@ public class DifficultyLevelButtonsController {
      * ToggleButtons responsible for changing SudokuBoard diff. level.
      */
     @FXML
-    ToggleButton tgbEasy, tgbMedium, tgbHard;
+    ToggleButton tgbEasy;
+    ToggleButton tgbMedium;
+    ToggleButton tgbHard;
 
     @FXML
     public void setLevelEasy() {
@@ -39,8 +41,6 @@ public class DifficultyLevelButtonsController {
     }
 
     @FXML
-    public void initialize(){
-
-    }
+    public void initialize(){}
 
 }

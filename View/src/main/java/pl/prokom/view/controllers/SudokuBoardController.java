@@ -1,9 +1,11 @@
 package pl.prokom.view.controllers;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
@@ -12,12 +14,6 @@ import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.
@@ -75,7 +71,7 @@ public class SudokuBoardController {
                 .filtered(node -> node instanceof TextField)
                 .forEach(node -> ((TextField) node).clear());
 
-        randomValues.stream().forEach(c -> {
+        randomValues.forEach(c -> {
                     TextField textField;
                     textField = new TextField(String.valueOf(sudokuBoard.get(c / 9, c % 9)));
                     textField.setAlignment(Pos.CENTER);

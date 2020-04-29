@@ -21,7 +21,8 @@ public class MainPaneWindow extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/MainPaneWindow.fxml"));
+        FXMLLoader loader =
+                new FXMLLoader(this.getClass().getResource("/fxml/MainPaneWindow.fxml"));
         Pane mainPaneWindow = loader.load();
         loader.<MainPaneWindowController>getController().setParentController(mainPaneWindow);
 

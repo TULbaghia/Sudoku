@@ -45,6 +45,12 @@ public class SudokuBoard implements Cloneable, Serializable {
         this(sudokuSolver, sudokuFields, 3);
     }
 
+    /**
+     * Constructor that handles object creation.
+     * @param sudokuSolver type of SudokuSolver that you want to use
+     * @param sudokuFields list of fields, which values are copied to SudokuBoard (default null)
+     * @param miniBoxDim number of boxes and box sizes in sudokuBoard (default 3)
+     */
     public SudokuBoard(final SudokuSolver<SudokuBoard> sudokuSolver,
                        final List<List<SudokuField>> sudokuFields, final int miniBoxDim) {
         this.sudokuSolver = sudokuSolver;
@@ -113,6 +119,11 @@ public class SudokuBoard implements Cloneable, Serializable {
         boxGroups.forEach(list -> sudokuGroups.add(new SudokuBox(list)));
     }
 
+    /**
+     * Returns reference to queried column.
+     * @param column number of column from 0..8
+     * @return reference to queried SudokuColumn
+     */
     public SudokuColumn getColumn(final int column) {
         return sudokuGroups.stream()
                 .filter(x -> x instanceof SudokuColumn).skip(column).findFirst()
@@ -120,6 +131,11 @@ public class SudokuBoard implements Cloneable, Serializable {
                 .get();
     }
 
+    /**
+     * Returns reference to queried row.
+     * @param row number of row from 0..8
+     * @return reference to queried SudokuRow
+     */
     public SudokuRow getRow(final int row) {
         return sudokuGroups.stream()
                 .filter(x -> x instanceof SudokuRow).skip(row).findFirst()
@@ -127,6 +143,12 @@ public class SudokuBoard implements Cloneable, Serializable {
                 .get();
     }
 
+    /**
+     * Returns reference to queried 3x3 box.
+     * @param row number of row from 0..2
+     * @param column number of column from 0..2
+     * @return reference to queried SudokuBoard
+     */
     public SudokuBox getBox(final int row, final int column) {
         return sudokuGroups.stream()
                 .filter(x -> x instanceof SudokuBox).skip(row * miniBoxDim + column).findFirst()
