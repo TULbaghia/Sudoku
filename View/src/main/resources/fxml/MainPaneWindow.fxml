@@ -7,17 +7,17 @@
    <children>
       <VBox alignment="CENTER" layoutX="421.0" layoutY="121.0" prefHeight="450.0" prefWidth="436.0">
          <children>
-            <fx:include fx:id="sudokuKontrola" layoutX="100.0" layoutY="100.0" source="SudokuBoardGridPane.fxml" />
+            <fx:include fx:id="sudokuGrid" layoutX="100.0" layoutY="100.0" source="SudokuBoardGridPane.fxml" />
          </children>
       </VBox>
       <VBox prefHeight="84.0" prefWidth="358.0">
          <children>
-            <fx:include fx:id="poziomyKontrola" source="DifficultyLevelButtons.fxml" />
+            <fx:include fx:id="difficultyLevels" source="DifficultyLevelButtons.fxml" />
          </children>
       </VBox>
       <VBox alignment="TOP_RIGHT" layoutX="691.0" prefHeight="84.0" prefWidth="166.0">
          <children>
-            <fx:include fx:id="jezykiKontrola" layoutX="400.0" source="LanguageChoiceButtons.fxml" />
+            <fx:include fx:id="languageChoice" layoutX="400.0" source="LanguageChoiceButtons.fxml" />
          </children>
       </VBox>
    </children>

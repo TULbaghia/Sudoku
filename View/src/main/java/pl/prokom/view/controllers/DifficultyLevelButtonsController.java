@@ -5,11 +5,17 @@ import javafx.scene.control.ToggleButton;
 import pl.prokom.model.board.SudokuBoardLevel;
 
 public class DifficultyLevelButtonsController {
+    /**
+     * Reference to MainPaneWindowController instance to reach this.
+     */
+    MainPaneWindowController mainController;
 
     /**
      * Reference to MainPaneWindowController instance to reach this inside.
      */
-
+    public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        this.mainController = mainPaneWindowController;
+    }
     /**
      * ToggleButtons responsible for changing SudokuBoard diff. level.
      */

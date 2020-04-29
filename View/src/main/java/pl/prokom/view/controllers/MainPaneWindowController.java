@@ -24,22 +24,25 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
      * Reference to class, that controls difficulty level buttons- DifficultyLevelButtonsController.
      */
     @FXML
-    private DifficultyLevelButtonsController poziomyKontrolaController;
+    private DifficultyLevelButtonsController difficultyLevelsController;
 
     /**
      * Reference to class, which controls language choice buttons - LanguageChoiceButtonsController.
      */
     @FXML
-    private LanguageChoiceButtonsController jezykiKontrolaController;
+    private LanguageChoiceButtonsController languageChoiceController;
 
     /**
      * Reference to class, which controls SudokuBoard - SudokuBoardController.
      */
     @FXML
-    private SudokuBoardController sudokuKontrolaController;
+    private SudokuBoardController sudokuGridController;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        sudokuKontrolaController.initSudokuCells(SudokuBoardLevel.EASY);
+        sudokuGridController.initSudokuCells(SudokuBoardLevel.EASY);
+        sudokuGridController.setParentController(this);
+        languageChoiceController.setParentController(this);
+        difficultyLevelsController.setParentController(this);
     }
 }
