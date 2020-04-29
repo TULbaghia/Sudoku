@@ -13,12 +13,15 @@ import javafx.scene.layout.Pane;
 import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.view.menu.MainPaneWindow;
 
-public class MainPaneWindowController extends MainPaneWindow implements Initializable{
+public class MainPaneWindowController extends MainPaneWindow implements Initializable {
     /**
      * Basic Pane instance.
      */
     @FXML
     private Pane mainPaneWindow;
+
+    @FXML
+    private ResourceBundle interactionBundle;
 
     /**
      * Reference to class, that controls difficulty level buttons- DifficultyLevelButtonsController.
@@ -41,9 +44,11 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         sudokuGridController.initSudokuCells(SudokuBoardLevel.EASY);
+        difficultyLevelsController.tgbEasy.setSelected(true);
         sudokuGridController.setParentController(this);
         languageChoiceController.setParentController(this);
         difficultyLevelsController.setParentController(this);
+        this.interactionBundle = resourceBundle;
     }
 
     public Pane getMainPaneWindow() {
@@ -60,5 +65,9 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
 
     public SudokuBoardController getSudokuGridController() {
         return sudokuGridController;
+    }
+
+    public ResourceBundle getInteractionBundle() {
+        return interactionBundle;
     }
 }
