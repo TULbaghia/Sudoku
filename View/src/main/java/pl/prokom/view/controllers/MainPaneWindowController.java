@@ -45,4 +45,20 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
         languageChoiceController.setParentController(this);
         difficultyLevelsController.setParentController(this);
     }
+
+    public Pane getMainPaneWindow() {
+        return mainPaneWindow;
+    }
+
+    public DifficultyLevelButtonsController getDifficultyLevelsController() {
+        return difficultyLevelsController;
+    }
+
+    public LanguageChoiceButtonsController getLanguageChoiceController() {
+        return languageChoiceController;
+    }
+
+    public SudokuBoardController getSudokuGridController() {
+        return sudokuGridController;
+    }
 }

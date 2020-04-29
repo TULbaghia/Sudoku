@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
+import java.util.Locale;
+
 public class LanguageChoiceButtonsController {
     /**
      * Reference to MainPaneWindowController instance to reach this.
@@ -28,10 +30,12 @@ public class LanguageChoiceButtonsController {
 
     @FXML
     public void setLanguagePolish() {
+        Locale.setDefault(new Locale("pl"));
     }
 
     @FXML
     public void setLanguageEnglish() {
+        Locale.setDefault(new Locale("en"));
     }
 
 

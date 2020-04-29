@@ -5,6 +5,7 @@ import javafx.scene.control.ToggleButton;
 import pl.prokom.model.board.SudokuBoardLevel;
 
 public class DifficultyLevelButtonsController {
+
     /**
      * Reference to MainPaneWindowController instance to reach this.
      */
@@ -28,17 +29,17 @@ public class DifficultyLevelButtonsController {
 
     @FXML
     public void setLevelEasy() {
-
+        this.mainController.getSudokuGridController().initSudokuCells(SudokuBoardLevel.EASY);
     }
 
     @FXML
     public void setLevelMedium() {
-
+        this.mainController.getSudokuGridController().initSudokuCells(SudokuBoardLevel.MEDIUM);
     }
 
     @FXML
     public void setLevelHard() {
-
+        this.mainController.getSudokuGridController().initSudokuCells(SudokuBoardLevel.HARD);
     }
 
 
