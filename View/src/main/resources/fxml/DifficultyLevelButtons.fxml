@@ -19,18 +19,18 @@
       <HBox layoutY="35.0" prefWidth="350.0">
          <children>
             <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-               <ToggleButton fx:id="tgbEasy" mnemonicParsing="false" onAction="#setLevelEasy" prefHeight="30.0" prefWidth="100.0" text="%difficulty.level.easy">
+               <ToggleButton fx:id="tgbEasy" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="%difficulty.level.easy">
                   <toggleGroup>
                      <ToggleGroup fx:id="difficultyLevels" />
                   </toggleGroup>
                </ToggleButton>
             </VBox>
             <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-               <ToggleButton fx:id="tgbMedium" mnemonicParsing="false" onAction="#setLevelMedium" prefHeight="30.0" prefWidth="100.0" text="%difficulty.level.medium" toggleGroup="$difficultyLevels">
+               <ToggleButton fx:id="tgbMedium" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="%difficulty.level.medium" toggleGroup="$difficultyLevels">
                </ToggleButton>
             </VBox>
             <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-               <ToggleButton fx:id="tgbHard" mnemonicParsing="false" onAction="#setLevelHard" prefHeight="30.0" prefWidth="100.0" text="%difficulty.level.hard" toggleGroup="$difficultyLevels">
+               <ToggleButton fx:id="tgbHard" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="%difficulty.level.hard" toggleGroup="$difficultyLevels">
                </ToggleButton>
             </VBox>
          </children>

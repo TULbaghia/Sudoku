@@ -43,12 +43,13 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        sudokuGridController.initSudokuCells(SudokuBoardLevel.EASY);
-        difficultyLevelsController.tgbEasy.setSelected(true);
+        this.interactionBundle = resourceBundle;
+
         sudokuGridController.setParentController(this);
         languageChoiceController.setParentController(this);
         difficultyLevelsController.setParentController(this);
-        this.interactionBundle = resourceBundle;
+
+        difficultyLevelsController.tgbEasy.fire();
     }
 
     public Pane getMainPaneWindow() {

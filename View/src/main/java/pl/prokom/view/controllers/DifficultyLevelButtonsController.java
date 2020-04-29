@@ -2,15 +2,26 @@ package pl.prokom.view.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import pl.prokom.model.board.SudokuBoardLevel;
 
 public class DifficultyLevelButtonsController {
+    @FXML
+    ToggleButton tgbEasy;
+    @FXML
+    private ToggleButton tgbMedium;
+    @FXML
+    private ToggleButton tgbHard;
+    @FXML
+    private ToggleGroup difficultyLevels;
+    @FXML
+    private Pane difficultyLevelPane;
 
     /**
      * Reference to MainPaneWindowController instance to reach this.
      */
-    MainPaneWindowController mainController;
+    private MainPaneWindowController mainController;
 
     /**
      * Reference to MainPaneWindowController instance to reach this inside.
@@ -18,32 +29,33 @@ public class DifficultyLevelButtonsController {
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
     }
+
     /**
-     * ToggleButtons responsible for changing SudokuBoard diff. level.
+     * Initialization method that set-up necessary listeners.
      */
     @FXML
-    ToggleButton tgbEasy;
-    @FXML
-    ToggleButton tgbMedium;
-    @FXML
-    ToggleButton tgbHard;
-    @FXML
-    Pane difficultyLevelPane;
+    public void initialize() {
+        tgbEasy.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.EASY));
+        tgbMedium.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.MEDIUM));
+        tgbHard.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.HARD));
 
-    @FXML
-    public void setLevelEasy() {
-        this.mainController.getSudokuGridController().initSudokuCells(SudokuBoardLevel.EASY);
+        difficultyLevels.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
+            if (oldToggle != null) {
+                ToggleButton oldButton = (ToggleButton) oldToggle;
+                oldButton.setDisable(false);
+            }
+            if(newToggle != null) {
+                ToggleButton newButton = (ToggleButton) newToggle;
+                newButton.setDisable(true);
+            }
+        });
     }
 
-    @FXML
-    public void setLevelMedium() { this.mainController.getSudokuGridController().initSudokuCells(SudokuBoardLevel.MEDIUM); }
-
-    @FXML
-    public void setLevelHard() {
-        this.mainController.getSudokuGridController().initSudokuCells(SudokuBoardLevel.HARD);
-    }
-
-    public Pane getDifficultyLevelPane() {
-        return difficultyLevelPane;
+    /**
+     * Method to execute SudokuBoard difficulty change.
+     * @param sudokuBoardLevel
+     */
+    private void changeDifficultyLevel(SudokuBoardLevel sudokuBoardLevel) {
+        this.mainController.getSudokuGridController().initSudokuCells(sudokuBoardLevel);
     }
 }
