@@ -5,6 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.prokom.model.exception.IllegalFieldValueException;
 
 /**
@@ -83,9 +84,9 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
 
     @Override
     public String toString() {
-        return "SudokuField{"
-                + "value=" + this.value
-                + '}';
+        return new ToStringBuilder(this)
+                .append("value", value)
+                .toString();
     }
 
     @Override

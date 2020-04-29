@@ -1,7 +1,10 @@
 package pl.prokom.model.board;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.partial.group.SudokuBox;
@@ -194,13 +198,13 @@ public class SudokuBoard implements Cloneable, Serializable {
 
     @Override
     public String toString() {
-        return "SudokuBoard{"
-                + "miniBoxDim=" + miniBoxDim
-                + ", boardSize=" + boardSize
-                + ", sudokuSolver=" + sudokuSolver.toString()
-                + ", sudokuFields=" + sudokuFields.toString()
-                + ", sudokuGroups=" + sudokuGroups.toString()
-                + '}';
+        return new ToStringBuilder(this)
+                .append("miniBoxDim", miniBoxDim)
+                .append("boardSize", boardSize)
+                .append("sudokuSolver", sudokuSolver)
+                .append("sudokuFields", sudokuFields)
+                .append("sudokuGroups", sudokuGroups)
+                .toString();
     }
 
     @Override
@@ -235,12 +239,16 @@ public class SudokuBoard implements Cloneable, Serializable {
 
     @Override
     public SudokuBoard clone() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
         try {
-            SudokuBoard sudokuBoard = (SudokuBoard) super.clone();
-            sudokuBoard.initializeFields(getCopyOfBoard());
-            sudokuBoard.initializeGroups();
-            return sudokuBoard;
-        } catch (CloneNotSupportedException e) {
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (SudokuBoard) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;

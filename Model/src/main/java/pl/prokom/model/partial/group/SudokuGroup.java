@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.exception.IllegalPropertyChangeEventSourceException;
 import pl.prokom.model.partial.field.SudokuField;
@@ -100,9 +101,9 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
 
     @Override
     public String toString() {
-        return "SudokuGroup{"
-                + "sudokuFields=" + sudokuFields.toString()
-                + '}';
+        return new ToStringBuilder(this)
+                .append("sudokuFields", sudokuFields.toString())
+                .toString();
     }
 
     @Override
