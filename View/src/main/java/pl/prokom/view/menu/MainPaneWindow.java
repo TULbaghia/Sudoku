@@ -24,8 +24,6 @@ public class MainPaneWindow extends Application {
         FXMLLoader loader =
                 new FXMLLoader(this.getClass().getResource("/fxml/MainPaneWindow.fxml"));
         Pane mainPaneWindow = loader.load();
-        loader.<MainPaneWindowController>getController().setParentController(mainPaneWindow);
-
         Scene scene = new Scene(mainPaneWindow);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Sudoku");

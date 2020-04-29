@@ -23,9 +23,7 @@ public class SudokuBoardController {
     /**
      * Reference to MainPaneWindowController instance to reach this.
      */
-    private MainPaneWindowController mainController;
-
-    public SudokuBoardController() {}
+    MainPaneWindowController mainController;
 
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
@@ -40,16 +38,16 @@ public class SudokuBoardController {
     private SudokuBoard sudokuBoard;
     private SudokuBoardLevel sudokuBoardLevel;
 
-    /**
-     * Intializing controller functions.
-     * - init sudokuBoard,
-     * - filling sudoku GUI table,
-     */
-    @FXML
-    public void initialize() {
-        sudokuBoardLevel = SudokuBoardLevel.EASY;
-        initSudokuCells(sudokuBoardLevel);
-    }
+//    /**
+//     * Intializing controller functions.
+//     * - init sudokuBoard,
+//     * - filling sudoku GUI table,
+//     */
+//    @FXML
+//    public void initialize() {
+//        sudokuBoardLevel = SudokuBoardLevel.EASY;
+//        initSudokuCells(sudokuBoardLevel);
+//    }
 
     /**
      * Filling sudokuBoard gridPane by textFields with chosen number of ciphers.
