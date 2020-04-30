@@ -53,8 +53,7 @@ public class LanguageChoiceButtonsController {
     }
 
     public Stage extractStage(){
-        Stage stage = (Stage) this.mainController.getMainPaneWindow().getScene().getWindow();
-        return stage;
+        return (Stage) this.mainController.getMainPaneWindow().getScene().getWindow();
     }
 
 

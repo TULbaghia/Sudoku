@@ -63,19 +63,32 @@ public class SudokuBoardController {
         List<Integer> randomValues =
                 IntStream.range(0, cellsNumber).boxed().collect(Collectors.toList());
         Collections.shuffle(randomValues);
-        randomValues = randomValues.subList(0, sudokuBoardLevel.getFilledCells());
+        List<Integer> randomSetValues, userInputValues;
+        randomSetValues = randomValues.subList(0, sudokuBoardLevel.getFilledCells());
+        userInputValues = randomValues.subList(sudokuBoardLevel.getFilledCells(), cellsNumber);
 
         gridPane.getChildren()
                 .filtered(node -> node instanceof TextField)
                 .forEach(node -> ((TextField) node).clear());
 
-        randomValues.forEach(c -> {
+        randomSetValues.forEach(c -> {
                     TextField textField;
                     textField = new TextField(String.valueOf(sudokuBoard.get(c / 9, c % 9)));
                     textField.setAlignment(Pos.CENTER);
                     textField.setBackground(Background.EMPTY);
                     textField.setFont(new Font("Calibri", 20));
                     textField.setEditable(false);
+                    gridPane.add(textField, c / 9, c % 9);
+                }
+        );
+
+        userInputValues.forEach(c -> {
+                    TextField textField = new TextField("");
+                    textField.setAlignment(Pos.CENTER);
+                    textField.setBackground(Background.EMPTY);
+                    textField.setFont(new Font("Calibri", 20));
+                    textField.setStyle("-fx-text-fill: green; -fx-font-size: 21 px;");
+                    textField.setEditable(true);
                     gridPane.add(textField, c / 9, c % 9);
                 }
         );
