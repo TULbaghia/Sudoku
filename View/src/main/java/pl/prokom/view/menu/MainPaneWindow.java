@@ -14,8 +14,6 @@ public class MainPaneWindow extends Application {
         launch(args);
     }
 
-    StageCreator stageCreator = new StageCreator();
-
     /**
      * Initializing stage, scene and setting Stage instance features.
      * @param primaryStage currently using stage.
@@ -25,8 +23,7 @@ public class MainPaneWindow extends Application {
     public void start(Stage primaryStage) throws IOException {
         Locale.setDefault(new Locale("pl"));
         ResourceBundle bundle = ResourceBundle.getBundle("bundles.interaction");
-        stageCreator.prepareCreator(primaryStage, bundle);
-        stageCreator.createStage();
+        StageCreator.createStage(primaryStage, bundle, this.getClass());
     }
 
 
