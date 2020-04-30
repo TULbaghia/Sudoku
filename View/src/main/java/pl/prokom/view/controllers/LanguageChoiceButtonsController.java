@@ -13,6 +13,18 @@ import java.util.ResourceBundle;
 
 public class LanguageChoiceButtonsController {
     /**
+     * ToggleButtons responsible for changing theme language.
+     */
+    @FXML
+    ToggleButton tgbPolish;
+    @FXML
+    ToggleButton tgbEnglish;
+    @FXML
+    ToggleGroup languageSet;
+    @FXML
+    Pane setLanguagePolish;
+
+    /**
      * Reference to MainPaneWindowController instance to reach this.
      */
     MainPaneWindowController mainController;
@@ -26,17 +38,6 @@ public class LanguageChoiceButtonsController {
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
     }
-    /**
-     * ToggleButtons responsible for changing theme language.
-     */
-    @FXML
-    ToggleButton tgbPolish;
-    @FXML
-    ToggleButton tgbEnglish;
-    @FXML
-    ToggleGroup languageSet;
-    @FXML
-    Pane setLanguagePolish;
 
     @FXML
     public void setLanguagePolish() throws IOException {

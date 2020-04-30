@@ -5,11 +5,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import pl.prokom.view.controllers.MainPaneWindowController;
 import pl.prokom.view.stage.StageCreator;
 
 public class MainPaneWindow extends Application {

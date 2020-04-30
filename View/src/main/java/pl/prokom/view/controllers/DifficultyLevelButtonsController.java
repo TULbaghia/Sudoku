@@ -7,6 +7,9 @@ import javafx.scene.layout.Pane;
 import pl.prokom.model.board.SudokuBoardLevel;
 
 public class DifficultyLevelButtonsController {
+
+    public static String clickedToggleID = null;
+
     @FXML
     ToggleButton tgbEasy;
     @FXML
@@ -47,8 +50,17 @@ public class DifficultyLevelButtonsController {
             if(newToggle != null) {
                 ToggleButton newButton = (ToggleButton) newToggle;
                 newButton.setDisable(true);
+                clickedToggleID = newButton.getId();
             }
         });
+    }
+
+    public void triggerButton() {
+        difficultyLevels.getToggles().stream()
+                .map(x -> (ToggleButton) x)
+                .filter(x -> x.getId().equals(clickedToggleID))
+                .findFirst()
+                .ifPresentOrElse(ToggleButton::fire, () -> tgbEasy.fire());
     }
 
     /**
