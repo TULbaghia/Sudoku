@@ -4,12 +4,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import javafx.beans.property.adapter.JavaBeanIntegerProperty;
+import javafx.beans.property.adapter.JavaBeanIntegerPropertyBuilder;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
+import javafx.util.StringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
@@ -36,7 +41,6 @@ public class SudokuBoardController {
     GridPane gridPane;
 
     private SudokuBoard sudokuBoard;
-    private SudokuBoardLevel sudokuBoardLevel;
 
 //    /**
 //     * Intializing controller functions.
@@ -55,6 +59,9 @@ public class SudokuBoardController {
      * @param sudokuBoardLevel - difficuly level which is chosen by user (default = EASY).
      */
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
+        StringConverter converter = new IntegerStringConverter();
+        JavaBeanIntegerPropertyBuilder builder = JavaBeanIntegerPropertyBuilder.create();
+
         SudokuSolver<SudokuBoard> sudokuSolver = new BacktrackingSudokuSolver();
         sudokuBoard = new SudokuBoard(sudokuSolver);
         sudokuBoard.solveGame();
@@ -90,6 +97,14 @@ public class SudokuBoardController {
                     textField.setStyle("-fx-text-fill: green; -fx-font-size: 21 px;");
                     textField.setEditable(true);
                     gridPane.add(textField, c / 9, c % 9);
+
+                    try {
+                        JavaBeanIntegerProperty integerProperty = builder.bean(sudokuBoard.getSudokuField(c / 9, c % 9))
+                                        .name("value").getter("getFieldValue").setter("setFieldValue").build();
+                        textField.textProperty().bindBidirectional(integerProperty, converter);
+                    } catch (NoSuchMethodException e) {
+                        throw new IllegalArgumentException(e);
+                    }
                 }
         );
     }

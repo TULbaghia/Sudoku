@@ -19,7 +19,6 @@ public class LanguageChoiceButtonsController {
 
     private ResourceBundle bundle = ResourceBundle.getBundle("bundles.interaction");
 
-    private StageCreator stageCreator = new StageCreator();
     /**
      * Reference to MainPaneWindowController instance to reach this inside.
      */
@@ -41,15 +40,13 @@ public class LanguageChoiceButtonsController {
     @FXML
     public void setLanguagePolish() throws IOException {
         Locale.setDefault(new Locale("pl"));
-        stageCreator.prepareCreator(extractStage(), bundle.getBundle("bundles.interaction", Locale.getDefault()));
-        stageCreator.createStage();
+        StageCreator.createStage(extractStage(), bundle.getBundle("bundles.interaction", Locale.getDefault()), this.getClass());
     }
 
     @FXML
     public void setLanguageEnglish() throws IOException {
         Locale.setDefault(new Locale("en"));
-        stageCreator.prepareCreator(extractStage(), bundle.getBundle("bundles.interaction", Locale.getDefault()));
-        stageCreator.createStage();
+        StageCreator.createStage(extractStage(), bundle.getBundle("bundles.interaction", Locale.getDefault()), this.getClass());
     }
 
     public Stage extractStage(){

@@ -5,8 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="212.0" prefWidth="362.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.SudokuBoardMenuButtonsController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="204.0" prefWidth="356.0" style="-fx-background-color: #FF000010;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.SudokuBoardMenuButtonsController">
    <children>
       <VBox layoutX="155.0" layoutY="23.0" prefHeight="66.0" prefWidth="184.0">
          <children>
