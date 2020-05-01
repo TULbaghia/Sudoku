@@ -1,5 +1,7 @@
 package pl.prokom.view.controllers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,28 +32,36 @@ public class SudokuBoardController {
      */
     MainPaneWindowController mainController;
 
-    public void setParentController(MainPaneWindowController mainPaneWindowController) {
-        this.mainController = mainPaneWindowController;
-    }
-
     /**
      * GridPane instance with all sudokuBoard cells as a TextField instances.
      */
     @FXML
     GridPane gridPane;
 
-    private SudokuBoard sudokuBoard;
+    /**
+     * Keeps SudokuBoard object
+     */
+    private SudokuBoard sudokuBoard = new SudokuBoard(new BacktrackingSudokuSolver());
 
-//    /**
-//     * Intializing controller functions.
-//     * - init sudokuBoard,
-//     * - filling sudoku GUI table,
-//     */
-//    @FXML
-//    public void initialize() {
-//        sudokuBoardLevel = SudokuBoardLevel.EASY;
-//        initSudokuCells(sudokuBoardLevel);
-//    }
+    /**
+     * Keeps references to JBIP, due to WeakReference in Observable
+     */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private List<JavaBeanIntegerProperty> javaBeanIntegerProperties = new ArrayList<>();
+
+    JavaBeanIntegerPropertyBuilder builder = new JavaBeanIntegerPropertyBuilder();
+
+    /**
+     * Stores references to TextFields to easly manipulate data during reload
+     */
+    private List<TextField> textFields;
+
+    @SuppressWarnings("rawtypes")
+    StringConverter converter = new IntegerStringConverter();
+
+    public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        this.mainController = mainPaneWindowController;
+    }
 
     /**
      * Filling sudokuBoard gridPane by textFields with chosen number of ciphers.
@@ -59,53 +69,60 @@ public class SudokuBoardController {
      * @param sudokuBoardLevel - difficuly level which is chosen by user (default = EASY).
      */
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
-        StringConverter converter = new IntegerStringConverter();
-        JavaBeanIntegerPropertyBuilder builder = JavaBeanIntegerPropertyBuilder.create();
+        IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> sudokuBoard.reset(x / 9, x % 9));
+        SudokuBoard sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
+        sudokuBoardTmp.solveGame();
 
-        SudokuSolver<SudokuBoard> sudokuSolver = new BacktrackingSudokuSolver();
-        sudokuBoard = new SudokuBoard(sudokuSolver);
-        sudokuBoard.solveGame();
-
-        Integer cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
+        int cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
         List<Integer> randomValues =
                 IntStream.range(0, cellsNumber).boxed().collect(Collectors.toList());
         Collections.shuffle(randomValues);
+
         List<Integer> randomSetValues, userInputValues;
         randomSetValues = randomValues.subList(0, sudokuBoardLevel.getFilledCells());
         userInputValues = randomValues.subList(sudokuBoardLevel.getFilledCells(), cellsNumber);
 
-        gridPane.getChildren()
-                .filtered(node -> node instanceof TextField)
-                .forEach(node -> ((TextField) node).clear());
-
         randomSetValues.forEach(c -> {
-                    TextField textField;
-                    textField = new TextField(String.valueOf(sudokuBoard.get(c / 9, c % 9)));
-                    textField.setAlignment(Pos.CENTER);
-                    textField.setBackground(Background.EMPTY);
-                    textField.setFont(new Font("Calibri", 20));
-                    textField.setEditable(false);
-                    gridPane.add(textField, c / 9, c % 9);
-                }
-        );
+            textFields.get(c).setEditable(false);
+            textFields.get(c).setStyle("");
+            javaBeanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
+        });
 
         userInputValues.forEach(c -> {
-                    TextField textField = new TextField("");
-                    textField.setAlignment(Pos.CENTER);
-                    textField.setBackground(Background.EMPTY);
-                    textField.setFont(new Font("Calibri", 20));
-                    textField.setStyle("-fx-text-fill: green; -fx-font-size: 21 px;");
-                    textField.setEditable(true);
-                    gridPane.add(textField, c / 9, c % 9);
+            textFields.get(c).setStyle("-fx-text-fill: red; -fx-font-size: 20 px;");
+            textFields.get(c).setEditable(true);
+            javaBeanIntegerProperties.get(c).fireValueChangedEvent();
+        });
+    }
 
-                    try {
-                        JavaBeanIntegerProperty integerProperty = builder.bean(sudokuBoard.getSudokuField(c / 9, c % 9))
-                                        .name("value").getter("getFieldValue").setter("setFieldValue").build();
-                        textField.textProperty().bindBidirectional(integerProperty, converter);
-                    } catch (NoSuchMethodException e) {
-                        throw new IllegalArgumentException(e);
-                    }
-                }
-        );
+    @FXML
+    public void initialize() {
+        textFields = Arrays.asList(new TextField[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
+
+        IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> {
+            TextField textField = new TextField(String.valueOf(sudokuBoard.get(x / 9, x % 9)));
+            textField.setAlignment(Pos.CENTER);
+            textField.setBackground(Background.EMPTY);
+            textField.setFont(new Font("Calibri", 20));
+            gridPane.add(textField, x / 9, x % 9);
+            textFields.set(x, textField);
+
+            try {
+                JavaBeanIntegerProperty integerProperty = builder.bean(sudokuBoard.getSudokuField(x / 9, x % 9))
+                        .name("value").getter("getFieldValue").setter("setFieldValue").build();
+                javaBeanIntegerProperties.add(integerProperty);
+                textField.textProperty().bindBidirectional(integerProperty, converter);
+            } catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException(e);
+            }
+        });
+    }
+
+    public void setDisabled() {
+
+    }
+
+    public void setEnabled() {
+
     }
 }
