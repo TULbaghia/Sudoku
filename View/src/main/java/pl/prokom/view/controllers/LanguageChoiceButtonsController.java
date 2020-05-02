@@ -12,6 +12,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LanguageChoiceButtonsController {
+
+    private static String clickedToggleID = null;
     /**
      * ToggleButtons responsible for changing theme language.
      */
@@ -32,10 +34,34 @@ public class LanguageChoiceButtonsController {
     private ResourceBundle bundle = ResourceBundle.getBundle("bundles.interaction");
 
     /**
+     * Initialization method that set-up necessary listeners.
+     */
+    @FXML
+    public void initialize() {
+        languageSet.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
+            if (oldToggle != null) {
+                ToggleButton oldButton = (ToggleButton) oldToggle;
+                oldButton.setDisable(false);
+            }
+            if(newToggle != null) {
+                ToggleButton newButton = (ToggleButton) newToggle;
+                newButton.setDisable(true);
+                clickedToggleID = newButton.getId();
+            }
+        });
+    }
+    /**
      * Reference to MainPaneWindowController instance to reach this inside.
      */
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
+        languageSet.getToggles().stream()
+                .map(x -> (ToggleButton) x)
+                .filter(x -> x.getId().equals(clickedToggleID))
+                .findFirst()
+                .ifPresentOrElse(x -> x.setDisable(true), () -> {
+                    tgbPolish.setDisable(true);
+                });
     }
 
     @FXML

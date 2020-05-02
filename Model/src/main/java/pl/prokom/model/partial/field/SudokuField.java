@@ -58,7 +58,7 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
      */
     public void setFieldValue(final int value) throws IllegalFieldValueException {
         //DEBUG ONLY
-        System.out.println("Chaning value from: " + this.value + " to " + value);
+//        System.out.println("Chaning value from: " + this.value + " to " + value);
         if(value == 0) {
             resetValue();
             return;

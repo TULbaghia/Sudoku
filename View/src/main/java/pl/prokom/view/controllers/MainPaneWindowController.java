@@ -47,13 +47,13 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.interactionBundle = resourceBundle;
 
-        sudokuGridController.setParentController(this);
         languageChoiceController.setParentController(this);
+
+        sudokuGridController.setParentController(this);
         authorsBundleController.setParentController(this);
-        difficultyLevelsController.setParentController(this);
         sudokuMenuController.setParentController(this);
 
-        difficultyLevelsController.triggerButton();
+        difficultyLevelsController.setParentController(this);
     }
 
     public Pane getMainPaneWindow() {
