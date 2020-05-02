@@ -41,6 +41,7 @@ public class SudokuBoardController {
      * Keeps SudokuBoard object
      */
     private SudokuBoard sudokuBoard = new SudokuBoard(new BacktrackingSudokuSolver());
+    private SudokuBoard sudokuFromFile;
 
     /**
      * Keeps references to JBIP, due to WeakReference in Observable
@@ -54,6 +55,11 @@ public class SudokuBoardController {
      * Stores references to TextFields to easly manipulate data during reload
      */
     private List<TextField> textFields;
+
+    /**
+     * Stores references to current difficulty level od SudokuBoard.
+     */
+    private SudokuBoardLevel boardCurrentLevel;
 
     @SuppressWarnings("rawtypes")
     StringConverter converter = new FieldStringConverter();
@@ -69,8 +75,11 @@ public class SudokuBoardController {
      */
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> sudokuBoard.reset(x / 9, x % 9));
-        SudokuBoard sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
-        sudokuBoardTmp.solveGame();
+        SudokuBoard sudokuBoardTmp;
+        if (sudokuFromFile == null) {
+            sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
+            sudokuBoardTmp.solveGame();
+        } else sudokuBoardTmp = this.sudokuFromFile;
 
         int cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
         List<Integer> randomValues =
@@ -136,5 +145,17 @@ public class SudokuBoardController {
                 throw new IllegalArgumentException(e);
             }
         });
+    }
+
+    public void setSudokuFromFile(SudokuBoard sudokuFromFile){
+        this.sudokuFromFile = sudokuFromFile;
+    }
+
+    public void setBoardCurrentLevel(SudokuBoardLevel boardCurrentLevel) {
+        this.boardCurrentLevel = boardCurrentLevel;
+    }
+
+    public SudokuBoardLevel getBoardCurrentLevel() {
+        return boardCurrentLevel;
     }
 }

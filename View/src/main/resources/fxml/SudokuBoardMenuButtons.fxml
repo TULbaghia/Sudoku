@@ -16,5 +16,11 @@
             </Button>
          </children>
       </VBox>
+      <VBox layoutX="155.0" layoutY="82.0" prefHeight="86.0" prefWidth="184.0">
+         <children>
+            <Button fx:id="sudokuReadButton" alignment="CENTER" mnemonicParsing="false" onAction="#readSudokuFromFile" prefHeight="56.0" prefWidth="189.0" text="%sudoku.file.read" />
+            <Button fx:id="writeSudokuButton" alignment="CENTER" mnemonicParsing="false" onAction="#writeSudokuToFile" prefHeight="61.0" prefWidth="205.0" text="%sudoku.file.write" />
+         </children>
+      </VBox>
    </children>
 </Pane>

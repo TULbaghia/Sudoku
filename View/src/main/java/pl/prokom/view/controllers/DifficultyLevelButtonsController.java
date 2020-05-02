@@ -69,5 +69,7 @@ public class DifficultyLevelButtonsController {
      */
     private void changeDifficultyLevel(SudokuBoardLevel sudokuBoardLevel) {
         this.mainController.getSudokuGridController().initSudokuCells(sudokuBoardLevel);
+        this.mainController.getSudokuGridController().setBoardCurrentLevel(sudokuBoardLevel);
     }
+
 }
