@@ -148,14 +148,23 @@ public class SudokuBoardController {
         });
     }
 
+    /**
+     * Set deserialized SudokuBoard instance to SudokuBoardController field. (in case of initializing it)
+     */
     public void setSudokuFromFile(SudokuBoard sudokuFromFile){
         this.sudokuFromFile = sudokuFromFile;
     }
 
+    /**
+     * Changing difficulty level of SudokuBoard (DifficultyLevelButtonsController).
+     */
     public void setBoardCurrentLevel(SudokuBoardLevel boardCurrentLevel) {
         this.boardCurrentLevel = boardCurrentLevel;
     }
 
+    /**
+     * Get current difficulty level of actual board.
+     */
     public SudokuBoardLevel getBoardCurrentLevel() {
         return boardCurrentLevel;
     }

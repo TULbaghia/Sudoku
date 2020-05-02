@@ -54,13 +54,23 @@ public class SudokuBoardMenuButtonsController {
         this.mainController = mainPaneWindowController;
     }
 
+    /**
+     * Create valid fileSudokuBoardDao instance.
+     */
+    private void initFileSudokuBoardDao(String filePath) {
+        SudokuBoardDaoFactory sudokuBoardDaoFactory = new SudokuBoardDaoFactory();
+        fileSudokuBoardDao = sudokuBoardDaoFactory.getFileDao(filePath);
+    }
+
+    /**
+     * Serialize instance of SudokuBoard to a valid file.
+     */
     @FXML
     public void writeSudokuToFile(){
         String filePath;
         try {
             filePath = fileChooser.showOpenDialog(this.mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
-            SudokuBoardDaoFactory sudokuBoardDaoFactory = new SudokuBoardDaoFactory();
-            fileSudokuBoardDao = sudokuBoardDaoFactory.getFileDao(filePath);
+            initFileSudokuBoardDao(filePath);
             fileSudokuBoardDao.write(this.mainController.getSudokuGridController().getSudokuBoard());
             System.out.println("Zapisano do pliku.");
         } catch (NullPointerException e) {
@@ -69,13 +79,15 @@ public class SudokuBoardMenuButtonsController {
         }
     }
 
+    /**
+     * Deserialize instance od SudokuBoard, set actual Sudoku difficulty level and initialize deserialized boaard.
+     */
     @FXML
     public void readSudokuFromFile(){
         String filePath;
         try {
             filePath = fileChooser.showOpenDialog(this.mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
-            SudokuBoardDaoFactory sudokuBoardDaoFactory = new SudokuBoardDaoFactory();
-            fileSudokuBoardDao = sudokuBoardDaoFactory.getFileDao(filePath);
+            initFileSudokuBoardDao(filePath);
             this.mainController.getSudokuGridController().setSudokuFromFile(fileSudokuBoardDao.read());
 
             SudokuBoardLevel sudokuBoardLevel = this.mainController.getSudokuGridController().getBoardCurrentLevel();
