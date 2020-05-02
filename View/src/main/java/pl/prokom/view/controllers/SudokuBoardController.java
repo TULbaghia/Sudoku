@@ -80,6 +80,7 @@ public class SudokuBoardController {
             sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
             sudokuBoardTmp.solveGame();
         } else sudokuBoardTmp = this.sudokuFromFile;
+        this.sudokuFromFile = null;
 
         int cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
         List<Integer> randomValues =
@@ -157,5 +158,9 @@ public class SudokuBoardController {
 
     public SudokuBoardLevel getBoardCurrentLevel() {
         return boardCurrentLevel;
+    }
+
+    public SudokuBoard getSudokuBoard() {
+        return sudokuBoard;
     }
 }

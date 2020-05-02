@@ -56,7 +56,17 @@ public class SudokuBoardMenuButtonsController {
 
     @FXML
     public void writeSudokuToFile(){
-
+        String filePath;
+        try {
+            filePath = fileChooser.showOpenDialog(this.mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
+            SudokuBoardDaoFactory sudokuBoardDaoFactory = new SudokuBoardDaoFactory();
+            fileSudokuBoardDao = sudokuBoardDaoFactory.getFileDao(filePath);
+            fileSudokuBoardDao.write(this.mainController.getSudokuGridController().getSudokuBoard());
+            System.out.println("Zapisano do pliku.");
+        } catch (NullPointerException e) {
+            System.out.println("Niepoprawny pliku.");
+            System.err.println(e.getMessage());
+        }
     }
 
     @FXML
@@ -67,6 +77,7 @@ public class SudokuBoardMenuButtonsController {
             SudokuBoardDaoFactory sudokuBoardDaoFactory = new SudokuBoardDaoFactory();
             fileSudokuBoardDao = sudokuBoardDaoFactory.getFileDao(filePath);
             this.mainController.getSudokuGridController().setSudokuFromFile(fileSudokuBoardDao.read());
+
             SudokuBoardLevel sudokuBoardLevel = this.mainController.getSudokuGridController().getBoardCurrentLevel();
             this.mainController.getSudokuGridController().initSudokuCells(sudokuBoardLevel);
         } catch (NullPointerException e) {
