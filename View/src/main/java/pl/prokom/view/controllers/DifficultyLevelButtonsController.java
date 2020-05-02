@@ -31,6 +31,11 @@ public class DifficultyLevelButtonsController {
      */
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
+        difficultyLevels.getToggles().stream()
+                .map(x -> (ToggleButton) x)
+                .filter(x -> x.getId().equals(clickedToggleID))
+                .findFirst()
+                .ifPresentOrElse(ToggleButton::fire, () -> tgbEasy.fire());
     }
 
     /**
@@ -53,14 +58,6 @@ public class DifficultyLevelButtonsController {
                 clickedToggleID = newButton.getId();
             }
         });
-    }
-
-    public void triggerButton() {
-        difficultyLevels.getToggles().stream()
-                .map(x -> (ToggleButton) x)
-                .filter(x -> x.getId().equals(clickedToggleID))
-                .findFirst()
-                .ifPresentOrElse(ToggleButton::fire, () -> tgbEasy.fire());
     }
 
     /**
