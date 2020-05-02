@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="authorsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="75.0" prefWidth="200.0" style="-fx-background-color: #FF000010;"
+      xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="pl.prokom.view.controllers.AuthorsController">
+
+    <children>
+        <Label alignment="CENTER" prefHeight="20" prefWidth="200.0" text="Autorzy">
+            <font>
+                <Font size="13.0"/>
+            </font>
+        </Label>
+        <VBox layoutY="30.0" prefWidth="200.0">
+            <children>
+                <Label fx:id="authorsInfo" alignment="CENTER" textAlignment="CENTER" prefHeight="32.5" prefWidth="350.0" text="Autorzy">
+                    <font>
+                        <Font size="12.0"/>
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
+</Pane>
