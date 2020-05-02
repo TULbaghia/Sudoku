@@ -1,13 +1,10 @@
 package pl.prokom.view.controllers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import javafx.beans.property.adapter.JavaBeanIntegerProperty;
 import javafx.beans.property.adapter.JavaBeanIntegerPropertyBuilder;
 import javafx.fxml.FXML;
@@ -18,12 +15,11 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
-import javafx.util.converter.IntegerStringConverter;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
-import pl.prokom.model.solver.SudokuSolver;
 import pl.prokom.view.converter.FieldStringConverter;
+import javafx.beans.binding.Bindings;
 
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.
@@ -96,20 +92,23 @@ public class SudokuBoardController {
             textFields.get(c).setEditable(true);
             javaBeanIntegerProperties.get(c).fireValueChangedEvent();
         });
+
+        //Temporarly alternative to bindBidirectional
+        randomValues.forEach(x -> textFields.get(x).setText(converter.toString(javaBeanIntegerProperties.get(x).get())));
+
     }
 
     @FXML
     public void initialize() {
         textFields = Arrays.asList(new TextField[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
         javaBeanIntegerProperties = Arrays.asList(new JavaBeanIntegerProperty[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
-        UnaryOperator<TextFormatter.Change> filter = change -> change.getText().matches("[0-9]*") ? change : null;
 
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> {
             TextField textField = new TextField(String.valueOf(sudokuBoard.get(x / 9, x % 9)));
             textField.setAlignment(Pos.CENTER);
             textField.setBackground(Background.EMPTY);
             textField.setFont(new Font("Calibri", 20));
-            textField.setTextFormatter(new TextFormatter<>(filter));
+            textField.setTextFormatter(new TextFormatter<>(change -> change.getControlNewText().matches("[0-9]?") ? change : null));
             gridPane.add(textField, x / 9, x % 9);
             textFields.set(x, textField);
 
@@ -121,9 +120,18 @@ public class SudokuBoardController {
                 JavaBeanIntegerProperty integerProperty = builder.bean(sudokuBoard.getSudokuField(x / 9, x % 9))
                         .name("value").getter("getFieldValue").setter("setFieldValue").build();
 
-                textField.textProperty().bindBidirectional(integerProperty, converter);
-                javaBeanIntegerProperties.set(x, integerProperty);
+                //Temporarly alternative to bindBidirectional
+                textField.textProperty().addListener((observableValue, s, t1) -> {
+                    try {
+                        sudokuBoard.set(x / 9, x % 9, (Integer) converter.fromString(t1));
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
+                });
 
+                //Temporarly disabled due to no idea how to handle exception
+//                textField.textProperty().bindBidirectional(integerProperty, converter);
+                javaBeanIntegerProperties.set(x, integerProperty);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException(e);
             }

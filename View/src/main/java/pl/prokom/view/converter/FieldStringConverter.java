@@ -17,7 +17,7 @@ public class FieldStringConverter extends StringConverter<Integer> {
             return null;
         } else {
             value = value.trim();
-            return value.length() < 1 ? null : Integer.valueOf(value);
+            return value.length() < 1 ? 0 : Integer.parseInt(value);
         }
     }
 }
