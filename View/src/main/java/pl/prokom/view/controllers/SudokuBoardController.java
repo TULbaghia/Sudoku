@@ -133,6 +133,7 @@ public class SudokuBoardController {
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> {
             TextField textField = new TextField(
                     String.valueOf(sudokuBoard.get(x / 9, x % 9)));
+            logger.info("Initialize SudokuBoard with {}", String.valueOf(sudokuBoard.get(x / 9, x % 9)));
             textField.setAlignment(Pos.CENTER);
             textField.setBackground(Background.EMPTY);
             textField.setFont(new Font("Calibri", 20));
@@ -163,7 +164,7 @@ public class SudokuBoardController {
                         try {
                             sudokuBoard.getSudokuField(x / 9, x % 9).validate(numVal);
                         } catch (IllegalFieldValueException e) {
-                            System.err.println(e.getMessage());
+                            logger.error(e.getMessage());
                             numVal = 0;
                         }
                         return numVal;
