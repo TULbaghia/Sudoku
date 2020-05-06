@@ -57,19 +57,26 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
      * @throws IllegalFieldValueException when value not in given range
      */
     public void setFieldValue(final int value) throws IllegalFieldValueException {
-        //DEBUG ONLY
-        //System.out.println("Chaning value from: " + this.value + " to " + value);
         if (value == 0) {
             resetValue();
             return;
         }
+        if (this.value != value) {
+            validate(value);
+            this.value = value;
+        }
+    }
+
+    /**
+     * Test value wheather can be inserted.
+     *
+     * @param value value you want to test if can be insert
+     */
+    public void validate(final int value) throws IllegalFieldValueException{
         if (value < 1) {
             throw new IllegalFieldValueException("Value '" + value + "' is not in allowed range.");
         }
-        if (this.value != value) {
-            pcs.firePropertyChange("value", this.value, value);
-            this.value = value;
-        }
+        pcs.firePropertyChange("value", this.value, value);
     }
 
     /**

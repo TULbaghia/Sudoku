@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.adapter.JavaBeanIntegerProperty;
 import javafx.beans.property.adapter.JavaBeanIntegerPropertyBuilder;
 import javafx.fxml.FXML;
@@ -18,8 +17,8 @@ import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.board.SudokuBoardLevel;
+import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
-import pl.prokom.view.converter.FieldStringConverter;
 
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.
@@ -47,7 +46,7 @@ public class SudokuBoardController {
      * Keeps references to JBIP, due to WeakReference in Observable.
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private List<JavaBeanIntegerProperty> javaBeanIntegerProperties;
+    private List<JavaBeanIntegerProperty> jBIntegerProperties;
 
     JavaBeanIntegerPropertyBuilder builder = new JavaBeanIntegerPropertyBuilder();
 
@@ -61,9 +60,6 @@ public class SudokuBoardController {
      */
     private SudokuBoardLevel boardCurrentLevel;
 
-    @SuppressWarnings("rawtypes")
-    StringConverter converter = new FieldStringConverter();
-
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
     }
@@ -75,7 +71,7 @@ public class SudokuBoardController {
      */
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize())
-                .forEach(x -> sudokuBoard.reset(x / 9, x % 9));
+                .forEach(x -> jBIntegerProperties.get(x).set(0));
         SudokuBoard sudokuBoardTmp;
 
         int cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
@@ -95,13 +91,12 @@ public class SudokuBoardController {
             randomSetValues.forEach(c -> {
                 textFields.get(c).setStyle("");
                 textFields.get(c).setEditable(false);
-                javaBeanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
+                jBIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
             });
 
             userInputValues.forEach(c -> {
                 textFields.get(c).setStyle("-fx-text-fill: red; -fx-font-size: 20 px;");
                 textFields.get(c).setEditable(true);
-                javaBeanIntegerProperties.get(c).fireValueChangedEvent();
             });
         } else {
             sudokuBoardTmp = sudokuFromFile;
@@ -115,21 +110,16 @@ public class SudokuBoardController {
                     textFields.get(c).setStyle("");
                     textFields.get(c).setEditable(false);
                 }
-                javaBeanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
-                javaBeanIntegerProperties.get(c).fireValueChangedEvent();
+                jBIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
             });
         }
-
-        //Temporarly alternative to bindBidirectional
-        randomValues.forEach(x -> textFields.get(x).setText(
-                converter.toString(javaBeanIntegerProperties.get(x).get())));
     }
 
     @FXML
     public void initialize() {
         textFields = Arrays.asList(
                 new TextField[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
-        javaBeanIntegerProperties = Arrays.asList(
+        jBIntegerProperties = Arrays.asList(
                 new JavaBeanIntegerProperty[
                         sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
 
@@ -144,29 +134,42 @@ public class SudokuBoardController {
             gridPane.add(textField, x / 9, x % 9);
             textFields.set(x, textField);
 
-            textField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
-                textField.setText(converter.toString(javaBeanIntegerProperties.get(x).get()));
-            });
-
             try {
                 JavaBeanIntegerProperty integerProperty = builder
                         .bean(sudokuBoard.getSudokuField(x / 9, x % 9))
                         .name("value").getter("getFieldValue").setter("setFieldValue")
                         .build();
 
-                //Temporarly alternative to bindBidirectional
-                textField.textProperty().addListener((observableValue, t0, t1) -> {
-                    try {
-                        javaBeanIntegerProperties.get(x).set((Integer) converter.fromString(t1));
-                        //sudokuBoard.set(x / 9, x % 9, (Integer) converter.fromString(t1));
-                    } catch (Exception e) {
-                        System.err.println(e.getMessage());
+                StringConverter<Number> converter = new StringConverter<>() {
+                    @Override
+                    public String toString(Number number) {
+                        int value = number.intValue();
+                        return value == 0 ? "" : Integer.toString(value);
                     }
+
+                    @Override
+                    public Integer fromString(String value) {
+                        if (value == null || value.trim().length() < 1) {
+                            return 0;
+                        }
+                        int numVal = Integer.parseInt(value.trim());
+                        try {
+                            sudokuBoard.getSudokuField(x / 9, x % 9).validate(numVal);
+                        } catch (IllegalFieldValueException e) {
+                            System.err.println(e.getMessage());
+                            numVal = 0;
+                        }
+                        return numVal;
+                    }
+                };
+
+                textField.textProperty().bindBidirectional(integerProperty, converter);
+
+                textField.focusedProperty().addListener(observable -> {
+                    textField.setText(converter.toString(integerProperty.get()));
                 });
 
-                //Temporarly disabled due to no idea how to handle exception
-                //textField.textProperty().bindBidirectional(integerProperty, converter);
-                javaBeanIntegerProperties.set(x, integerProperty);
+                jBIntegerProperties.set(x, integerProperty);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException(e);
             }
