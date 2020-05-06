@@ -19,11 +19,16 @@ import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.
  */
 public class SudokuBoardController {
+    /**
+     * Logger instance. Logging events of SudokuBoardController class.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(SudokuBoardController.class);
 
     /**
      * Reference to MainPaneWindowController instance to reach this.
@@ -70,6 +75,7 @@ public class SudokuBoardController {
      * @param sudokuBoardLevel - difficuly level which is chosen by user (default = EASY).
      */
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
+
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize())
                 .forEach(x -> jBIntegerProperties.get(x).set(0));
         SudokuBoard sudokuBoardTmp;
@@ -117,6 +123,7 @@ public class SudokuBoardController {
 
     @FXML
     public void initialize() {
+        logger.info("Initializtion of SudokuBoardController.");
         textFields = Arrays.asList(
                 new TextField[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
         jBIntegerProperties = Arrays.asList(

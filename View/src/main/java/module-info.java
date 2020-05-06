@@ -5,6 +5,7 @@ module pl.prokom.view {
     requires pl.prokom.model;
     requires pl.prokom.dao.file;
     requires pl.prokom.dao.api;
+    requires slf4j.api;
 
     exports pl.prokom.view.controllers;
     exports pl.prokom.view.menu;
