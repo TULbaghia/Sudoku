@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.adapter.JavaBeanIntegerProperty;
 import javafx.beans.property.adapter.JavaBeanIntegerPropertyBuilder;
 import javafx.fxml.FXML;
@@ -19,7 +20,6 @@ import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.view.converter.FieldStringConverter;
-import javafx.beans.binding.Bindings;
 
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.
@@ -38,13 +38,13 @@ public class SudokuBoardController {
     GridPane gridPane;
 
     /**
-     * Keeps SudokuBoard object
+     * Keeps SudokuBoard object.
      */
     private static SudokuBoard sudokuBoard = new SudokuBoard(new BacktrackingSudokuSolver());
     private SudokuBoard sudokuFromFile = null;
 
     /**
-     * Keeps references to JBIP, due to WeakReference in Observable
+     * Keeps references to JBIP, due to WeakReference in Observable.
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private List<JavaBeanIntegerProperty> javaBeanIntegerProperties;
@@ -52,7 +52,7 @@ public class SudokuBoardController {
     JavaBeanIntegerPropertyBuilder builder = new JavaBeanIntegerPropertyBuilder();
 
     /**
-     * Stores references to TextFields to easly manipulate data during reload
+     * Stores references to TextFields to easly manipulate data during reload.
      */
     private List<TextField> textFields;
 
@@ -74,7 +74,8 @@ public class SudokuBoardController {
      * @param sudokuBoardLevel - difficuly level which is chosen by user (default = EASY).
      */
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
-        IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> sudokuBoard.reset(x / 9, x % 9));
+        IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize())
+                .forEach(x -> sudokuBoard.reset(x / 9, x % 9));
         SudokuBoard sudokuBoardTmp;
 
         int cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
@@ -120,43 +121,51 @@ public class SudokuBoardController {
         }
 
         //Temporarly alternative to bindBidirectional
-        randomValues.forEach(x -> textFields.get(x).setText(converter.toString(javaBeanIntegerProperties.get(x).get())));
+        randomValues.forEach(x -> textFields.get(x).setText(
+                converter.toString(javaBeanIntegerProperties.get(x).get())));
     }
 
     @FXML
     public void initialize() {
-        textFields = Arrays.asList(new TextField[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
-        javaBeanIntegerProperties = Arrays.asList(new JavaBeanIntegerProperty[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
+        textFields = Arrays.asList(
+                new TextField[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
+        javaBeanIntegerProperties = Arrays.asList(
+                new JavaBeanIntegerProperty[
+                        sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
 
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> {
-            TextField textField = new TextField(String.valueOf(sudokuBoard.get(x / 9, x % 9)));
+            TextField textField = new TextField(
+                    String.valueOf(sudokuBoard.get(x / 9, x % 9)));
             textField.setAlignment(Pos.CENTER);
             textField.setBackground(Background.EMPTY);
             textField.setFont(new Font("Calibri", 20));
-            textField.setTextFormatter(new TextFormatter<>(change -> change.getControlNewText().matches("[0-9]?") ? change : null));
+            textField.setTextFormatter(new TextFormatter<>(change ->
+                    change.getControlNewText().matches("[0-9]?") ? change : null));
             gridPane.add(textField, x / 9, x % 9);
             textFields.set(x, textField);
 
-            textField.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
+            textField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
                 textField.setText(converter.toString(javaBeanIntegerProperties.get(x).get()));
             });
 
             try {
-                JavaBeanIntegerProperty integerProperty = builder.bean(sudokuBoard.getSudokuField(x / 9, x % 9))
-                        .name("value").getter("getFieldValue").setter("setFieldValue").build();
+                JavaBeanIntegerProperty integerProperty = builder
+                        .bean(sudokuBoard.getSudokuField(x / 9, x % 9))
+                        .name("value").getter("getFieldValue").setter("setFieldValue")
+                        .build();
 
                 //Temporarly alternative to bindBidirectional
-                textField.textProperty().addListener((observableValue, s, t1) -> {
+                textField.textProperty().addListener((observableValue, t0, t1) -> {
                     try {
                         javaBeanIntegerProperties.get(x).set((Integer) converter.fromString(t1));
-//                        sudokuBoard.set(x / 9, x % 9, (Integer) converter.fromString(t1));
+                        //sudokuBoard.set(x / 9, x % 9, (Integer) converter.fromString(t1));
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
                     }
                 });
 
                 //Temporarly disabled due to no idea how to handle exception
-//                textField.textProperty().bindBidirectional(integerProperty, converter);
+                //textField.textProperty().bindBidirectional(integerProperty, converter);
                 javaBeanIntegerProperties.set(x, integerProperty);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException(e);
@@ -165,9 +174,10 @@ public class SudokuBoardController {
     }
 
     /**
-     * Set deserialized SudokuBoard instance to SudokuBoardController field. (in case of initializing it)
+     * Set deserialized SudokuBoard instance to SudokuBoardController field.
+     * (in case of initializing it)
      */
-    public void setSudokuFromFile(SudokuBoard sudokuFromFile){
+    public void setSudokuFromFile(SudokuBoard sudokuFromFile) {
         this.sudokuFromFile = sudokuFromFile;
     }
 

@@ -2,19 +2,11 @@ package pl.prokom.view.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
 import javafx.stage.FileChooser;
 import pl.prokom.dao.api.Dao;
-import pl.prokom.dao.file.FileSudokuBoardDao;
 import pl.prokom.dao.file.SudokuBoardDaoFactory;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.board.SudokuBoardLevel;
-import pl.prokom.view.stage.StageCreator;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class SudokuBoardMenuButtonsController {
 
@@ -66,12 +58,13 @@ public class SudokuBoardMenuButtonsController {
      * Serialize instance of SudokuBoard to a valid file.
      */
     @FXML
-    public void writeSudokuToFile(){
+    public void writeSudokuToFile() {
         String filePath;
         try {
-            filePath = fileChooser.showOpenDialog(this.mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
+            filePath = fileChooser.showSaveDialog(
+                    mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
             initFileSudokuBoardDao(filePath);
-            fileSudokuBoardDao.write(this.mainController.getSudokuGridController().getSudokuBoard());
+            fileSudokuBoardDao.write(mainController.getSudokuGridController().getSudokuBoard());
             System.out.println("Zapisano do pliku.");
         } catch (NullPointerException e) {
             System.out.println("Niepoprawny pliku.");
@@ -80,17 +73,20 @@ public class SudokuBoardMenuButtonsController {
     }
 
     /**
-     * Deserialize instance od SudokuBoard, set actual Sudoku difficulty level and initialize deserialized boaard.
+     * Deserialize instance od SudokuBoard.
+     * Set actual Sudoku difficulty level and initialize deserialized boaard.
      */
     @FXML
-    public void readSudokuFromFile(){
+    public void readSudokuFromFile() {
         String filePath;
         try {
-            filePath = fileChooser.showOpenDialog(this.mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
+            filePath = fileChooser.showOpenDialog(
+                    mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
             initFileSudokuBoardDao(filePath);
-            this.mainController.getSudokuGridController().setSudokuFromFile(fileSudokuBoardDao.read());
+            mainController.getSudokuGridController().setSudokuFromFile(fileSudokuBoardDao.read());
 
-            SudokuBoardLevel sudokuBoardLevel = this.mainController.getSudokuGridController().getBoardCurrentLevel();
+            SudokuBoardLevel sudokuBoardLevel = mainController.getSudokuGridController()
+                    .getBoardCurrentLevel();
             this.mainController.getSudokuGridController().initSudokuCells(sudokuBoardLevel);
         } catch (NullPointerException e) {
             System.out.println("Nie wczytano pliku.");
@@ -99,7 +95,7 @@ public class SudokuBoardMenuButtonsController {
     }
 
     @FXML
-    public void checkCorrectness(){
+    public void checkCorrectness() {
 
     }
 

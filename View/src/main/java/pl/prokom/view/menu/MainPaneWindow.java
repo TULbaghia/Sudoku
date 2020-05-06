@@ -3,7 +3,6 @@ package pl.prokom.view.menu;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
 import pl.prokom.view.stage.StageCreator;

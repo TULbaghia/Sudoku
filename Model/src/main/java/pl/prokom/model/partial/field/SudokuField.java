@@ -58,8 +58,8 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
      */
     public void setFieldValue(final int value) throws IllegalFieldValueException {
         //DEBUG ONLY
-//        System.out.println("Chaning value from: " + this.value + " to " + value);
-        if(value == 0) {
+        //System.out.println("Chaning value from: " + this.value + " to " + value);
+        if (value == 0) {
             resetValue();
             return;
         }
@@ -133,7 +133,9 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
 
     @Override
     public int compareTo(SudokuField sudokuField) throws NullPointerException {
-        if(sudokuField == null) throw new NullPointerException();
+        if (sudokuField == null) {
+            throw new NullPointerException();
+        }
         return Integer.compare(this.getFieldValue(), sudokuField.getFieldValue());
     }
 }

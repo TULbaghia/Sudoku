@@ -47,22 +47,24 @@ public class DifficultyLevelButtonsController {
         tgbMedium.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.MEDIUM));
         tgbHard.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.HARD));
 
-        difficultyLevels.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
-            if (oldToggle != null) {
-                ToggleButton oldButton = (ToggleButton) oldToggle;
-                oldButton.setDisable(false);
-            }
-            if(newToggle != null) {
-                ToggleButton newButton = (ToggleButton) newToggle;
-                newButton.setDisable(true);
-                clickedToggleID = newButton.getId();
-            }
-        });
+        difficultyLevels.selectedToggleProperty()
+                .addListener((observable, oldToggle, newToggle) -> {
+                    if (oldToggle != null) {
+                        ToggleButton oldButton = (ToggleButton) oldToggle;
+                        oldButton.setDisable(false);
+                    }
+                    if (newToggle != null) {
+                        ToggleButton newButton = (ToggleButton) newToggle;
+                        newButton.setDisable(true);
+                        clickedToggleID = newButton.getId();
+                    }
+                });
     }
 
     /**
      * Method to execute SudokuBoard difficulty change.
-     * @param sudokuBoardLevel
+     *
+     * @param sudokuBoardLevel difficulty level of sudokuBoard
      */
     private void changeDifficultyLevel(SudokuBoardLevel sudokuBoardLevel) {
         this.mainController.getSudokuGridController().initSudokuCells(sudokuBoardLevel);

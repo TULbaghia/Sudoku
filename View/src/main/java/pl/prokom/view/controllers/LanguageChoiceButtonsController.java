@@ -1,15 +1,14 @@
 package pl.prokom.view.controllers;
 
+import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import pl.prokom.view.stage.StageCreator;
-
-import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class LanguageChoiceButtonsController {
 
@@ -43,13 +42,14 @@ public class LanguageChoiceButtonsController {
                 ToggleButton oldButton = (ToggleButton) oldToggle;
                 oldButton.setDisable(false);
             }
-            if(newToggle != null) {
+            if (newToggle != null) {
                 ToggleButton newButton = (ToggleButton) newToggle;
                 newButton.setDisable(true);
                 clickedToggleID = newButton.getId();
             }
         });
     }
+
     /**
      * Reference to MainPaneWindowController instance to reach this inside.
      */
@@ -67,16 +67,18 @@ public class LanguageChoiceButtonsController {
     @FXML
     public void setLanguagePolish() throws IOException {
         Locale.setDefault(new Locale("pl"));
-        StageCreator.createStage(extractStage(), bundle.getBundle("bundles.interaction", Locale.getDefault()), this.getClass());
+        StageCreator.createStage(extractStage(), bundle.getBundle("bundles.interaction",
+                Locale.getDefault()), this.getClass());
     }
 
     @FXML
     public void setLanguageEnglish() throws IOException {
         Locale.setDefault(new Locale("en"));
-        StageCreator.createStage(extractStage(), bundle.getBundle("bundles.interaction", Locale.getDefault()), this.getClass());
+        StageCreator.createStage(extractStage(), bundle.getBundle("bundles.interaction",
+                Locale.getDefault()), this.getClass());
     }
 
-    public Stage extractStage(){
+    public Stage extractStage() {
         return (Stage) this.mainController.getMainPaneWindow().getScene().getWindow();
     }
 

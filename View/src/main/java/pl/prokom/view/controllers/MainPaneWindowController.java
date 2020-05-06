@@ -35,7 +35,7 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
     @FXML
     private SudokuBoardController sudokuGridController;
     /**
-     * Reference to class, that controls sudoku board menu buttons - SudokuBoardMenuButtonsController.
+     * Reference to class, that controls SudokuBoard menu buttons- SudokuBoardMenuButtonsController.
      */
     @FXML
     private SudokuBoardMenuButtonsController sudokuMenuController;
