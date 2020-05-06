@@ -40,8 +40,8 @@ public class SudokuBoardController {
     /**
      * Keeps SudokuBoard object
      */
-    private SudokuBoard sudokuBoard = new SudokuBoard(new BacktrackingSudokuSolver());
-    private SudokuBoard sudokuFromFile;
+    private static SudokuBoard sudokuBoard = new SudokuBoard(new BacktrackingSudokuSolver());
+    private SudokuBoard sudokuFromFile = null;
 
     /**
      * Keeps references to JBIP, due to WeakReference in Observable
@@ -76,36 +76,51 @@ public class SudokuBoardController {
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> sudokuBoard.reset(x / 9, x % 9));
         SudokuBoard sudokuBoardTmp;
-        if (sudokuFromFile == null) {
-            sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
-            sudokuBoardTmp.solveGame();
-        } else sudokuBoardTmp = this.sudokuFromFile;
-        this.sudokuFromFile = null;
 
         int cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
         List<Integer> randomValues =
                 IntStream.range(0, cellsNumber).boxed().collect(Collectors.toList());
         Collections.shuffle(randomValues);
 
-        List<Integer> randomSetValues, userInputValues;
-        randomSetValues = randomValues.subList(0, sudokuBoardLevel.getFilledCells());
-        userInputValues = randomValues.subList(sudokuBoardLevel.getFilledCells(), cellsNumber);
 
-        randomSetValues.forEach(c -> {
-            textFields.get(c).setEditable(false);
-            textFields.get(c).setStyle("");
-            javaBeanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
-        });
+        if (sudokuFromFile == null) {
+            sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
+            sudokuBoardTmp.solveGame();
 
-        userInputValues.forEach(c -> {
-            textFields.get(c).setStyle("-fx-text-fill: red; -fx-font-size: 20 px;");
-            textFields.get(c).setEditable(true);
-            javaBeanIntegerProperties.get(c).fireValueChangedEvent();
-        });
+            List<Integer> randomSetValues, userInputValues;
+            randomSetValues = randomValues.subList(0, sudokuBoardLevel.getFilledCells());
+            userInputValues = randomValues.subList(sudokuBoardLevel.getFilledCells(), cellsNumber);
+
+            randomSetValues.forEach(c -> {
+                textFields.get(c).setStyle("");
+                textFields.get(c).setEditable(false);
+                javaBeanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
+            });
+
+            userInputValues.forEach(c -> {
+                textFields.get(c).setStyle("-fx-text-fill: red; -fx-font-size: 20 px;");
+                textFields.get(c).setEditable(true);
+                javaBeanIntegerProperties.get(c).fireValueChangedEvent();
+            });
+        } else {
+            sudokuBoardTmp = sudokuFromFile;
+            sudokuFromFile = null;
+
+            randomValues.forEach(c -> {
+                if (sudokuBoardTmp.get(c / 9, c % 9) == 0) {
+                    textFields.get(c).setStyle("-fx-text-fill: red; -fx-font-size: 20 px;");
+                    textFields.get(c).setEditable(true);
+                } else {
+                    textFields.get(c).setStyle("");
+                    textFields.get(c).setEditable(false);
+                }
+                javaBeanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
+                javaBeanIntegerProperties.get(c).fireValueChangedEvent();
+            });
+        }
 
         //Temporarly alternative to bindBidirectional
         randomValues.forEach(x -> textFields.get(x).setText(converter.toString(javaBeanIntegerProperties.get(x).get())));
-
     }
 
     @FXML
@@ -133,7 +148,8 @@ public class SudokuBoardController {
                 //Temporarly alternative to bindBidirectional
                 textField.textProperty().addListener((observableValue, s, t1) -> {
                     try {
-                        sudokuBoard.set(x / 9, x % 9, (Integer) converter.fromString(t1));
+                        javaBeanIntegerProperties.get(x).set((Integer) converter.fromString(t1));
+//                        sudokuBoard.set(x / 9, x % 9, (Integer) converter.fromString(t1));
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
                     }
