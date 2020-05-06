@@ -65,7 +65,7 @@ public class SudokuFieldTest {
     @Test
     public void exceptionSetValueTestCase() {
         assertThrows(IllegalFieldValueException.class, () -> sudokuField.setFieldValue(-1));
-        assertThrows(IllegalFieldValueException.class, () -> sudokuField.setFieldValue(0));
+//        assertThrows(IllegalFieldValueException.class, () -> sudokuField.setFieldValue(0));
     }
 
     /**
@@ -95,6 +95,8 @@ public class SudokuFieldTest {
 
         sudokuField.setFieldValue(8);
         assertEquals(1, sudokuField.compareTo(sudokuFieldOther));
+
+        assertThrows(NullPointerException.class, () -> sudokuField.compareTo(null));
     }
 
     /**
