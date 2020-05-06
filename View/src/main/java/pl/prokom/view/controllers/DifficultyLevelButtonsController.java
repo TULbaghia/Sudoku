@@ -2,47 +2,71 @@ package pl.prokom.view.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Pane;
 import pl.prokom.model.board.SudokuBoardLevel;
 
 public class DifficultyLevelButtonsController {
 
-    /**
-     * Reference to MainPaneWindowController instance to reach this inside.
-     */
-    private MainPaneWindowController mainController;
+    public static String clickedToggleID = null;
 
-    public DifficultyLevelButtonsController() {}
-
-    public void setParentController(MainPaneWindowController mainPaneWindowController) {
-        this.mainController = mainPaneWindowController;
-    }
-
-    /**
-     * ToggleButtons responsible for changing SudokuBoard diff. level.
-     */
     @FXML
     ToggleButton tgbEasy;
     @FXML
-    ToggleButton tgbMedium;
+    private ToggleButton tgbMedium;
     @FXML
-    ToggleButton tgbHard;
+    private ToggleButton tgbHard;
+    @FXML
+    private ToggleGroup difficultyLevels;
+    @FXML
+    private Pane difficultyLevelPane;
 
-    @FXML
-    public void setLevelEasy() {
-        mainController.getSudokuBoardController().initSudokuCells(SudokuBoardLevel.EASY);
+    /**
+     * Reference to MainPaneWindowController instance to reach this.
+     */
+    private MainPaneWindowController mainController;
+
+    /**
+     * Reference to MainPaneWindowController instance to reach this inside.
+     */
+    public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        this.mainController = mainPaneWindowController;
+        difficultyLevels.getToggles().stream()
+                .map(x -> (ToggleButton) x)
+                .filter(x -> x.getId().equals(clickedToggleID))
+                .findFirst()
+                .ifPresentOrElse(ToggleButton::fire, () -> tgbEasy.fire());
     }
 
+    /**
+     * Initialization method that set-up necessary listeners.
+     */
     @FXML
-    public void setLevelMedium() {
-        mainController.getSudokuBoardController().initSudokuCells(SudokuBoardLevel.MEDIUM);
+    public void initialize() {
+        tgbEasy.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.EASY));
+        tgbMedium.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.MEDIUM));
+        tgbHard.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.HARD));
+
+        difficultyLevels.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
+            if (oldToggle != null) {
+                ToggleButton oldButton = (ToggleButton) oldToggle;
+                oldButton.setDisable(false);
+            }
+            if(newToggle != null) {
+                ToggleButton newButton = (ToggleButton) newToggle;
+                newButton.setDisable(true);
+                clickedToggleID = newButton.getId();
+            }
+        });
     }
 
-    @FXML
-    public void setLevelHard() {
-        mainController.getSudokuBoardController().initSudokuCells(SudokuBoardLevel.HARD);
+    /**
+     * Method to execute SudokuBoard difficulty change.
+     * @param sudokuBoardLevel
+     */
+    private void changeDifficultyLevel(SudokuBoardLevel sudokuBoardLevel) {
+        this.mainController.getSudokuGridController().initSudokuCells(sudokuBoardLevel);
+        this.mainController.getSudokuGridController().setBoardCurrentLevel(sudokuBoardLevel);
     }
-
-    @FXML
-    public void initialize(){}
 
 }

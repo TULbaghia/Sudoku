@@ -156,7 +156,7 @@ public class SudokuBoard implements Cloneable, Serializable {
                 .get();
     }
 
-    private SudokuField getSudokuField(int row, int column) {
+    public SudokuField getSudokuField(int row, int column) {
         return sudokuFields.get(row).get(column);
     }
 
