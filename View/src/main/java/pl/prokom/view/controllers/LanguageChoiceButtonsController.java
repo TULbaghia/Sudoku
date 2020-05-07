@@ -51,7 +51,7 @@ public class LanguageChoiceButtonsController {
     }
 
     /**
-     * Reference to MainPaneWindowController instance to reach this inside.
+     * Setting parent controller MainPaneWindowController type to LanguageChoiceButtonsController.
      */
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
@@ -64,6 +64,9 @@ public class LanguageChoiceButtonsController {
                 });
     }
 
+    /**
+     * Changing overall interface language to Polish.
+     */
     @FXML
     public void setLanguagePolish() throws IOException {
         Locale.setDefault(new Locale("pl"));
@@ -71,6 +74,9 @@ public class LanguageChoiceButtonsController {
                 Locale.getDefault()), this.getClass());
     }
 
+    /**
+     * Changing overall interface language to English.
+     */
     @FXML
     public void setLanguageEnglish() throws IOException {
         Locale.setDefault(new Locale("en"));

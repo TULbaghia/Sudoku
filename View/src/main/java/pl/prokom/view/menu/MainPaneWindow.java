@@ -9,8 +9,10 @@ import pl.prokom.view.stage.StageCreator;
 
 public class MainPaneWindow extends Application {
     static {
-        System.setProperty("logback.configurationFile", "./View/src/main/resources/logging/logback.xml");
+        System.setProperty("logback.configurationFile",
+                "./View/src/main/resources/logging/logback.xml");
     }
+
     public static void main(String[] args) {
         launch(args);
     }

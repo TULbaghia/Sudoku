@@ -15,16 +15,18 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.board.SudokuBoardLevel;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-/**
- * Controller for main GUI class, which holds sudokuBoard stable.
- */
-public class SudokuBoardController {
+
+    /**
+     * Controller for main GUI class, which holds sudokuBoard stable.
+     */
+    public class SudokuBoardController {
+
     /**
      * Logger instance. Logging events of SudokuBoardController class.
      */
@@ -51,7 +53,7 @@ public class SudokuBoardController {
      * Keeps references to JBIP, due to WeakReference in Observable.
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private List<JavaBeanIntegerProperty> jBIntegerProperties;
+    private List<JavaBeanIntegerProperty> beanIntegerProperties;
 
     JavaBeanIntegerPropertyBuilder builder = new JavaBeanIntegerPropertyBuilder();
 
@@ -65,6 +67,9 @@ public class SudokuBoardController {
      */
     private SudokuBoardLevel boardCurrentLevel;
 
+    /**
+     * Setting parent controller of MainPaneWindowController type to SudokuBoardController.
+     */
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
     }
@@ -77,7 +82,7 @@ public class SudokuBoardController {
     public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
 
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize())
-                .forEach(x -> jBIntegerProperties.get(x).set(0));
+                .forEach(x -> beanIntegerProperties.get(x).set(0));
         SudokuBoard sudokuBoardTmp;
 
         int cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
@@ -90,14 +95,15 @@ public class SudokuBoardController {
             sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
             sudokuBoardTmp.solveGame();
 
-            List<Integer> randomSetValues, userInputValues;
+            List<Integer> randomSetValues;
+            List<Integer> userInputValues;
             randomSetValues = randomValues.subList(0, sudokuBoardLevel.getFilledCells());
             userInputValues = randomValues.subList(sudokuBoardLevel.getFilledCells(), cellsNumber);
 
             randomSetValues.forEach(c -> {
                 textFields.get(c).setStyle("");
                 textFields.get(c).setEditable(false);
-                jBIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
+                beanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
             });
 
             userInputValues.forEach(c -> {
@@ -116,24 +122,33 @@ public class SudokuBoardController {
                     textFields.get(c).setStyle("");
                     textFields.get(c).setEditable(false);
                 }
-                jBIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
+                beanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
             });
         }
     }
 
+    /**
+     * Initializing of SudokuBoardGridPane.fxml using SudokuBoardController.
+     * Additional features:
+     * - initializing of internal SudokuBoard instance,
+     * - creating properties for each SudokuField value,
+     * - binding properties with TextField instances created programatically in this method,
+     * - implementation of converter included;
+     */
     @FXML
     public void initialize() {
         logger.info("Initializtion of SudokuBoardController.");
         textFields = Arrays.asList(
                 new TextField[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
-        jBIntegerProperties = Arrays.asList(
+        beanIntegerProperties = Arrays.asList(
                 new JavaBeanIntegerProperty[
                         sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
 
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> {
             TextField textField = new TextField(
                     String.valueOf(sudokuBoard.get(x / 9, x % 9)));
-            logger.info("Initialize SudokuBoard with {}", String.valueOf(sudokuBoard.get(x / 9, x % 9)));
+            logger.info("Initialize SudokuBoard with {}",
+                    String.valueOf(sudokuBoard.get(x / 9, x % 9)));
             textField.setAlignment(Pos.CENTER);
             textField.setBackground(Background.EMPTY);
             textField.setFont(new Font("Calibri", 20));
@@ -177,7 +192,7 @@ public class SudokuBoardController {
                     textField.setText(converter.toString(integerProperty.get()));
                 });
 
-                jBIntegerProperties.set(x, integerProperty);
+                beanIntegerProperties.set(x, integerProperty);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException(e);
             }

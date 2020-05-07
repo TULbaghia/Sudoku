@@ -32,7 +32,7 @@ public class SudokuBoardMenuButtonsController {
     private FileChooser fileChooser = new FileChooser();
 
     /**
-     * File - DAO (SudokuBoard instances)
+     * File - DAO (SudokuBoard instances).
      */
     private Dao<SudokuBoard> fileSudokuBoardDao;
 

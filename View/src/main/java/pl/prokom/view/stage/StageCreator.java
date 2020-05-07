@@ -9,6 +9,12 @@ import javafx.stage.Stage;
 
 public class StageCreator {
 
+    /**
+     * Creating of new Stage class instance.
+     * @param primaryStage iniital Stage instance without any parameters set,
+     * @param bundle ResourceBundle property with region settings to make correct language choice,
+     * @param c this class.
+     */
     public static void createStage(Stage primaryStage, ResourceBundle bundle, Class c)
             throws IOException {
         FXMLLoader loader =

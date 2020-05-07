@@ -72,7 +72,7 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
      *
      * @param value value you want to test if can be insert
      */
-    public void validate(final int value) throws IllegalFieldValueException{
+    public void validate(final int value) throws IllegalFieldValueException {
         if (value < 1) {
             throw new IllegalFieldValueException("Value '" + value + "' is not in allowed range.");
         }

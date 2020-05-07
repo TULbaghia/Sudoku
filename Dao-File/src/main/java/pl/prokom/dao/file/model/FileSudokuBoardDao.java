@@ -43,8 +43,7 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
             deserialized = (SudokuBoard) iStream.readObject();
         } catch (IOException e) {
             throw new DaoFileException("Illegal file access.", e);
-        }
-          catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new DaoClassException("Illegal class obtained.", e);
         }
         return deserialized;

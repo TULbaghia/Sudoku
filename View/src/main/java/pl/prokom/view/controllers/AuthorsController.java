@@ -18,6 +18,9 @@ public class AuthorsController {
         this.mainPaneWindowController = mainPaneWindowController;
     }
 
+    /**
+     * Initializing of AuthoursBundle.fxml using AuthorsController.
+     */
     @FXML
     public void initialize() {
         ResourceBundle resourceBundle =
