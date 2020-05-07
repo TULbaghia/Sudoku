@@ -10,9 +10,10 @@ import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,13 +27,14 @@ public class FileSudokuBoardDaoTest {
     String testPath;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws URISyntaxException {
         sudokuSolver = new BacktrackingSudokuSolver();
         sudokuBoard = new SudokuBoard(sudokuSolver);
         sudokuBoard.solveGame();
 
         SudokuBoardDaoFactory factory = new SudokuBoardDaoFactory();
-        testPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        Path path = Paths.get(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+        testPath = path.toString();
         fileSudokuBoardDao = factory.getFileDao(testPath + "test.txt");
     }
 
@@ -76,37 +78,4 @@ public class FileSudokuBoardDaoTest {
         }
     }
 
-    /**
-     * Case description:
-     * - trying to read from illegal file throws IllegalArgumentException
-     * - trying to write to illegal file throws IllegalArgumentException
-     */
-    @Test
-    public void exceptionsTest() throws DaoException, NoSuchFieldException, IllegalAccessException {
-        fileSudokuBoardDao.write(sudokuBoard);
-        Field field = fileSudokuBoardDao.getClass().getDeclaredField("fileName");
-        field.setAccessible(true);
-        field.set(fileSudokuBoardDao, "//");
-        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.read());
-        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.write(sudokuBoard));
-    }
-
-    /**
-     * Case description:
-     * - trying to read from file without serialized class
-     */
-    @Test
-    public void exceptionReadClassNotFoundTest() throws DaoException, NoSuchFieldException, IllegalAccessException {
-        fileSudokuBoardDao.write(sudokuBoard);
-        try (RandomAccessFile fh = new RandomAccessFile(testPath+"test.txt", "rw")) {
-            fh.seek(30L);
-            fh.write('Y');
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Field field = fileSudokuBoardDao.getClass().getDeclaredField("fileName");
-        field.setAccessible(true);
-        field.set(fileSudokuBoardDao, testPath + "test.txt");
-        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.read());
-    }
 }
