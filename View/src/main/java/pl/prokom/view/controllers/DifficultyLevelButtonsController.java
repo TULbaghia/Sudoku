@@ -1,17 +1,26 @@
 package pl.prokom.view.controllers;
 
+import java.util.EnumMap;
+import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
-import pl.prokom.model.board.SudokuBoardLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pl.prokom.view.adapter.level.SudokuBoardLevel;
 
 public class DifficultyLevelButtonsController {
 
+    private static final Logger logger =
+            LoggerFactory.getLogger(DifficultyLevelButtonsController.class);
+
     public static String clickedToggleID = null;
 
+    private Map<SudokuBoardLevel, ToggleButton> levelsToButtonsMap;
+
     @FXML
-    ToggleButton tgbEasy;
+    private ToggleButton tgbEasy;
     @FXML
     private ToggleButton tgbMedium;
     @FXML
@@ -31,11 +40,13 @@ public class DifficultyLevelButtonsController {
      */
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
+        logger.info("Setted mainController");
         difficultyLevels.getToggles().stream()
                 .map(x -> (ToggleButton) x)
                 .filter(x -> x.getId().equals(clickedToggleID))
                 .findFirst()
                 .ifPresentOrElse(ToggleButton::fire, () -> tgbEasy.fire());
+        logger.info("Triggered button change event");
     }
 
     /**
@@ -43,22 +54,13 @@ public class DifficultyLevelButtonsController {
      */
     @FXML
     public void initialize() {
-        tgbEasy.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.EASY));
-        tgbMedium.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.MEDIUM));
-        tgbHard.setOnAction(actionEvent -> changeDifficultyLevel(SudokuBoardLevel.HARD));
+        levelsToButtonsMap = new EnumMap<>(SudokuBoardLevel.class);
+        levelsToButtonsMap.put(SudokuBoardLevel.EASY, tgbEasy);
+        levelsToButtonsMap.put(SudokuBoardLevel.MEDIUM, tgbMedium);
+        levelsToButtonsMap.put(SudokuBoardLevel.HARD, tgbHard);
 
-        difficultyLevels.selectedToggleProperty()
-                .addListener((observable, oldToggle, newToggle) -> {
-                    if (oldToggle != null) {
-                        ToggleButton oldButton = (ToggleButton) oldToggle;
-                        oldButton.setDisable(false);
-                    }
-                    if (newToggle != null) {
-                        ToggleButton newButton = (ToggleButton) newToggle;
-                        newButton.setDisable(true);
-                        clickedToggleID = newButton.getId();
-                    }
-                });
+        levelsToButtonsMap.forEach((x, y) -> y.setOnAction(e -> changeDifficultyLevel(x, true)));
+        logger.info("Initialized class with {} difficulty levels", levelsToButtonsMap.size());
     }
 
     /**
@@ -66,9 +68,20 @@ public class DifficultyLevelButtonsController {
      *
      * @param sudokuBoardLevel difficulty level of sudokuBoard
      */
-    private void changeDifficultyLevel(SudokuBoardLevel sudokuBoardLevel) {
-        this.mainController.getSudokuGridController().initSudokuCells(sudokuBoardLevel);
-        this.mainController.getSudokuGridController().setBoardCurrentLevel(sudokuBoardLevel);
+    public void changeDifficultyLevel(SudokuBoardLevel sudokuBoardLevel, boolean propagate) {
+        difficultyLevels.getToggles().stream().map(x -> (ToggleButton) x).forEach(x -> {
+            x.setDisable(false);
+            x.setSelected(false);
+        });
+        ToggleButton clickedButton = levelsToButtonsMap.getOrDefault(sudokuBoardLevel, tgbEasy);
+        clickedButton.setDisable(true);
+        clickedButton.setSelected(true);
+        clickedToggleID = clickedButton.getId();
+        logger.info("Changing difficulty level to {} with propagation: {}"
+                , sudokuBoardLevel.name(), propagate);
+        if(propagate) {
+            this.mainController.getSudokuGridController().setBoardLevel(sudokuBoardLevel);
+        }
     }
 
 }

@@ -18,14 +18,15 @@ import javafx.util.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.prokom.model.board.SudokuBoard;
-import pl.prokom.model.board.SudokuBoardLevel;
+import pl.prokom.view.adapter.SudokuBoardAdapter;
+import pl.prokom.view.adapter.level.SudokuBoardLevel;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 
-    /**
-     * Controller for main GUI class, which holds sudokuBoard stable.
-     */
-    public class SudokuBoardController {
+/**
+ * Controller for main GUI class, which holds sudokuBoard stable.
+ */
+public class SudokuBoardController {
 
     /**
      * Logger instance. Logging events of SudokuBoardController class.
@@ -46,8 +47,7 @@ import pl.prokom.model.solver.BacktrackingSudokuSolver;
     /**
      * Keeps SudokuBoard object.
      */
-    private static SudokuBoard sudokuBoard = new SudokuBoard(new BacktrackingSudokuSolver());
-    private SudokuBoard sudokuFromFile = null;
+    private static SudokuBoardAdapter sudokuBoard = new SudokuBoardAdapter();
 
     /**
      * Keeps references to JBIP, due to WeakReference in Observable.
@@ -55,17 +55,10 @@ import pl.prokom.model.solver.BacktrackingSudokuSolver;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private List<JavaBeanIntegerProperty> beanIntegerProperties;
 
-    JavaBeanIntegerPropertyBuilder builder = new JavaBeanIntegerPropertyBuilder();
-
     /**
      * Stores references to TextFields to easly manipulate data during reload.
      */
     private List<TextField> textFields;
-
-    /**
-     * Stores references to current difficulty level od SudokuBoard.
-     */
-    private SudokuBoardLevel boardCurrentLevel;
 
     /**
      * Setting parent controller of MainPaneWindowController type to SudokuBoardController.
@@ -76,55 +69,31 @@ import pl.prokom.model.solver.BacktrackingSudokuSolver;
 
     /**
      * Filling sudokuBoard gridPane by textFields with chosen number of ciphers.
-     *
-     * @param sudokuBoardLevel - difficuly level which is chosen by user (default = EASY).
      */
-    public void initSudokuCells(SudokuBoardLevel sudokuBoardLevel) {
+    public void initSudokuCells() {
+        SudokuBoard sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
+        sudokuBoardTmp.solveGame();
 
+        initializeSudokuCellsWith(sudokuBoardTmp, true);
+    }
+
+    public void initializeSudokuCellsWith(SudokuBoard tmp, boolean wipeEmpty) {
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize())
                 .forEach(x -> beanIntegerProperties.get(x).set(0));
-        SudokuBoard sudokuBoardTmp;
 
-        int cellsNumber = sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize();
-        List<Integer> randomValues =
-                IntStream.range(0, cellsNumber).boxed().collect(Collectors.toList());
-        Collections.shuffle(randomValues);
+        sudokuBoard.getProtectedIntegerFields().forEach(c -> {
+            textFields.get(c).setStyle("");
+            textFields.get(c).setEditable(false);
+            beanIntegerProperties.get(c).set(tmp.get(c / 9, c % 9));
+        });
 
-
-        if (sudokuFromFile == null) {
-            sudokuBoardTmp = new SudokuBoard(new BacktrackingSudokuSolver());
-            sudokuBoardTmp.solveGame();
-
-            List<Integer> randomSetValues;
-            List<Integer> userInputValues;
-            randomSetValues = randomValues.subList(0, sudokuBoardLevel.getFilledCells());
-            userInputValues = randomValues.subList(sudokuBoardLevel.getFilledCells(), cellsNumber);
-
-            randomSetValues.forEach(c -> {
-                textFields.get(c).setStyle("");
-                textFields.get(c).setEditable(false);
-                beanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
-            });
-
-            userInputValues.forEach(c -> {
-                textFields.get(c).setStyle("-fx-text-fill: red; -fx-font-size: 20 px;");
-                textFields.get(c).setEditable(true);
-            });
-        } else {
-            sudokuBoardTmp = sudokuFromFile;
-            sudokuFromFile = null;
-
-            randomValues.forEach(c -> {
-                if (sudokuBoardTmp.get(c / 9, c % 9) == 0) {
-                    textFields.get(c).setStyle("-fx-text-fill: red; -fx-font-size: 20 px;");
-                    textFields.get(c).setEditable(true);
-                } else {
-                    textFields.get(c).setStyle("");
-                    textFields.get(c).setEditable(false);
-                }
-                beanIntegerProperties.get(c).set(sudokuBoardTmp.get(c / 9, c % 9));
-            });
-        }
+        sudokuBoard.getEditableIntegerFields().forEach(c -> {
+            textFields.get(c).setStyle("-fx-text-fill: red; -fx-font-size: 20 px;");
+            textFields.get(c).setEditable(true);
+            if(!wipeEmpty) {
+                beanIntegerProperties.get(c).set(tmp.get(c / 9, c % 9));
+            }
+        });
     }
 
     /**
@@ -138,6 +107,9 @@ import pl.prokom.model.solver.BacktrackingSudokuSolver;
     @FXML
     public void initialize() {
         logger.info("Initializtion of SudokuBoardController.");
+
+        JavaBeanIntegerPropertyBuilder builder = new JavaBeanIntegerPropertyBuilder();
+
         textFields = Arrays.asList(
                 new TextField[sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()]);
         beanIntegerProperties = Arrays.asList(
@@ -147,8 +119,7 @@ import pl.prokom.model.solver.BacktrackingSudokuSolver;
         IntStream.range(0, sudokuBoard.getBoardSize() * sudokuBoard.getBoardSize()).forEach(x -> {
             TextField textField = new TextField(
                     String.valueOf(sudokuBoard.get(x / 9, x % 9)));
-            logger.info("Initialize SudokuBoard with {}",
-                    String.valueOf(sudokuBoard.get(x / 9, x % 9)));
+            logger.info("Initialize SudokuBoard with {}", sudokuBoard.get(x / 9, x % 9));
             textField.setAlignment(Pos.CENTER);
             textField.setBackground(Background.EMPTY);
             textField.setFont(new Font("Calibri", 20));
@@ -200,28 +171,23 @@ import pl.prokom.model.solver.BacktrackingSudokuSolver;
     }
 
     /**
-     * Set deserialized SudokuBoard instance to SudokuBoardController field.
-     * (in case of initializing it)
-     */
-    public void setSudokuFromFile(SudokuBoard sudokuFromFile) {
-        this.sudokuFromFile = sudokuFromFile;
-    }
-
-    /**
      * Changing difficulty level of SudokuBoard (DifficultyLevelButtonsController).
      */
-    public void setBoardCurrentLevel(SudokuBoardLevel boardCurrentLevel) {
-        this.boardCurrentLevel = boardCurrentLevel;
+    public void setBoardLevel(SudokuBoardLevel boardCurrentLevel) {
+        if (boardCurrentLevel != getBoardCurrentLevel()) {
+            sudokuBoard.setSudokuBoardLevel(boardCurrentLevel);
+        }
+        initSudokuCells();
     }
 
     /**
      * Get current difficulty level of actual board.
      */
     public SudokuBoardLevel getBoardCurrentLevel() {
-        return boardCurrentLevel;
+        return sudokuBoard.getSudokuBoardLevel();
     }
 
-    public SudokuBoard getSudokuBoard() {
+    public SudokuBoardAdapter getSudokuBoard() {
         return sudokuBoard;
     }
 }

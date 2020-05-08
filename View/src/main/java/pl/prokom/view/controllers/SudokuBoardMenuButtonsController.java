@@ -8,7 +8,7 @@ import pl.prokom.dao.api.model.Dao;
 import pl.prokom.dao.file.exception.DaoFileException;
 import pl.prokom.dao.file.model.SudokuBoardDaoFactory;
 import pl.prokom.model.board.SudokuBoard;
-import pl.prokom.model.board.SudokuBoardLevel;
+import pl.prokom.view.adapter.SudokuBoardAdapter;
 
 public class SudokuBoardMenuButtonsController {
 
@@ -84,12 +84,23 @@ public class SudokuBoardMenuButtonsController {
             filePath = fileChooser.showOpenDialog(
                     mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
             initFileSudokuBoardDao(filePath);
-            mainController.getSudokuGridController().setSudokuFromFile(fileSudokuBoardDao.read());
+            SudokuBoardAdapter sudokuBoardDAO = (SudokuBoardAdapter) fileSudokuBoardDao.read();
 
-            SudokuBoardLevel sudokuBoardLevel = mainController.getSudokuGridController()
-                    .getBoardCurrentLevel();
-            this.mainController.getSudokuGridController().initSudokuCells(sudokuBoardLevel);
-        } catch (NullPointerException | DaoException e) {
+            //Restore difficulty level
+            this.mainController.getDifficultyLevelsController()
+                    .changeDifficultyLevel(sudokuBoardDAO.getSudokuBoardLevel(), false);
+
+            //Restores sudokuBoard settings
+            this.mainController.getSudokuGridController()
+                    .getSudokuBoard().replaceParametersWith(sudokuBoardDAO);
+
+            //Refreshes window grid
+            this.mainController.getSudokuGridController()
+                    .initializeSudokuCellsWith(sudokuBoardDAO, false);
+        } catch (NullPointerException e) {
+            System.err.println("File not choosen");
+        }
+        catch (DaoException e) {
             throw new DaoFileException("Illegal file access.", e);
         }
     }

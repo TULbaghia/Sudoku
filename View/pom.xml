@@ -168,7 +168,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>pl.prokom.view.Main</mainClass>
+                            <mainClass>pl.prokom.view.menu.MainPaneWindow</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

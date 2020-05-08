@@ -9,6 +9,9 @@ module pl.prokom.view {
 
     exports pl.prokom.view.controllers;
     exports pl.prokom.view.menu;
+    exports pl.prokom.view.bundles;
+    exports pl.prokom.view.adapter;
+    exports pl.prokom.view;
 
     opens pl.prokom.view.controllers;
     opens pl.prokom.view.menu;

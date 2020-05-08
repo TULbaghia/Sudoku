@@ -2,6 +2,8 @@ package pl.prokom.view;
 
 import pl.prokom.view.menu.MainPaneWindow;
 
+//TODO: set MainPaneWindow as application start class
+
 /**
  * Jar bundler needs Main class that does not extends/implements any other class.
  * This class is just a wrapper for jar-builder

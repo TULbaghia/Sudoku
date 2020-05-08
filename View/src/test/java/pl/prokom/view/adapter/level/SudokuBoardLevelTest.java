@@ -1,4 +1,4 @@
-package pl.prokom.model.board;
+package pl.prokom.view.adapter.level;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

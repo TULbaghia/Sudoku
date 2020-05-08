@@ -1,0 +1,75 @@
+package pl.prokom.view.adapter;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import pl.prokom.model.board.SudokuBoard;
+import pl.prokom.model.exception.IllegalFieldValueException;
+import pl.prokom.model.solver.BacktrackingSudokuSolver;
+import pl.prokom.view.adapter.level.SudokuBoardLevel;
+
+//TODO: replace Singleton with sth else
+
+/**
+ * Adapter of SudokuBoard to match view restrictions.
+ * Implements Singleton pattern.
+ */
+public class SudokuBoardAdapter extends SudokuBoard {
+    private List<Integer> protectedIntegerFields;
+
+    private List<Integer> editableIntegerFields;
+
+    private SudokuBoardLevel sudokuBoardLevel;
+
+    public SudokuBoardAdapter() {
+        super(new BacktrackingSudokuSolver());
+        setSudokuBoardLevel(SudokuBoardLevel.EASY);
+    }
+
+    @Override
+    public void set(int row, int column, int value) throws IllegalFieldValueException {
+        if (value == 0) {
+            super.reset(row, column);
+        } else {
+            super.set(row, column, value);
+        }
+    }
+
+    public List<Integer> getProtectedIntegerFields() {
+        return protectedIntegerFields;
+    }
+
+    public List<Integer> getEditableIntegerFields() {
+        return editableIntegerFields;
+    }
+
+    public SudokuBoardLevel getSudokuBoardLevel() {
+        return sudokuBoardLevel;
+    }
+
+    public void setSudokuBoardLevel(SudokuBoardLevel sudokuBoardLevel) {
+        this.sudokuBoardLevel = sudokuBoardLevel;
+
+        List<Integer> randomValues = IntStream
+                .range(0, getBoardSize() * getBoardSize())
+                .boxed()
+                .collect(Collectors.toList());
+
+        Collections.shuffle(randomValues);
+
+        protectedIntegerFields = new ArrayList<>(
+                randomValues.subList(0, sudokuBoardLevel.getFilledCells()));
+
+        editableIntegerFields = new ArrayList<>(randomValues
+                .subList(sudokuBoardLevel.getFilledCells(), getBoardSize() * getBoardSize()));
+    }
+
+    public void replaceParametersWith(SudokuBoardAdapter sudokuBoardDAO) {
+        this.protectedIntegerFields = sudokuBoardDAO.protectedIntegerFields;
+        this.editableIntegerFields = sudokuBoardDAO.editableIntegerFields;
+        this.sudokuBoardLevel = sudokuBoardDAO.sudokuBoardLevel;
+    }
+}
