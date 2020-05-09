@@ -5,6 +5,8 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
+import pl.prokom.view.controllers.sudokuboard.SudokuBoardController;
+import pl.prokom.view.controllers.sudokuboard.SudokuBoardDAOFileController;
 import pl.prokom.view.menu.MainPaneWindow;
 
 public class MainPaneWindowController extends MainPaneWindow implements Initializable {
@@ -38,7 +40,7 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
      * Reference to class, that controls SudokuBoard menu buttons- SudokuBoardMenuButtonsController.
      */
     @FXML
-    private SudokuBoardMenuButtonsController sudokuMenuController;
+    private SudokuBoardDAOFileController sudokuBoardDAOFileController;
 
     @FXML
     private AuthorsController authorsBundleController;
@@ -51,7 +53,7 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
 
         sudokuGridController.setParentController(this);
         authorsBundleController.setParentController(this);
-        sudokuMenuController.setParentController(this);
+        sudokuBoardDAOFileController.setParentController(this);
 
         difficultyLevelsController.setParentController(this);
     }

@@ -1,6 +1,5 @@
 package pl.prokom.view.adapter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,11 +10,8 @@ import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.view.adapter.level.SudokuBoardLevel;
 
-//TODO: replace Singleton with sth else
-
 /**
  * Adapter of SudokuBoard to match view restrictions.
- * Implements Singleton pattern.
  */
 public class SudokuBoardAdapter extends SudokuBoard {
     private List<Integer> protectedIntegerFields;

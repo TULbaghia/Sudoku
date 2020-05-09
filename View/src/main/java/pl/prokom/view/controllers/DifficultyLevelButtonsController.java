@@ -5,7 +5,6 @@ import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.Pane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.prokom.view.adapter.level.SudokuBoardLevel;
@@ -27,8 +26,6 @@ public class DifficultyLevelButtonsController {
     private ToggleButton tgbHard;
     @FXML
     private ToggleGroup difficultyLevels;
-    @FXML
-    private Pane difficultyLevelPane;
 
     /**
      * Reference to MainPaneWindowController instance to reach this.
@@ -40,13 +37,13 @@ public class DifficultyLevelButtonsController {
      */
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
         this.mainController = mainPaneWindowController;
-        logger.info("Setted mainController");
+        logger.trace("mainController was set");
         difficultyLevels.getToggles().stream()
                 .map(x -> (ToggleButton) x)
                 .filter(x -> x.getId().equals(clickedToggleID))
                 .findFirst()
                 .ifPresentOrElse(ToggleButton::fire, () -> tgbEasy.fire());
-        logger.info("Triggered button change event");
+        logger.trace("Triggered button change event");
     }
 
     /**
@@ -60,7 +57,7 @@ public class DifficultyLevelButtonsController {
         levelsToButtonsMap.put(SudokuBoardLevel.HARD, tgbHard);
 
         levelsToButtonsMap.forEach((x, y) -> y.setOnAction(e -> changeDifficultyLevel(x, true)));
-        logger.info("Initialized class with {} difficulty levels", levelsToButtonsMap.size());
+        logger.trace("Initialized class with {} difficulty levels", levelsToButtonsMap.size());
     }
 
     /**

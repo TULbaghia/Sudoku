@@ -22,6 +22,7 @@ public class StageCreator {
         Pane mainPaneWindow = loader.load();
         Scene scene = new Scene(mainPaneWindow);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.setTitle(bundle.getString("title"));
         primaryStage.show();
     }

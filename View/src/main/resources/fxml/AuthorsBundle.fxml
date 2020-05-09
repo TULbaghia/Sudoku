@@ -1,29 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.Label?>
 
-<Pane fx:id="authorsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="200.0" style="-fx-background-color: #FF000010;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.AuthorsController">
-
-    <children>
-        <Label alignment="CENTER" layoutY="7.0" prefHeight="20" prefWidth="200.0" text="%authors.header">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </Label>
-        <VBox layoutY="30.0" prefWidth="200.0">
-            <children>
-                <Label fx:id="authorsInfo" alignment="CENTER" prefHeight="32.5" prefWidth="350.0" text="%authors.header" textAlignment="CENTER">
-                    <font>
-                        <Font size="12.0" />
-                    </font>
-                </Label>
-            </children>
-        </VBox>
-    </children>
-    <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-    </padding>
-</Pane>
+<Menu xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" mnemonicParsing="false"
+      fx:id="authorsMenu" fx:controller="pl.prokom.view.controllers.AuthorsController">
+    <graphic>
+        <Label text="%authors.header" onMouseClicked="#openAuthorBox"/>
+    </graphic>
+</Menu>

@@ -1,9 +1,7 @@
-package pl.prokom.view.controllers;
+package pl.prokom.view.controllers.sudokuboard;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.beans.property.adapter.JavaBeanIntegerProperty;
 import javafx.beans.property.adapter.JavaBeanIntegerPropertyBuilder;
@@ -22,6 +20,7 @@ import pl.prokom.view.adapter.SudokuBoardAdapter;
 import pl.prokom.view.adapter.level.SudokuBoardLevel;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
+import pl.prokom.view.controllers.MainPaneWindowController;
 
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.

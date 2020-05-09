@@ -6,9 +6,10 @@ public class Authors extends ListResourceBundle {
     @Override
     protected Object[][] getContents() {
         return new Object[][]{
-                {"AuthorNumbers", "2"},
-                {"Author1", "Guzek Paweł"},
-                {"Author2", "Maksajda Michał"},
+                {"label", "Authors"},
+                {"authorNumber", "2"},
+                {"author_1", "Guzek Paweł"},
+                {"author_2", "Maksajda Michał"},
         };
     }
 }
