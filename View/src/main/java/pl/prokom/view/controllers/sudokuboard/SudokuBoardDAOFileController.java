@@ -96,6 +96,9 @@ public class SudokuBoardDAOFileController {
             this.mainController.getSudokuGridController()
                     .getSudokuBoard().replaceParametersWith(sudokuBoardDAO);
 
+            this.mainController.getCorrectnessController()
+                    .changeCorrectnessMode(sudokuBoardDAO.getSudokuCorrectnessMode());
+
             //Refreshes window grid
             this.mainController.getSudokuGridController()
                     .initializeSudokuCellsWith(sudokuBoardDAO, false);

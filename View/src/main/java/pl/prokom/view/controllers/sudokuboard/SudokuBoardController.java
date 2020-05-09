@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.view.adapter.SudokuBoardAdapter;
+import pl.prokom.view.adapter.correctness.CorrectnessMode;
 import pl.prokom.view.adapter.level.SudokuBoardLevel;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
@@ -177,6 +178,12 @@ public class SudokuBoardController {
             sudokuBoard.setSudokuBoardLevel(boardCurrentLevel);
         }
         initSudokuCells();
+    }
+
+    public void setBoardListenerMode(CorrectnessMode listenerMode) {
+        if(listenerMode != sudokuBoard.getSudokuCorrectnessMode()) {
+            sudokuBoard.setSudokuFieldListenerEnabled(listenerMode);
+        }
     }
 
     /**

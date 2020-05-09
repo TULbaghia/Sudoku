@@ -6,6 +6,6 @@
 <Menu xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" mnemonicParsing="false"
       fx:id="authorsMenu" fx:controller="pl.prokom.view.controllers.AuthorsController">
     <graphic>
-        <Label text="%authors.header" onMouseClicked="#openAuthorBox"/>
+        <Label text="%authors.label" onMouseClicked="#openAuthorBox"/>
     </graphic>
 </Menu>

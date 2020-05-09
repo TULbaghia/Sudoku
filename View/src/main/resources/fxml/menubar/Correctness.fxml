@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+
+<Menu mnemonicParsing="false" text="%correctness.label" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.sudokuboard.SudokuBoardCorrectnessController">
+    <items>
+        <RadioMenuItem fx:id="rmiSupervisor" mnemonicParsing="false" text="%correctness.label.supervisor">
+            <toggleGroup>
+                <ToggleGroup fx:id="correctnessGroup" />
+            </toggleGroup>
+        </RadioMenuItem>
+        <RadioMenuItem fx:id="rmiFreeMode" mnemonicParsing="false" text="%correctness.level.freestyle" toggleGroup="$correctnessGroup" />
+    </items>
+</Menu>

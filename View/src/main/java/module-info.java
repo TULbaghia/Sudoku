@@ -6,6 +6,7 @@ module pl.prokom.view {
     requires pl.prokom.dao.file;
     requires pl.prokom.dao.api;
     requires slf4j.api;
+    requires java.desktop;
 
     exports pl.prokom.view.controllers;
     exports pl.prokom.view.controllers.sudokuboard;

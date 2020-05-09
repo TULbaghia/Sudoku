@@ -95,6 +95,14 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
         pcs.addPropertyChangeListener(listener);
     }
 
+    /**
+     * Returns propertyChangeSupport object.
+     * @return propertyChangeSupport
+     */
+    public PropertyChangeSupport getPcs() {
+        return pcs;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)

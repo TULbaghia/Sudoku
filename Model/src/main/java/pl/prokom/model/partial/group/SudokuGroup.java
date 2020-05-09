@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -32,7 +34,8 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
      * @param sudokuFields group of fields- Box, Column, Row or other
      */
     public SudokuGroup(final List<SudokuField> sudokuFields) {
-        setSudokuFields(sudokuFields);
+        this.sudokuFields = sudokuFields;
+        initializeListeners();
     }
 
     /**
@@ -45,12 +48,9 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
     }
 
     /**
-     * Setter of {@code sudokuFields}.
-     *
-     * @param sudokuFields group of fields- Box, Column, Row or other
+     * Initialize listeners of {@code sudokuFields}.
      */
-    private void setSudokuFields(final List<SudokuField> sudokuFields) {
-        this.sudokuFields = sudokuFields;
+    public void initializeListeners() {
         this.sudokuFields.forEach(x -> x.addPropertyChangeListener(this));
     }
 
@@ -75,10 +75,23 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
      * @return true when value exists; false otherwise
      */
     private boolean isValueAllowedToSet(final int value) {
-        return sudokuFields.stream()
+        return containsUniqueValues() && sudokuFields.stream()
                 .map(SudokuField::getFieldValue)
                 .noneMatch(x -> x == value)
                 && value <= sudokuFields.size();
+    }
+
+    /**
+     * Checks if group does not contains duplicates other than 0.
+     *
+     * @return true when there is no duplicates in [1..x]
+     */
+    public final boolean containsUniqueValues() {
+        Set<Integer> unique = new HashSet<>();
+
+        return sudokuFields.stream()
+                .map(SudokuField::getFieldValue)
+                .allMatch(x -> x == 0 || unique.add(x));
     }
 
     /**
@@ -129,9 +142,12 @@ public abstract class SudokuGroup implements PropertyChangeListener, Cloneable {
     public SudokuGroup clone() {
         try {
             SudokuGroup sudokuGroup = (SudokuGroup) super.clone();
-            sudokuGroup.setSudokuFields(Arrays.asList(sudokuFields.stream()
+
+            sudokuGroup.sudokuFields = Arrays.asList(sudokuFields.stream()
                     .map(SudokuField::clone)
-                    .toArray(SudokuField[]::new)));
+                    .toArray(SudokuField[]::new));
+
+            sudokuGroup.initializeListeners();
 
             return sudokuGroup;
         } catch (CloneNotSupportedException e) {

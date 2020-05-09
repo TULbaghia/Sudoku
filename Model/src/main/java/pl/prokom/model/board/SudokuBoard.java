@@ -34,7 +34,7 @@ public class SudokuBoard implements Cloneable, Serializable {
 
     private transient SudokuSolver<SudokuBoard> sudokuSolver;
     private List<List<SudokuField>> sudokuFields;
-    private transient List<SudokuGroup> sudokuGroups;
+    protected transient List<SudokuGroup> sudokuGroups;
 
     public SudokuBoard(final SudokuSolver<SudokuBoard> sudokuSolver) {
         this(sudokuSolver, null);
