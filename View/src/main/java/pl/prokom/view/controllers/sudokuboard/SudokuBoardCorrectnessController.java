@@ -1,19 +1,18 @@
 package pl.prokom.view.controllers.sudokuboard;
 
 import java.util.EnumMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.prokom.view.adapter.correctness.CorrectnessMode;
+import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.controllers.MainPaneWindowController;
 import pl.prokom.view.exception.SudokuBoardDuplicateValuesException;
+import pl.prokom.view.menu.AlertBox;
 
 public class SudokuBoardCorrectnessController {
 
@@ -35,31 +34,43 @@ public class SudokuBoardCorrectnessController {
     @FXML
     private ToggleGroup correctnessGroup;
 
+    /**
+     * Reference to MainPaneWindowController instance to reach this inside.
+     */
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        logger.trace(BundleHelper.getApplication("initializingParentController"));
         this.mainController = mainPaneWindowController;
         setSelectedToggle();
     }
 
     @FXML
     private void initialize() {
+        logger.trace(BundleHelper.getApplication("startingInitialization"));
+
         modesRadioItemMap = new EnumMap<>(CorrectnessMode.class);
         modesRadioItemMap.put(CorrectnessMode.SUPERVISOR, rmiSupervisor);
         modesRadioItemMap.put(CorrectnessMode.FREESTYLE, rmiFreeMode);
 
         modesRadioItemMap.forEach((x, y) -> y.setOnAction(e -> changeCorrectnessMode(x)));
 
-        correctnessGroup.selectedToggleProperty().addListener((observable, oldToggle, newToggle) -> {
-            if (newToggle != null) {
-                RadioMenuItem newButton = (RadioMenuItem) newToggle;
-                logger.info("Changed id from {} to {}", clickedToggleID, newButton.getId());
-            }
-        });
+        correctnessGroup.selectedToggleProperty().addListener(
+                (observable, oldToggle, newToggle) -> {
+                    if (newToggle != null) {
+                        RadioMenuItem newButton = (RadioMenuItem) newToggle;
+                        logger.info(BundleHelper.getApplication("correctnessGroup"),
+                                clickedToggleID, newButton.getId());
+                    }
+                });
+
+        logger.trace(BundleHelper.getApplication("finishedInitialization"));
     }
 
+    /**
+     * Change correctness mode that is used during gameplay.
+     *
+     * @param mode one that match CorrectnessMode
+     */
     public void changeCorrectnessMode(CorrectnessMode mode) {
-        Locale locale;
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("bundles.interaction", Locale.getDefault());
-        Alert alert;
         try {
             mainController.getSudokuGridController().setBoardListenerMode(mode);
             correctnessGroup.getToggles().stream().map(x -> (RadioMenuItem) x).forEach(x -> {
@@ -70,21 +81,25 @@ public class SudokuBoardCorrectnessController {
             clickedButton.setDisable(true);
             clickedButton.setSelected(true);
             clickedToggleID = clickedButton.getId();
-            logger.info("Changing Correctness mode to {}", mode.name());
-            alert = new Alert(AlertType.INFORMATION);
-            alert.setContentText(resourceBundle.getString("correctness.alert.text.ok"));
-
+            logger.info(BundleHelper.getApplication("correctnessModeChanging"), mode);
+            AlertBox.showAlert(AlertType.INFORMATION,
+                    BundleHelper.getApplication("correctnessAlertTitle"),
+                    BundleHelper.getApplication("correctnessAlertHeader"),
+                    BundleHelper.getApplication("correctnessAlertTextOk"));
         } catch (SudokuBoardDuplicateValuesException e) {
-            logger.warn(e.getMessage());
+            logger.warn(
+                    BundleHelper.getException("correctnessModeChangingDuplicate"), e.getMessage());
             setSelectedToggle();
-            alert = new Alert(AlertType.ERROR);
-            alert.setContentText(resourceBundle.getString("correctness.alert.text.error"));
+            AlertBox.showAlert(AlertType.WARNING,
+                    BundleHelper.getApplication("correctnessAlertTitle"),
+                    BundleHelper.getApplication("correctnessAlertHeader"),
+                    BundleHelper.getApplication("correctnessAlertTextError"));
         }
-        alert.setTitle(resourceBundle.getString("correctness.alert.title"));
-        alert.setHeaderText(resourceBundle.getString("correctness.alert.header"));
-        alert.showAndWait();
     }
 
+    /**
+     * Selector for toggle that is used during initialization or when error occur.
+     */
     private void setSelectedToggle() {
         correctnessGroup.getToggles().stream()
                 .map(x -> (RadioMenuItem) x)
@@ -93,11 +108,13 @@ public class SudokuBoardCorrectnessController {
                 .ifPresentOrElse(x -> {
                     x.setSelected(true);
                     x.setDisable(true);
-                    logger.info("{} was selected and disabled", clickedToggleID);
+                    logger.info(BundleHelper.getApplication("correctnessChoiceSelAndDis"),
+                            clickedToggleID);
                 }, () -> {
                     rmiSupervisor.setSelected(true);
                     rmiSupervisor.setDisable(true);
-                    logger.info("{} was selected and disabled", rmiSupervisor.getId());
+                    logger.info(BundleHelper.getApplication("correctnessChoiceSelAndDis"),
+                            rmiSupervisor.getId());
                 });
     }
 }

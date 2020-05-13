@@ -1,14 +1,12 @@
 package pl.prokom.view.controllers;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.prokom.view.bundles.BundleHelper;
+import pl.prokom.view.menu.AlertBox;
 
 public class AuthorsController {
 
@@ -16,50 +14,44 @@ public class AuthorsController {
 
     private MainPaneWindowController mainPaneWindowController;
 
-    public AuthorsController() {
-    }
-
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        logger.trace(BundleHelper.getApplication("initializingParentController"));
         this.mainPaneWindowController = mainPaneWindowController;
     }
 
     @FXML
     private void openAuthorBox(Event actionEvent) {
-        logger.trace("Loading author's resourceBundle");
-        ResourceBundle resourceBundle = ResourceBundle
-                .getBundle("pl.prokom.view.bundles.Authors", Locale.getDefault());
+        logger.trace(BundleHelper.getApplication("authorsLoadBundle"));
 
-        showAlert(resourceBundle.getString("label"), buildAuthorsString(resourceBundle));
+        showAlert(BundleHelper.getAuthors("label"), buildAuthorsString());
     }
 
-    private String buildAuthorsString(ResourceBundle resourceBundle) {
-        logger.trace("Building author's list");
-        int numer = Integer.parseInt(resourceBundle.getString("authorNumber"));
-
+    private String buildAuthorsString() {
+        logger.trace(BundleHelper.getApplication("authorsBuildingString"));
         StringBuilder authors = new StringBuilder();
-        for (int i = 1; i <= numer; i++) {
-            authors.append(resourceBundle.getString("author_" + i));
-            if (i != numer) {
-                authors.append("\n");
+
+        try {
+            int numer = Integer.parseInt(BundleHelper.getAuthors("authorNumber"));
+
+            for (int i = 1; i <= numer; i++) {
+                authors.append(BundleHelper.getAuthors("author_" + i));
+                if (i != numer) {
+                    authors.append("\n");
+                }
             }
+        } catch (NumberFormatException e) {
+            logger.error(BundleHelper.getException("error") + " - "
+                    + BundleHelper.getException("numberFormatException"), e);
         }
 
         return authors.toString();
     }
 
     private void showAlert(String label, String content) {
-        logger.info("Showing author alert");
-        Alert alert = new Alert(AlertType.INFORMATION);
+        logger.debug(BundleHelper.getApplication("authorsAlertShowing"));
 
-        alert.setTitle(label);
-        alert.setHeaderText(label + ":");
-        alert.setContentText(content);
+        AlertBox.showAlert(AlertType.INFORMATION, label, label + ":", content);
 
-        alert.showAndWait().ifPresent(x -> {
-            if(x == ButtonType.OK) {
-                logger.info("Pressed OK button");
-            }
-        });
-        logger.info("Closed author alert");
+        logger.debug(BundleHelper.getApplication("authorsAlertClosed"));
     }
 }

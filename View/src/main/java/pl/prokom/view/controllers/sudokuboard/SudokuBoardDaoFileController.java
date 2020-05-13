@@ -1,7 +1,7 @@
 package pl.prokom.view.controllers.sudokuboard;
 
-import java.util.Arrays;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +11,14 @@ import pl.prokom.dao.file.exception.DaoFileException;
 import pl.prokom.dao.file.model.SudokuBoardDaoFactory;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.view.adapter.SudokuBoardAdapter;
+import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.controllers.MainPaneWindowController;
+import pl.prokom.view.menu.AlertBox;
 
-public class SudokuBoardDAOFileController {
+public class SudokuBoardDaoFileController {
 
     private static final Logger logger =
-            LoggerFactory.getLogger(SudokuBoardDAOFileController.class);
+            LoggerFactory.getLogger(SudokuBoardDaoFileController.class);
 
     /**
      * Reference to MainPaneWindowController instance to reach this.
@@ -34,17 +36,10 @@ public class SudokuBoardDAOFileController {
     private Dao<SudokuBoard> fileSudokuBoardDao;
 
     /**
-     * Factory of fileSudokuBoardDao instances, needed to obtain SudokuBoard instance.
-     */
-    SudokuBoardDaoFactory sudokuBoardDaoFactory = new SudokuBoardDaoFactory();
-
-    public SudokuBoardDAOFileController() {
-    }
-
-    /**
      * Reference to MainPaneWindowController instance to reach this inside.
      */
     public void setParentController(MainPaneWindowController mainPaneWindowController) {
+        logger.trace(BundleHelper.getApplication("initializingParentController"));
         this.mainController = mainPaneWindowController;
     }
 
@@ -61,16 +56,21 @@ public class SudokuBoardDAOFileController {
      */
     @FXML
     public void writeSudokuToFile() throws DaoFileException {
-        String filePath;
         try {
-            filePath = fileChooser.showSaveDialog(
+            String filePath = fileChooser.showSaveDialog(
                     mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
             initFileSudokuBoardDao(filePath);
             fileSudokuBoardDao.write(mainController.getSudokuGridController().getSudokuBoard());
-            logger.trace("Saved sudoku to file at {}", filePath);
+
+            logger.trace(BundleHelper.getApplication("daoFileWriteSuccess"), filePath);
+            AlertBox.showAlert(Alert.AlertType.INFORMATION,
+                    BundleHelper.getApplication("daoFileAlertTitle"),
+                    BundleHelper.getApplication("daoFileAlertHeader"),
+                    BundleHelper.getApplication("daoFileAlertWriteContent"));
         } catch (NullPointerException e) {
-            logger.warn("Unknown sudoku output file");
+            logger.warn(BundleHelper.getException("daoFileNotChoosen"), e);
         } catch (DaoException e) {
+            logger.error(BundleHelper.getException("daoFileException"), e);
             throw new DaoFileException("Illegal file access.", e);
         }
     }
@@ -81,32 +81,36 @@ public class SudokuBoardDAOFileController {
      */
     @FXML
     public void readSudokuFromFile() throws DaoFileException {
-        String filePath;
         try {
-            filePath = fileChooser.showOpenDialog(
+            String filePath = fileChooser.showOpenDialog(
                     mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
             initFileSudokuBoardDao(filePath);
-            SudokuBoardAdapter sudokuBoardDAO = (SudokuBoardAdapter) fileSudokuBoardDao.read();
+            SudokuBoardAdapter sudokuBoardDao = (SudokuBoardAdapter) fileSudokuBoardDao.read();
 
             //Restore difficulty level
             this.mainController.getDifficultyLevelsController()
-                    .changeDifficultyLevel(sudokuBoardDAO.getSudokuBoardLevel(), false);
+                    .changeDifficultyLevel(sudokuBoardDao.getSudokuBoardLevel(), false);
 
             //Restores sudokuBoard settings
             this.mainController.getSudokuGridController()
-                    .getSudokuBoard().replaceParametersWith(sudokuBoardDAO);
+                    .getSudokuBoard().replaceParametersWith(sudokuBoardDao);
 
             this.mainController.getCorrectnessController()
-                    .changeCorrectnessMode(sudokuBoardDAO.getSudokuCorrectnessMode());
+                    .changeCorrectnessMode(sudokuBoardDao.getSudokuCorrectnessMode());
 
             //Refreshes window grid
             this.mainController.getSudokuGridController()
-                    .initializeSudokuCellsWith(sudokuBoardDAO, false);
-            logger.trace("Saved sudoku to file at {}", filePath);
+                    .initializeSudokuCellsWith(sudokuBoardDao, false);
+
+            logger.trace(BundleHelper.getApplication("daoFileReadSuccess"), filePath);
+            AlertBox.showAlert(Alert.AlertType.INFORMATION,
+                    BundleHelper.getApplication("daoFileAlertTitle"),
+                    BundleHelper.getApplication("daoFileAlertHeader"),
+                    BundleHelper.getApplication("daoFileAlertReadContent"));
         } catch (NullPointerException e) {
-            logger.warn("Unknown sudoku output file");
+            logger.warn(BundleHelper.getException("daoFileNotChoosen"), e);
         } catch (DaoException e) {
-            logger.error("Illegal file access {}", Arrays.toString(e.getStackTrace()));
+            logger.error(BundleHelper.getException("daoFileException"), e);
             throw new DaoFileException("Illegal file access.", e);
         }
     }

@@ -19,6 +19,7 @@ public class MainPaneWindow extends Application {
 
     /**
      * Initializing stage, scene and setting Stage instance features.
+     *
      * @param primaryStage currently using stage.
      * @throws IOException location of .fxml
      */
@@ -28,6 +29,4 @@ public class MainPaneWindow extends Application {
         ResourceBundle bundle = ResourceBundle.getBundle("bundles.interaction");
         StageCreator.createStage(primaryStage, bundle, this.getClass());
     }
-
-
 }

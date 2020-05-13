@@ -7,18 +7,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.exception.IllegalFieldValueException;
 import pl.prokom.model.partial.group.SudokuGroup;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.view.adapter.correctness.CorrectnessMode;
 import pl.prokom.view.adapter.level.SudokuBoardLevel;
+import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.exception.SudokuBoardDuplicateValuesException;
 
 /**
  * Adapter of SudokuBoard to match view restrictions.
  */
 public class SudokuBoardAdapter extends SudokuBoard {
+
+    /**
+     * Logger instance. Logging events of SudokuBoardController class.
+     */
+    private static final transient Logger logger =
+            LoggerFactory.getLogger(SudokuBoardAdapter.class);
+
     private List<Integer> protectedIntegerFields;
 
     private List<Integer> editableIntegerFields;
@@ -53,6 +63,11 @@ public class SudokuBoardAdapter extends SudokuBoard {
         return sudokuBoardLevel;
     }
 
+    /**
+     * Generates protected and editable field lists.
+     *
+     * @param sudokuBoardLevel difficulty level of sudoku
+     */
     public void setSudokuBoardLevel(SudokuBoardLevel sudokuBoardLevel) {
         this.sudokuBoardLevel = sudokuBoardLevel;
 
@@ -66,38 +81,57 @@ public class SudokuBoardAdapter extends SudokuBoard {
         protectedIntegerFields = new ArrayList<>(
                 randomValues.subList(0, sudokuBoardLevel.getFilledCells()));
 
+        logger.debug(
+                BundleHelper.getApplication("boardAdapterProtectedFields"), protectedIntegerFields);
+
         editableIntegerFields = new ArrayList<>(randomValues
                 .subList(sudokuBoardLevel.getFilledCells(), getBoardSize() * getBoardSize()));
+
+        logger.debug(
+                BundleHelper.getApplication("boardAdapterEditableFields"), editableIntegerFields);
     }
 
     public boolean basicGroupCorrectnessCheck() {
-        return sudokuGroups.stream().allMatch(SudokuGroup::containsUniqueValues);
+        return getGroups().stream().allMatch(SudokuGroup::containsUniqueValues);
     }
 
     public CorrectnessMode getSudokuCorrectnessMode() {
         return sudokuCorrectnessMode;
     }
 
+    /**
+     * Enables or disables sudokuField's listeneres.
+     *
+     * @param status validation status used during gameplay
+     */
     public void setSudokuFieldListenerEnabled(CorrectnessMode status) {
         if (!basicGroupCorrectnessCheck()) {
-            throw new SudokuBoardDuplicateValuesException("Incorrect group validation");
+            throw new SudokuBoardDuplicateValuesException(
+                    BundleHelper.getException("sudokuBoardDuplicateValuesException"));
         } else if (status != sudokuCorrectnessMode) {
             if (status == CorrectnessMode.SUPERVISOR) {
-                sudokuGroups.forEach(SudokuGroup::initializeListeners);
+                getGroups().forEach(SudokuGroup::initializeListeners);
+                logger.debug(BundleHelper.getApplication("boardAdapterListenerSupervisor"));
             } else {
                 IntStream.range(0, getBoardSize() * getBoardSize()).forEach(x -> {
                     PropertyChangeSupport pcs = getSudokuField(x / 9, x % 9).getPcs();
                     Arrays.stream(pcs.getPropertyChangeListeners())
                             .forEach(pcs::removePropertyChangeListener);
                 });
+                logger.debug(BundleHelper.getApplication("boardAdapterListenerFreeStyle"));
             }
             sudokuCorrectnessMode = status;
         }
     }
 
-    public void replaceParametersWith(SudokuBoardAdapter sudokuBoardDAO) {
-        this.protectedIntegerFields = sudokuBoardDAO.protectedIntegerFields;
-        this.editableIntegerFields = sudokuBoardDAO.editableIntegerFields;
-        this.sudokuBoardLevel = sudokuBoardDAO.sudokuBoardLevel;
+    /**
+     * Replaces parameters of class with given one.
+     *
+     * @param sudokuBoardDao class from DAO
+     */
+    public void replaceParametersWith(SudokuBoardAdapter sudokuBoardDao) {
+        this.protectedIntegerFields = sudokuBoardDao.protectedIntegerFields;
+        this.editableIntegerFields = sudokuBoardDao.editableIntegerFields;
+        this.sudokuBoardLevel = sudokuBoardDao.sudokuBoardLevel;
     }
 }

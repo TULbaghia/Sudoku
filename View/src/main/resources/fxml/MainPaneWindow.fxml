@@ -7,7 +7,7 @@
     <children>
         <MenuBar prefHeight="30.0" prefWidth="700.0">
             <menus>
-                <fx:include fx:id="sudokuBoardDAOFile" source="menubar/SudokuBoardDAOFile.fxml" />
+                <fx:include fx:id="sudokuBoardDaoFile" source="menubar/SudokuBoardDAOFile.fxml" />
                 <fx:include fx:id="languageChoice" source="menubar/LanguageChoiceButtons.fxml" />
                 <fx:include fx:id="correctness" source="menubar/Correctness.fxml" />
                 <fx:include fx:id="authorsBundle" source="menubar/AuthorsBundle.fxml" />

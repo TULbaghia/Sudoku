@@ -183,7 +183,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>pl.prokom.view.Main</mainClass>
+                            <mainClass>pl.prokom.view.menu.MainPaneWindow</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

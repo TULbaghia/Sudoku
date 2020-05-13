@@ -34,7 +34,7 @@ public class SudokuBoard implements Cloneable, Serializable {
 
     private transient SudokuSolver<SudokuBoard> sudokuSolver;
     private List<List<SudokuField>> sudokuFields;
-    protected transient List<SudokuGroup> sudokuGroups;
+    private transient List<SudokuGroup> sudokuGroups;
 
     public SudokuBoard(final SudokuSolver<SudokuBoard> sudokuSolver) {
         this(sudokuSolver, null);
@@ -154,6 +154,13 @@ public class SudokuBoard implements Cloneable, Serializable {
                 .filter(x -> x instanceof SudokuBox).skip(row * miniBoxDim + column).findFirst()
                 .map(x -> (SudokuBox) x)
                 .get();
+    }
+
+    /**
+     * Return reference to List containing groups.
+     */
+    protected List<SudokuGroup> getGroups() {
+        return sudokuGroups;
     }
 
     public SudokuField getSudokuField(int row, int column) {

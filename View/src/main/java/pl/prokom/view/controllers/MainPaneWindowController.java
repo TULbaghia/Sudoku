@@ -5,12 +5,18 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.controllers.sudokuboard.SudokuBoardController;
 import pl.prokom.view.controllers.sudokuboard.SudokuBoardCorrectnessController;
-import pl.prokom.view.controllers.sudokuboard.SudokuBoardDAOFileController;
+import pl.prokom.view.controllers.sudokuboard.SudokuBoardDaoFileController;
 import pl.prokom.view.menu.MainPaneWindow;
 
 public class MainPaneWindowController extends MainPaneWindow implements Initializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(MainPaneWindowController.class);
+
     /**
      * Basic Pane instance.
      */
@@ -41,7 +47,7 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
      * Reference to class, that controls SudokuBoard menu buttons- SudokuBoardMenuButtonsController.
      */
     @FXML
-    private SudokuBoardDAOFileController sudokuBoardDAOFileController;
+    private SudokuBoardDaoFileController sudokuBoardDaoFileController;
 
     /**
      * Reference to class, that controls Correctness Mode of sudokuBoard.
@@ -54,6 +60,7 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.trace(BundleHelper.getApplication("startingInitialization"));
         this.interactionBundle = resourceBundle;
 
         languageChoiceController.setParentController(this);
@@ -61,9 +68,10 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
         sudokuGridController.setParentController(this);
         correctnessController.setParentController(this);
         authorsBundleController.setParentController(this);
-        sudokuBoardDAOFileController.setParentController(this);
+        sudokuBoardDaoFileController.setParentController(this);
 
         difficultyLevelsController.setParentController(this);
+        logger.trace(BundleHelper.getApplication("finishedInitialization"));
     }
 
     public Pane getMainPaneWindow() {

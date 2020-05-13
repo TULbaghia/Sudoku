@@ -3,7 +3,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuItem?>
 
-<Menu mnemonicParsing="false" text="%sudokuFile.label" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.sudokuboard.SudokuBoardDAOFileController">
+<Menu mnemonicParsing="false" text="%sudokuFile.label" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.sudokuboard.SudokuBoardDaoFileController">
    <items>
       <MenuItem mnemonicParsing="false" text="%sudokuFile.read" onAction="#readSudokuFromFile" fx:id="sudokuReadButton"/>
       <MenuItem mnemonicParsing="false" text="%sudokuFile.write" onAction="#writeSudokuToFile" fx:id="writeSudokuButton"/>

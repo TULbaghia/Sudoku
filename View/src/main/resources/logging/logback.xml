@@ -2,6 +2,7 @@
 <configuration debug="true">
     <property name="HOME_LOG" value="./logs"/>
 
+    <!-- FILE HANDLERS -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}/app.log</file>
         <encoder>
@@ -19,11 +20,97 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="pl.prokom.view.controllers.sudokuboard.SudokuBoardController" level="DEBUG" additivity="false">
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}/app_error.log</file>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+
+        <encoder>
+            <pattern>[%thread] %d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${HOME_LOG}/archived/app_error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <totalSizeCap>10GB</totalSizeCap>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+
+
+    <!--  CONSOLE HANDLERS -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>DENY</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>DENY</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+        </filter>
+
+        <encoder>
+            <pattern>[%thread] %d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SYSTDERR" class="ch.qos.logback.core.ConsoleAppender">
+        <Target>System.err</Target>
+
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>DENY</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>DENY</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>DENY</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+
+        <encoder>
+            <pattern>[%thread] %d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="pl.prokom.view" level="TRACE" additivity="false">
         <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE_ERROR"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SYSTDERR"/>
     </logger>
 
-    <root level="DEBUG">
+    <root level="TRACE">
         <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE_ERROR"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SYSTDERR"/>
     </root>
 </configuration>
