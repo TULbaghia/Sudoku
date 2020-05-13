@@ -1,11 +1,13 @@
-package pl.prokom.model.board;
+package pl.prokom.view.adapter.level;
 
+
+import java.io.Serializable;
 
 /**
  * Class holds enums for all difficulty levels of SudokuBoard.
  * Used while filling entire sudokuBoard in SudokuBoardController (pl.prokom.view.controllers).
  */
-public enum SudokuBoardLevel {
+public enum SudokuBoardLevel implements Cloneable, Serializable {
 
     EASY(60), MEDIUM(50), HARD(40);
 

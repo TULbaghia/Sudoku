@@ -51,6 +51,9 @@ public class SudokuFieldTest {
         sudokuField.setFieldValue(1);
         assertEquals(1, sudokuField.getFieldValue());
 
+        sudokuField.setFieldValue(0);
+        assertEquals(0, sudokuField.getFieldValue());
+
         sudokuField.setFieldValue(5);
         assertEquals(5, sudokuField.getFieldValue());
 
@@ -97,6 +100,15 @@ public class SudokuFieldTest {
         assertEquals(1, sudokuField.compareTo(sudokuFieldOther));
 
         assertThrows(NullPointerException.class, () -> sudokuField.compareTo(null));
+    }
+
+    /**
+     * Case description:
+     * - check if pcs is not null
+     */
+    @Test
+    public void getPcsTest() {
+        assertNotNull(sudokuField.getPcs());
     }
 
     /**

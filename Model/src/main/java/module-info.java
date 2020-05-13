@@ -1,8 +1,6 @@
 module pl.prokom.model {
     requires org.apache.commons.lang3;
     requires java.desktop;               //java.beans
-
-
     exports pl.prokom.model.board;
     exports pl.prokom.model.exception;
     exports pl.prokom.model.partial.field;

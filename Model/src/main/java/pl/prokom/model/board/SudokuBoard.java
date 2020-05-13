@@ -156,6 +156,13 @@ public class SudokuBoard implements Cloneable, Serializable {
                 .get();
     }
 
+    /**
+     * Return reference to List containing groups.
+     */
+    protected List<SudokuGroup> getGroups() {
+        return sudokuGroups;
+    }
+
     public SudokuField getSudokuField(int row, int column) {
         return sudokuFields.get(row).get(column);
     }

@@ -1,4 +1,4 @@
-package pl.prokom.dao.file;
+package pl.prokom.dao.file.model;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,7 +6,9 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import pl.prokom.dao.api.Dao;
+import pl.prokom.dao.api.model.Dao;
+import pl.prokom.dao.file.exception.DaoClassException;
+import pl.prokom.dao.file.exception.DaoFileException;
 import pl.prokom.model.board.SudokuBoard;
 
 /**
@@ -34,13 +36,15 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
      * @return reference to {@code SudokuBoard}
      */
     @Override
-    public SudokuBoard read() {
+    public SudokuBoard read() throws DaoFileException, DaoClassException {
         SudokuBoard deserialized = null;
         Path filePath = Paths.get(fileName);
         try (ObjectInputStream iStream = new ObjectInputStream(Files.newInputStream(filePath))) {
             deserialized = (SudokuBoard) iStream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
+        } catch (IOException e) {
+            throw new DaoFileException("Illegal file access.", e);
+        } catch (ClassNotFoundException e) {
+            throw new DaoClassException("Illegal class obtained.", e);
         }
         return deserialized;
     }
@@ -51,12 +55,12 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
      * @param object is an instance of SudokuBoard, which is currenty being serialized
      */
     @Override
-    public void write(SudokuBoard object) {
+    public void write(SudokuBoard object) throws DaoFileException {
         Path filePath = Paths.get(fileName);
         try (ObjectOutputStream oStream = new ObjectOutputStream(Files.newOutputStream(filePath))) {
             oStream.writeObject(object);
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            throw new DaoFileException("Illegal file access.", e);
         }
     }
 

@@ -57,19 +57,26 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
      * @throws IllegalFieldValueException when value not in given range
      */
     public void setFieldValue(final int value) throws IllegalFieldValueException {
-        //DEBUG ONLY
-//        System.out.println("Chaning value from: " + this.value + " to " + value);
-        if(value == 0) {
+        if (value == 0) {
             resetValue();
             return;
         }
+        if (this.value != value) {
+            validate(value);
+            this.value = value;
+        }
+    }
+
+    /**
+     * Test value wheather can be inserted.
+     *
+     * @param value value you want to test if can be insert
+     */
+    public void validate(final int value) throws IllegalFieldValueException {
         if (value < 1) {
             throw new IllegalFieldValueException("Value '" + value + "' is not in allowed range.");
         }
-        if (this.value != value) {
-            pcs.firePropertyChange("value", this.value, value);
-            this.value = value;
-        }
+        pcs.firePropertyChange("value", this.value, value);
     }
 
     /**
@@ -86,6 +93,14 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
      */
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Returns propertyChangeSupport object.
+     * @return propertyChangeSupport
+     */
+    public PropertyChangeSupport getPcs() {
+        return pcs;
     }
 
     @Override
@@ -133,7 +148,9 @@ public class SudokuField implements Cloneable, Serializable, Comparable<SudokuFi
 
     @Override
     public int compareTo(SudokuField sudokuField) throws NullPointerException {
-        if(sudokuField == null) throw new NullPointerException();
+        if (sudokuField == null) {
+            throw new NullPointerException();
+        }
         return Integer.compare(this.getFieldValue(), sudokuField.getFieldValue());
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
+
+<Menu mnemonicParsing="false" text="%language.label" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.LanguageChoiceButtonsController">
+    <items>
+        <RadioMenuItem fx:id="rmiPolish" mnemonicParsing="false" onAction="#setLanguagePolish" text="%language.label.polish">
+            <toggleGroup>
+                <ToggleGroup fx:id="langChoiceGroup" />
+            </toggleGroup>
+        </RadioMenuItem>
+        <RadioMenuItem fx:id="rmiEnglish" mnemonicParsing="false" onAction="#setLanguageEnglish" text="%language.label.english" toggleGroup="$langChoiceGroup" />
+    </items>
+</Menu>

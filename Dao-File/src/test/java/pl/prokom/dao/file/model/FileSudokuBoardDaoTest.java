@@ -1,17 +1,19 @@
-package pl.prokom.dao.file;
+package pl.prokom.dao.file.model;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.prokom.dao.api.Dao;
+import pl.prokom.dao.api.exception.DaoException;
+import pl.prokom.dao.api.model.Dao;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.model.partial.field.SudokuField;
 import pl.prokom.model.solver.BacktrackingSudokuSolver;
 import pl.prokom.model.solver.SudokuSolver;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,13 +27,14 @@ public class FileSudokuBoardDaoTest {
     String testPath;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws URISyntaxException {
         sudokuSolver = new BacktrackingSudokuSolver();
         sudokuBoard = new SudokuBoard(sudokuSolver);
         sudokuBoard.solveGame();
 
         SudokuBoardDaoFactory factory = new SudokuBoardDaoFactory();
-        testPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        Path path = Paths.get(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+        testPath = path.toString();
         fileSudokuBoardDao = factory.getFileDao(testPath + "test.txt");
     }
 
@@ -42,7 +45,7 @@ public class FileSudokuBoardDaoTest {
      * - check if one is reference to another (if they are the same).
      */
     @Test
-    public void serializeDeserializeTest() {
+    public void serializeDeserializeTest() throws Exception {
         fileSudokuBoardDao.write(sudokuBoard);
         SudokuBoard sudokuDeserialized = fileSudokuBoardDao.read();
 
@@ -56,7 +59,7 @@ public class FileSudokuBoardDaoTest {
      * - confirms that there are 2 different instances
      */
     @Test
-    public void cellValuesAfterSerialization() throws NoSuchFieldException, IllegalAccessException {
+    public void cellValuesAfterSerialization() throws DaoException, NoSuchFieldException, IllegalAccessException {
         fileSudokuBoardDao.write(sudokuBoard);
         SudokuBoard sudokuDeserialized = fileSudokuBoardDao.read();
         Field field = sudokuBoard.getClass().getDeclaredField("sudokuFields");
@@ -75,37 +78,4 @@ public class FileSudokuBoardDaoTest {
         }
     }
 
-    /**
-     * Case description:
-     * - trying to read from illegal file throws IllegalArgumentException
-     * - trying to write to illegal file throws IllegalArgumentException
-     */
-    @Test
-    public void exceptionsTest() throws NoSuchFieldException, IllegalAccessException {
-        fileSudokuBoardDao.write(sudokuBoard);
-        Field field = fileSudokuBoardDao.getClass().getDeclaredField("fileName");
-        field.setAccessible(true);
-        field.set(fileSudokuBoardDao, "//");
-        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.read());
-        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.write(sudokuBoard));
-    }
-
-    /**
-     * Case description:
-     * - trying to read from file without serialized class
-     */
-    @Test
-    public void exceptionReadClassNotFoundTest() throws NoSuchFieldException, IllegalAccessException {
-        fileSudokuBoardDao.write(sudokuBoard);
-        try (RandomAccessFile fh = new RandomAccessFile(testPath+"test.txt", "rw")) {
-            fh.seek(30L);
-            fh.write('Y');
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Field field = fileSudokuBoardDao.getClass().getDeclaredField("fileName");
-        field.setAccessible(true);
-        field.set(fileSudokuBoardDao, testPath + "test.txt");
-        assertThrows(IllegalArgumentException.class, () -> fileSudokuBoardDao.read());
-    }
 }
