@@ -9,6 +9,7 @@ import pl.prokom.dao.api.exception.DaoException;
 import pl.prokom.dao.api.model.Dao;
 import pl.prokom.dao.db.exception.*;
 import pl.prokom.dao.db.model.*;
+import pl.prokom.dao.file.exception.DaoFileException;
 import pl.prokom.model.board.SudokuBoard;
 import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.controllers.MainPaneWindowController;
@@ -63,15 +64,19 @@ public class SudokuBoardDaoDBController {
      * sudokuBoardName is essentialy the name of new instance record in database.
      */
     @FXML
-    public void writeSudokuToDatabase() throws JdbcDaoConnectionException, JdbcDaoNameException {
+    public void writeSudokuToDatabase() throws JdbcDaoNameException {
         textInputDialog.getEditor().setText("");
         JdbcSudokuBoardDaoFactory jdbcSudokuBoardDaoFactory = new JdbcSudokuBoardDaoFactory();
         try {
             Optional<String> sudokuBoardName = textInputDialog.showAndWait();
-            jdbcSudokuBoardDaoFactory.getDBDao(sudokuBoardName.get());
-        } catch (DaoException e) {
+            jdbcSudokuBoardDao = jdbcSudokuBoardDaoFactory.getDBDao(sudokuBoardName.get());
+            jdbcSudokuBoardDao.write(mainController.getSudokuGridController().getSudokuBoard());
+        } catch(JdbcDaoConnectionException e) {
             logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoConnectionNotEstablished"), e);
-            throw new JdbcDaoConnectionException(e);
+        } catch(JdbcDaoQueryException e) {
+            logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoQueryException"), e);
+        } catch (DaoException e) {
+            logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoException"), e);
         } catch (NoSuchElementException e) {
             logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoNameException"), e);
             throw new JdbcDaoNameException(e);
