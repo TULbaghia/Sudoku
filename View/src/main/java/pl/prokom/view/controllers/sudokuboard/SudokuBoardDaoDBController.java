@@ -1,6 +1,7 @@
 package pl.prokom.view.controllers.sudokuboard;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import org.slf4j.Logger;
@@ -9,10 +10,11 @@ import pl.prokom.dao.api.exception.DaoException;
 import pl.prokom.dao.api.model.Dao;
 import pl.prokom.dao.db.exception.*;
 import pl.prokom.dao.db.model.*;
-import pl.prokom.dao.file.exception.DaoFileException;
 import pl.prokom.model.board.SudokuBoard;
+import pl.prokom.view.adapter.SudokuBoardAdapter;
 import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.controllers.MainPaneWindowController;
+import pl.prokom.view.menu.AlertBox;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -47,12 +49,16 @@ public class SudokuBoardDaoDBController {
     }
 
     /**
-     * Setting required bindings.
+     * Setting initial state of TextInputDialog instance.
+     * ContentText, Title, HeaderText are being adjusted.
+     * Binding disableProperty of OK button -> textProperty.
      */
     @FXML
     public void initialize(){
-       textInputDialog.setHeaderText(BundleHelper.getInteraction("sudokuDatabase.textInputDialog"));
-       textInputDialog.getDialogPane()
+        textInputDialog.setContentText(BundleHelper.getInteraction("sudokuDatabase.textInputDialogContent"));
+        textInputDialog.setTitle(BundleHelper.getInteraction("sudokuDatabase.textInputDialogTitle"));
+        textInputDialog.setHeaderText(BundleHelper.getInteraction("sudokuDatabase.textInputDialogHeader"));
+        textInputDialog.getDialogPane()
                 .lookupButton(ButtonType.OK).disableProperty()
                 .bind(textInputDialog.getEditor().textProperty().isEmpty());
     }
@@ -60,36 +66,80 @@ public class SudokuBoardDaoDBController {
     /**
      * Write state of SudokuBoard instance to a database table.
      * @throws JdbcDaoConnectionException - connection has not been established.
-     * @throws JdbcDaoNameException - entered specific board name was incorrect or empty.
+     * @throws JdbcDaoQueryException - incorrect query.
      * sudokuBoardName is essentialy the name of new instance record in database.
      */
     @FXML
-    public void writeSudokuToDatabase() throws JdbcDaoNameException {
+    public void writeSudokuToDatabase() throws JdbcDaoConnectionException, JdbcDaoQueryException {
         textInputDialog.getEditor().setText("");
         JdbcSudokuBoardDaoFactory jdbcSudokuBoardDaoFactory = new JdbcSudokuBoardDaoFactory();
         try {
             Optional<String> sudokuBoardName = textInputDialog.showAndWait();
             jdbcSudokuBoardDao = jdbcSudokuBoardDaoFactory.getDBDao(sudokuBoardName.get());
             jdbcSudokuBoardDao.write(mainController.getSudokuGridController().getSudokuBoard());
+
+            logger.trace(BundleHelper.getApplication("sudokuDatabase.connectionSuccess"));
+            AlertBox.showAlert(Alert.AlertType.INFORMATION,
+                    BundleHelper.getApplication("sudokuDatabase.daoDBAlertTitle"),
+                    BundleHelper.getApplication("sudokuDatabase.daoDBAlertHeader"),
+                    BundleHelper.getApplication("sudokuDatabase.daoDBAlertWriteContent"));
+
         } catch(JdbcDaoConnectionException e) {
             logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoConnectionNotEstablished"), e);
+            throw new JdbcDaoConnectionException(e);
         } catch(JdbcDaoQueryException e) {
-            logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoQueryException"), e);
+            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoQueryException"), e);
+            throw new JdbcDaoQueryException(e);
         } catch (DaoException e) {
-            logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoException"), e);
+            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoException"), e);
         } catch (NoSuchElementException e) {
-            logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoNameException"), e);
-            throw new JdbcDaoNameException(e);
+            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoNameException"), e);
         }
-        logger.trace(BundleHelper.getApplication("sudokuDatabase.connectionSuccess"));
-
     }
 
     /**
      * Read state of SudokuBoard instance from a database table.
+     * @throws JdbcDaoQueryException - incorrect query.
+     * @throws JdbcDaoConnectionException - connection has not been established.
+     * sudokuBoardName is essentialy the name of new instance record in database.
      */
     @FXML
-    public void readSudokuFromDatabase() {
+    public void readSudokuFromDatabase() throws JdbcDaoConnectionException, JdbcDaoQueryException {
+        textInputDialog.getEditor().setText("");
+        JdbcSudokuBoardDaoFactory jdbcSudokuBoardDaoFactory = new JdbcSudokuBoardDaoFactory();
+        try {
+            Optional<String> sudokuBoardName = textInputDialog.showAndWait();
+            jdbcSudokuBoardDao = jdbcSudokuBoardDaoFactory.getDBDao(sudokuBoardName.get());
+            SudokuBoardAdapter sudokuBoardDao = (SudokuBoardAdapter) jdbcSudokuBoardDao.read();
+
+            this.mainController.getDifficultyLevelsController()
+                    .changeDifficultyLevel(sudokuBoardDao.getSudokuBoardLevel(), false);
+
+            this.mainController.getSudokuGridController()
+                    .getSudokuBoard().replaceParametersWith(sudokuBoardDao);
+
+            this.mainController.getCorrectnessController()
+                    .changeCorrectnessMode(sudokuBoardDao.getSudokuCorrectnessMode());
+
+            this.mainController.getSudokuGridController()
+                    .initializeSudokuCellsWith(sudokuBoardDao, false);
+            logger.trace(BundleHelper.getApplication("sudokuDatabase.connectionSuccess"));
+            AlertBox.showAlert(Alert.AlertType.INFORMATION,
+                    BundleHelper.getApplication("sudokuDatabase.daoDBAlertTitle"),
+                    BundleHelper.getApplication("sudokuDatabase.daoDBAlertHeader"),
+                    BundleHelper.getApplication("sudokuDatabase.daoDBAlertReadContent"));
+
+        } catch(JdbcDaoConnectionException e) {
+            logger.error(BundleHelper.getException("sudokuDatabase.jdbcDaoConnectionNotEstablished"), e);
+            throw new JdbcDaoConnectionException(e);
+        } catch(JdbcDaoQueryException e) {
+            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoQueryException"), e);
+            throw new JdbcDaoQueryException(e);
+        } catch (DaoException e) {
+            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoException"), e);
+        } catch (NoSuchElementException e) {
+            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoNameException"), e);
+        }
 
     }
 }
