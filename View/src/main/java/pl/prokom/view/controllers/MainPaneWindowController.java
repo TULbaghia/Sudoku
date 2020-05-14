@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.controllers.sudokuboard.SudokuBoardController;
 import pl.prokom.view.controllers.sudokuboard.SudokuBoardCorrectnessController;
+import pl.prokom.view.controllers.sudokuboard.SudokuBoardDaoDBController;
 import pl.prokom.view.controllers.sudokuboard.SudokuBoardDaoFileController;
 import pl.prokom.view.menu.MainPaneWindow;
 
@@ -50,6 +51,11 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
     private SudokuBoardDaoFileController sudokuBoardDaoFileController;
 
     /**
+     * Reference to class, that controls SudokuBoard database read/write features.
+     */
+    @FXML
+    private SudokuBoardDaoDBController sudokuBoardDaoDBController;
+    /**
      * Reference to class, that controls Correctness Mode of sudokuBoard.
      */
     @FXML
@@ -69,6 +75,7 @@ public class MainPaneWindowController extends MainPaneWindow implements Initiali
         correctnessController.setParentController(this);
         authorsBundleController.setParentController(this);
         sudokuBoardDaoFileController.setParentController(this);
+        sudokuBoardDaoDBController.setParentController(this);
 
         difficultyLevelsController.setParentController(this);
         logger.trace(BundleHelper.getApplication("finishedInitialization"));

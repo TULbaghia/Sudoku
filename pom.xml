@@ -13,6 +13,7 @@
     <modules>
         <module>Dao-API</module>
         <module>Dao-File</module>
+        <module>Dao-DB</module>
         <module>Parent</module>
         <module>Model</module>
         <module>View</module>

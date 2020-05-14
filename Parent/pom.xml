@@ -37,6 +37,12 @@
 
         <dependency>
             <groupId>pl.prokom</groupId>
+            <artifactId>Dao-DB</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pl.prokom</groupId>
             <artifactId>ViewProject</artifactId>
             <version>${project.version}</version>
         </dependency>
