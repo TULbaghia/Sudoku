@@ -8,7 +8,15 @@ import java.sql.SQLException;
 
 public class SudokuBoardQueryExecutor {
 
+    /**
+     * PreparedStatement instance with each database query/ies.
+     */
     private static PreparedStatement dbStatement;
+
+    /**
+     * Database connection class.
+     * Configuration method in JdbcSudokuBoardDao.
+     */
     private static Connection dbConnection;
 
     public static void createNewTable() throws JdbcDaoQueryException {
@@ -32,6 +40,29 @@ public class SudokuBoardQueryExecutor {
         } catch (SQLException e) {
             throw new JdbcDaoQueryException("Database query error while: Inserting data.", e);
         }
+
+    }
+
+    public static byte[] selectSudokuBoard(String sudokuBoard) throws JdbcDaoQueryException {
+        try {
+            dbStatement = dbConnection
+                    .prepareStatement("SELECT * FROM SavedSudokuBoards WHERE name = ?;");
+            dbStatement.setString(1, sudokuBoard);
+            byte[] obtainedBoard = getSerializedObject();
+            dbStatement.close();
+            return obtainedBoard;
+        } catch (SQLException e) {
+            throw new JdbcDaoQueryException("Database query error while: Selecting chosen SudokuBoard blob state from database.", e);
+        }
+    }
+
+    private static byte[] getSerializedObject() throws SQLException {
+        byte[] obtainedBoard = null;
+        java.sql.ResultSet obtainedRecord = dbStatement.executeQuery();
+        while(obtainedRecord.next()){
+            obtainedBoard = obtainedRecord.getBytes("serializedObject");
+        }
+        return obtainedBoard;
     }
 
     private static void executeAndCloseStatement() throws SQLException {

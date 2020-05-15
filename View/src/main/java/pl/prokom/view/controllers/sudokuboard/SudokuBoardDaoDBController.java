@@ -6,7 +6,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.prokom.dao.api.exception.DaoException;
 import pl.prokom.dao.api.model.Dao;
 import pl.prokom.dao.db.exception.*;
 import pl.prokom.dao.db.model.*;
@@ -15,8 +14,6 @@ import pl.prokom.view.adapter.SudokuBoardAdapter;
 import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.controllers.MainPaneWindowController;
 import pl.prokom.view.menu.AlertBox;
-
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class SudokuBoardDaoDBController {
@@ -32,13 +29,9 @@ public class SudokuBoardDaoDBController {
     MainPaneWindowController mainController;
 
     /**
-     * Database - Jdbc DAO.
+     * TextInputDialog holding DAO - DB features.
      */
-    private Dao<SudokuBoard> jdbcSudokuBoardDao;
-    /**
-     * FileChooser holding file processing.
-     */
-    private TextInputDialog textInputDialog = new TextInputDialog();
+    private TextInputDialog textInputDialog= new TextInputDialog();
 
     /**
      * Reference to MainPaneWindowController instance to reach this inside.
@@ -57,7 +50,6 @@ public class SudokuBoardDaoDBController {
     public void initialize(){
         textInputDialog.setContentText(BundleHelper.getInteraction("sudokuDatabase.textInputDialogContent"));
         textInputDialog.setTitle(BundleHelper.getInteraction("sudokuDatabase.textInputDialogTitle"));
-        textInputDialog.setHeaderText(BundleHelper.getInteraction("sudokuDatabase.textInputDialogHeader"));
         textInputDialog.getDialogPane()
                 .lookupButton(ButtonType.OK).disableProperty()
                 .bind(textInputDialog.getEditor().textProperty().isEmpty());
@@ -72,10 +64,10 @@ public class SudokuBoardDaoDBController {
     @FXML
     public void writeSudokuToDatabase() throws JdbcDaoConnectionException, JdbcDaoQueryException {
         textInputDialog.getEditor().setText("");
+        textInputDialog.setHeaderText(BundleHelper.getInteraction("sudokuDatabase.textInputDialogHeaderWrite"));
         JdbcSudokuBoardDaoFactory jdbcSudokuBoardDaoFactory = new JdbcSudokuBoardDaoFactory();
-        try {
-            Optional<String> sudokuBoardName = textInputDialog.showAndWait();
-            jdbcSudokuBoardDao = jdbcSudokuBoardDaoFactory.getDBDao(sudokuBoardName.get());
+        Optional<String> sudokuBoardName = textInputDialog.showAndWait();
+        try(Dao<SudokuBoard> jdbcSudokuBoardDao = jdbcSudokuBoardDaoFactory.getDBDao(sudokuBoardName.get());) {
             jdbcSudokuBoardDao.write(mainController.getSudokuGridController().getSudokuBoard());
 
             logger.trace(BundleHelper.getApplication("sudokuDatabase.connectionSuccess"));
@@ -90,10 +82,8 @@ public class SudokuBoardDaoDBController {
         } catch(JdbcDaoQueryException e) {
             logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoQueryException"), e);
             throw new JdbcDaoQueryException(e);
-        } catch (DaoException e) {
+        } catch (Exception e) {
             logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoException"), e);
-        } catch (NoSuchElementException e) {
-            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoNameException"), e);
         }
     }
 
@@ -106,10 +96,10 @@ public class SudokuBoardDaoDBController {
     @FXML
     public void readSudokuFromDatabase() throws JdbcDaoConnectionException, JdbcDaoQueryException {
         textInputDialog.getEditor().setText("");
+        textInputDialog.setHeaderText(BundleHelper.getInteraction("sudokuDatabase.textInputDialogHeaderRead"));
         JdbcSudokuBoardDaoFactory jdbcSudokuBoardDaoFactory = new JdbcSudokuBoardDaoFactory();
-        try {
-            Optional<String> sudokuBoardName = textInputDialog.showAndWait();
-            jdbcSudokuBoardDao = jdbcSudokuBoardDaoFactory.getDBDao(sudokuBoardName.get());
+        Optional<String> sudokuBoardName = textInputDialog.showAndWait();
+        try (Dao<SudokuBoard> jdbcSudokuBoardDao = jdbcSudokuBoardDaoFactory.getDBDao(sudokuBoardName.get());){
             SudokuBoardAdapter sudokuBoardDao = (SudokuBoardAdapter) jdbcSudokuBoardDao.read();
 
             this.mainController.getDifficultyLevelsController()
@@ -135,11 +125,10 @@ public class SudokuBoardDaoDBController {
         } catch(JdbcDaoQueryException e) {
             logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoQueryException"), e);
             throw new JdbcDaoQueryException(e);
-        } catch (DaoException e) {
-            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoException"), e);
-        } catch (NoSuchElementException e) {
+        } catch(NullPointerException e) {
             logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoNameException"), e);
+        } catch (Exception e) {
+            logger.warn(BundleHelper.getException("sudokuDatabase.jdbcDaoException"), e);
         }
-
     }
 }
