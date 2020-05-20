@@ -1,7 +1,6 @@
 package pl.prokom.dao.api.exception;
 
 public class DaoException extends Exception {
-
     public DaoException() {
         super();
     }

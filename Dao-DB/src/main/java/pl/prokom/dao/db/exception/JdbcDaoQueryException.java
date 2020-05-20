@@ -1,8 +1,6 @@
 package pl.prokom.dao.db.exception;
 
-import pl.prokom.dao.api.exception.DaoException;
-
-public class JdbcDaoQueryException extends DaoException {
+public class JdbcDaoQueryException extends DbDaoException {
     public JdbcDaoQueryException() {
         super();
     }

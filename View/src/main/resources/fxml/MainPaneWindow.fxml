@@ -3,12 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="mainPaneWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="571.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.MainPaneWindowController">
+<Pane fx:id="mainPaneWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="571.0" prefWidth="390.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.MainPaneWindowController">
     <children>
         <MenuBar prefHeight="30.0" prefWidth="700.0">
             <menus>
                 <fx:include fx:id="sudokuBoardDaoFile" source="menubar/SudokuBoardDAOFile.fxml" />
-                <fx:include fx:id="sudokuBoardDaoDB" source="menubar/SudokuBoardDaoDB.fxml" />
+                <fx:include fx:id="sudokuBoardDaoDb" source="menubar/SudokuBoardDaoDB.fxml" />
                 <fx:include fx:id="languageChoice" source="menubar/LanguageChoiceButtons.fxml" />
                 <fx:include fx:id="correctness" source="menubar/Correctness.fxml" />
                 <fx:include fx:id="authorsBundle" source="menubar/AuthorsBundle.fxml" />

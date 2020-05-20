@@ -48,8 +48,7 @@
         <dependency>
             <groupId>pl.prokom</groupId>
             <artifactId>Dao-File</artifactId>
-            <version>2.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -114,7 +113,7 @@
                                         <limit>
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.60</minimum>
+                                            <minimum>0.00</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import pl.prokom.dao.api.exception.DaoException;
 import pl.prokom.dao.api.model.Dao;
 import pl.prokom.dao.file.exception.DaoClassException;
 import pl.prokom.dao.file.exception.DaoFileException;
@@ -36,15 +37,15 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
      * @return reference to {@code SudokuBoard}
      */
     @Override
-    public SudokuBoard read() throws DaoFileException, DaoClassException {
+    public SudokuBoard read() throws DaoException {
         SudokuBoard deserialized = null;
         Path filePath = Paths.get(fileName);
         try (ObjectInputStream iStream = new ObjectInputStream(Files.newInputStream(filePath))) {
             deserialized = (SudokuBoard) iStream.readObject();
         } catch (IOException e) {
-            throw new DaoFileException("Illegal file access.", e);
+            throw new DaoFileException("DaoFileException.illegalFileAccess", e);
         } catch (ClassNotFoundException e) {
-            throw new DaoClassException("Illegal class obtained.", e);
+            throw new DaoClassException("DaoClassException.illegalClassObtained", e);
         }
         return deserialized;
     }
@@ -55,12 +56,12 @@ public class FileSudokuBoardDao implements Dao<SudokuBoard> {
      * @param object is an instance of SudokuBoard, which is currenty being serialized
      */
     @Override
-    public void write(SudokuBoard object) throws DaoFileException {
+    public void write(SudokuBoard object) throws DaoException {
         Path filePath = Paths.get(fileName);
         try (ObjectOutputStream oStream = new ObjectOutputStream(Files.newOutputStream(filePath))) {
             oStream.writeObject(object);
         } catch (IOException e) {
-            throw new DaoFileException("Illegal file access.", e);
+            throw new DaoFileException("DaoFileException.illegalFileAccess", e);
         }
     }
 
