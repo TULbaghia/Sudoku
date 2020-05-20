@@ -49,6 +49,20 @@ public class DaoFileExceptionTest {
         assertThrows(DaoFileException.class, () -> fileSudokuBoardDao.write(sudokuBoard));
     }
 
-
+    @Test
+    public void exceptionsTestCase() {
+        assertThrows(DaoFileException.class, () -> {
+            throw new DaoFileException();
+        });
+        assertThrows(DaoFileException.class, () -> {
+            throw new DaoFileException("TEST");
+        });
+        assertThrows(DaoFileException.class, () -> {
+            throw new DaoFileException(new NullPointerException());
+        });
+        assertThrows(DaoFileException.class, () -> {
+            throw new DaoFileException("TEST", new NullPointerException());
+        });
+    }
 
 }
