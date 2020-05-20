@@ -8,12 +8,19 @@ import javafx.beans.property.adapter.JavaBeanIntegerPropertyBuilder;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
@@ -28,6 +35,7 @@ import pl.prokom.view.adapter.level.SudokuBoardLevel;
 import pl.prokom.view.bundles.BundleHelper;
 import pl.prokom.view.controllers.MainPaneWindowController;
 import pl.prokom.view.exception.FatalSudokuError;
+import pl.prokom.view.menu.AlertBox;
 
 /**
  * Controller for main GUI class, which holds sudokuBoard stable.
@@ -43,6 +51,8 @@ public class SudokuBoardController {
      * Reference to MainPaneWindowController instance to reach this.
      */
     MainPaneWindowController mainController;
+
+    boolean showedEndGameDialog = false;
 
     /**
      * GridPane instance with all sudokuBoard cells as a TextField instances.
@@ -86,7 +96,7 @@ public class SudokuBoardController {
     /**
      * Initialize cells matching board.
      *
-     * @param tmp solved sudokuBoard.
+     * @param tmp       solved sudokuBoard.
      * @param wipeEmpty should values entered by user be overwritten
      */
     public void initializeSudokuCellsWith(SudokuBoard tmp, boolean wipeEmpty) {
@@ -150,6 +160,13 @@ public class SudokuBoardController {
                     change.getControlNewText().matches("[0-9]?") ? change : null));
             gridPane.add(textField, x / 9, x % 9);
             textFields.set(x, textField);
+            textField.setMinHeight(10);
+            textField.setMinWidth(10);
+
+            textField.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,
+                    null, new BorderWidths(1, (x / 9) % 3 == 2 ? 1 : 0,
+                    (x % 9) % 3 == 2 ? 1 : 0, 1))));
+            textField.setCursor(Cursor.CROSSHAIR);
 
             try {
                 JavaBeanIntegerProperty integerProperty = builder
@@ -187,9 +204,13 @@ public class SudokuBoardController {
 
                 textField.textProperty().bindBidirectional(integerProperty, converter);
 
-                textField.focusedProperty().addListener(observable -> {
+                textField.focusedProperty().addListener((observableValue, oldBool, newBool) -> {
                     textField.setText(converter.toString(integerProperty.get()));
                     textField.setBackground(Background.EMPTY);
+
+                    if (!newBool) {
+                        endGame();
+                    }
                 });
 
                 beanIntegerProperties.set(x, integerProperty);
@@ -234,9 +255,35 @@ public class SudokuBoardController {
 
     /**
      * Get sudokuBoard.
+     *
      * @return reference to sudokuBoard
      */
     public SudokuBoardAdapter getSudokuBoard() {
         return sudokuBoard;
+    }
+
+    /**
+     * Displays message when game ends.
+     */
+    private void endGame() {
+        if (sudokuBoard.getEditableIntegerFields().stream()
+                .map(x -> sudokuBoard.get(x / 9, x % 9))
+                .allMatch(x -> x != 0) && !showedEndGameDialog) {
+            logger.info(BundleHelper.getApplication("boardControllerGameEnd"));
+            if (sudokuBoard.isSolved()) {
+                AlertBox.showAlert(Alert.AlertType.INFORMATION,
+                        BundleHelper.getApplication("boardControllerGameEndTitle"),
+                        BundleHelper.getApplication("boardControllerGameEndHeaderSuccess"),
+                        BundleHelper.getApplication("boardControllerGameEndContextSuccess"));
+            } else {
+                AlertBox.showAlert(Alert.AlertType.ERROR,
+                        BundleHelper.getApplication("boardControllerGameEndTitle"),
+                        BundleHelper.getApplication("boardControllerGameEndHeaderFailure"),
+                        BundleHelper.getApplication("boardControllerGameEndContextFailure"));
+            }
+            this.showedEndGameDialog = true;
+        } else {
+            this.showedEndGameDialog = false;
+        }
     }
 }

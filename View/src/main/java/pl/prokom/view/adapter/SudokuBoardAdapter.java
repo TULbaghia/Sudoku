@@ -106,8 +106,7 @@ public class SudokuBoardAdapter extends SudokuBoard {
      */
     public void setSudokuFieldListenerEnabled(CorrectnessMode status) {
         if (!basicGroupCorrectnessCheck()) {
-            throw new SudokuBoardDuplicateValuesException(
-                    BundleHelper.getException("sudokuBoardDuplicateValuesException"));
+            throw new SudokuBoardDuplicateValuesException("sudokuBoardDuplicateValuesException");
         } else if (status != sudokuCorrectnessMode) {
             if (status == CorrectnessMode.SUPERVISOR) {
                 getGroups().forEach(SudokuGroup::initializeListeners);

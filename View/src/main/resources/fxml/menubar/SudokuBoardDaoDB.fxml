@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+
+<Menu mnemonicParsing="false" text="%sudokuDatabase.label" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.prokom.view.controllers.sudokuboard.SudokuBoardDaoDbController">
+  <items>
+    <MenuItem fx:id="sudokuDatabaseWrite" mnemonicParsing="false" onAction="#writeSudokuToDatabase" text="%sudokuDatabase.write" />
+      <MenuItem fx:id="sudokuDatabaseRead" mnemonicParsing="false" onAction="#readSudokuFromDatabase" text="%sudokuDatabase.read" />
+  </items>
+</Menu>

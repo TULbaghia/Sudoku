@@ -5,6 +5,7 @@ module pl.prokom.view {
     requires pl.prokom.model;
     requires pl.prokom.dao.file;
     requires pl.prokom.dao.api;
+    requires pl.prokom.dao.db;
     requires slf4j.api;
     requires java.desktop;
 

@@ -55,7 +55,7 @@ public class SudokuBoardDaoFileController {
      * Serialize instance of SudokuBoard to a valid file.
      */
     @FXML
-    public void writeSudokuToFile() throws DaoFileException {
+    public void writeSudokuToFile() {
         try {
             String filePath = fileChooser.showSaveDialog(
                     mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
@@ -71,7 +71,7 @@ public class SudokuBoardDaoFileController {
             logger.warn(BundleHelper.getException("daoFileNotChoosen"), e);
         } catch (DaoException e) {
             logger.error(BundleHelper.getException("daoFileException"), e);
-            throw new DaoFileException("Illegal file access.", e);
+            //throw e;
         }
     }
 
@@ -80,7 +80,7 @@ public class SudokuBoardDaoFileController {
      * Set actual Sudoku difficulty level and initialize deserialized boaard.
      */
     @FXML
-    public void readSudokuFromFile() throws DaoFileException {
+    public void readSudokuFromFile() {
         try {
             String filePath = fileChooser.showOpenDialog(
                     mainController.getMainPaneWindow().getScene().getWindow()).getAbsolutePath();
@@ -111,7 +111,7 @@ public class SudokuBoardDaoFileController {
             logger.warn(BundleHelper.getException("daoFileNotChoosen"), e);
         } catch (DaoException e) {
             logger.error(BundleHelper.getException("daoFileException"), e);
-            throw new DaoFileException("Illegal file access.", e);
+            //throw e;
         }
     }
 

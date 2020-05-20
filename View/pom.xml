@@ -65,7 +65,13 @@
         <dependency>
             <groupId>pl.prokom</groupId>
             <artifactId>Dao-File</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.prokom</groupId>
+            <artifactId>Dao-DB</artifactId>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

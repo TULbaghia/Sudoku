@@ -56,6 +56,20 @@ public class DaoClassExceptionTest {
         assertThrows(DaoClassException.class, () -> fileSudokuBoardDao.read());
     }
 
-
+    @Test
+    public void exceptionsTestCase() {
+        assertThrows(DaoClassException.class, () -> {
+            throw new DaoClassException();
+        });
+        assertThrows(DaoClassException.class, () -> {
+            throw new DaoClassException("TEST");
+        });
+        assertThrows(DaoClassException.class, () -> {
+            throw new DaoClassException(new NullPointerException());
+        });
+        assertThrows(DaoClassException.class, () -> {
+            throw new DaoClassException("TEST", new NullPointerException());
+        });
+    }
 
 }

@@ -1,9 +1,6 @@
 package pl.prokom.dao.file.exception;
 
-import pl.prokom.dao.api.exception.DaoException;
-
-public class DaoFileException extends DaoException {
-
+public class DaoFileException extends FileDaoException {
     public DaoFileException() {
         super();
     }

@@ -71,6 +71,10 @@ public class SudokuBoardCorrectnessController {
      * @param mode one that match CorrectnessMode
      */
     public void changeCorrectnessMode(CorrectnessMode mode) {
+        if (modesRadioItemMap.get(mode).isDisable()) {
+            logger.debug(BundleHelper.getApplication("correctnessChangeSame"));
+            return;
+        }
         try {
             mainController.getSudokuGridController().setBoardListenerMode(mode);
             correctnessGroup.getToggles().stream().map(x -> (RadioMenuItem) x).forEach(x -> {
@@ -95,6 +99,7 @@ public class SudokuBoardCorrectnessController {
                     BundleHelper.getApplication("correctnessAlertHeader"),
                     BundleHelper.getApplication("correctnessAlertTextError"));
         }
+
     }
 
     /**
